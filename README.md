@@ -1,4 +1,4 @@
-# mvc_project
+# E-commerce_project
 
 A new Flutter project.
 
