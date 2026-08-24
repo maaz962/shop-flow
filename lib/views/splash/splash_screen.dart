@@ -25,15 +25,36 @@ class _SplashScreenState extends State<SplashScreen>{
 
   @override
   Widget build(BuildContext context){
-    return const Scaffold(
+    return  Scaffold(
       body: Center(
-        child: Text(
-          'ShopFlow',
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logo.png',
+              width: 160,
+              height: 160,
+              fit: BoxFit.contain,
+            ),
+
+            const SizedBox(height: 24),
+
+            Text(
+              'ShopFlow',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              'Everything you need, in one place.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
         ),
+
       ),
     );
   }

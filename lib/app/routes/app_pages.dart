@@ -1,4 +1,4 @@
-import 'package:ShopFlowApp/main.dart';
+import 'package:shop_flow_app/main.dart';
 import 'package:get/get.dart';
 import '../../views/home/home_screen.dart';
 import '../../views/splash/splash_screen.dart';
