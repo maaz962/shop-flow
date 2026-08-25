@@ -23,4 +23,27 @@ class ApiService {
       );
     }
   }
+
+  Future<Response> createProduct({
+    required String title,
+    required double price,
+}) async {
+    try {
+      final response = await _dio.post(
+        '/product/add',
+        data: {
+          'title': title,
+          'price': price,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      throw Exception(
+        e.message ?? 'Failed to create product',
+      );
+    }
+  }
+
+  Future<>
 }

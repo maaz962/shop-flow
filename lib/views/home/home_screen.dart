@@ -35,6 +35,13 @@ class HomeScreen extends StatelessWidget{
               },
               icon: const Icon(Icons.settings),
           ),
+
+          IconButton(
+            onPressed: () {
+              Get.toNamed(AppRoutes.addProduct);
+            },
+            icon: const Icon(Icons.add),
+          ),
         ],
       ),
 
@@ -60,11 +67,20 @@ class HomeScreen extends StatelessWidget{
             return Card(
               margin: const EdgeInsets.only(bottom: 16),
               child: ListTile(
-                leading: Image.network(
+                leading: product.thumbnail.isNotEmpty
+                  ? Image.network(
                   product.thumbnail,
                   width: 70,
-                    height: 70,
-                    fit: BoxFit.cover,
+                  height: 70,
+                  fit: BoxFit.cover,
+                )
+                : Container(
+                  width: 70,
+                  height: 70,
+                  color: Colors.grey.shade300,
+                  child: const Icon(
+                    Icons.image_not_supported,
+                  ),
                 ),
                 title: Text(product.title),
                 subtitle: Text('\$${product.price}',

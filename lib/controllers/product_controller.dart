@@ -38,4 +38,21 @@ class ProductController extends GetxController{
       isLoading.value = false;
     }
   }
+
+  Future<void> createProduct({
+    required String title,
+    required double price,
+}) async {
+    try {
+      final response = await apiService.createProduct(
+          title: title,
+        price: price,);
+
+      final newProduct = ProductModel.fromJson(response.data);
+      products.insert(0, newProduct);
+
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
+  }
 }
