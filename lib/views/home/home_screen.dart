@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget{
   Widget build(BuildContext context){
     final themeController = Get.find<ThemeController>();
     final productController = Get.put(ProductController());
+    // final ProductController productController =  Get.find<ProductController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -46,11 +47,11 @@ class HomeScreen extends StatelessWidget{
       ),
 
       body: Obx(() {
-        if(productController.isLoading.value){
+        if (productController.isLoading.value) {
           return const ProductSkeleton();
         }
 
-        if(productController.errorMessage.value.isNotEmpty){
+        if (productController.errorMessage.value.isNotEmpty) {
           return Center(
             child: Text(
               productController.errorMessage.value,
@@ -58,39 +59,125 @@ class HomeScreen extends StatelessWidget{
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: productController.products.length,
-          itemBuilder: (context, index) {
-            final product = productController.products[index];
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: productController.products.length,
+                itemBuilder: (context, index) {
+                  final product =
+                  productController.products[index];
 
-            return Card(
-              margin: const EdgeInsets.only(bottom: 16),
-              child: ListTile(
-                leading: product.thumbnail.isNotEmpty
-                  ? Image.network(
-                  product.thumbnail,
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.cover,
-                )
-                : Container(
-                  width: 70,
-                  height: 70,
-                  color: Colors.grey.shade300,
-                  child: const Icon(
-                    Icons.image_not_supported,
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: ListTile(
+                      onTap: () {
+                        Get.toNamed(
+                          AppRoutes.editProduct,
+                          arguments: product,
+                        );
+                      },
+
+                      leading: product.thumbnail.isNotEmpty
+                          ? Image.network(
+                        product.thumbnail,
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.cover,
+                      )
+                          : Container(
+                        width: 70,
+                        height: 70,
+                        color: Colors.grey.shade300,
+                        child: const Icon(
+                          Icons.image_not_supported,
+                        ),
+                      ),
+
+                      title: Text(product.title),
+
+                      subtitle: Text(
+                        '\$${product.price}',
+                      ),
+
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '⭐ ${product.rating}',
+                          ),
+
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              Get.defaultDialog(
+                                title: 'Delete Product',
+                                middleText:
+                                'Are you sure you want to delete this product?',
+                                textCancel: 'Cancel',
+                                textConfirm: 'Delete',
+                                onConfirm: () async {
+                                  Get.back();
+
+                                  await productController
+                                      .deleteProduct(product.id);
+
+                                  Get.snackbar(
+                                    'Deleted',
+                                    '${product.title} deleted successfully',
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Pagination
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed:
+                  productController.currentPage > 1
+                      ? () {
+                    productController.goToPage(
+                      productController.currentPage - 1,
+                    );
+                  }
+                      : null,
+                  icon: const Icon(
+                    Icons.chevron_left,
                   ),
                 ),
-                title: Text(product.title),
-                subtitle: Text('\$${product.price}',
+
+                Text(
+                  'Page ${productController.currentPage}',
                 ),
-                trailing: Text('⭐ ${product.rating}'),
-              ),
-            );
-          },
+
+                IconButton(
+                  onPressed: () {
+                    productController.goToPage(
+                      productController.currentPage + 1,
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.chevron_right,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+          ],
         );
-      })
+      }),
     );
   }
 }
