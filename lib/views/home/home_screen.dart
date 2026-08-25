@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/product_controller.dart';
+import '../../widgets/product_skeleton.dart';
 
 class HomeScreen extends StatelessWidget{
   const HomeScreen({super.key});
@@ -39,9 +40,7 @@ class HomeScreen extends StatelessWidget{
 
       body: Obx(() {
         if(productController.isLoading.value){
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const ProductSkeleton();
         }
 
         if(productController.errorMessage.value.isNotEmpty){
