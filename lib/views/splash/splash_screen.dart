@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
+import '../../controllers/auth_controller.dart';
 
 class SplashScreen extends StatefulWidget{
   const SplashScreen({super.key});
@@ -17,8 +18,16 @@ class _SplashScreenState extends State<SplashScreen>{
 
     Future.delayed(
       const Duration(seconds: 2),
-        () {
-        Get.offNamed(AppRoutes.home);
+        () async {
+        final authController = Get.find<AuthController>();
+
+        final loggedIn = await authController.isLoggedIn();
+
+        if(loggedIn){
+          Get.offNamed(AppRoutes.home);
+        } else {
+          Get.offNamed(AppRoutes.login);
+        }
         },
     );
   }

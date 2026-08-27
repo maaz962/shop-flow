@@ -1,11 +1,13 @@
 import 'package:shop_flow_app/main.dart';
 import 'package:get/get.dart';
+import 'package:shop_flow_app/views/auth/login_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
 import '../../views/home/home_screen.dart';
 import '../../views/splash/splash_screen.dart';
 import '../../views/settings/settings_screen.dart';
 import 'app_routes.dart';
 import '../../views/products/add_product_screen.dart';
+import '../../views/auth/login_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -33,5 +35,12 @@ class AppPages {
       name: AppRoutes.editProduct,
       page: () => EditProductScreen(product: Get.arguments,),
     ),
+
+    GetPage(
+      name: AppRoutes.login,
+      page: () => const LoginScreen(),
+    ),
+
+
   ];
 }

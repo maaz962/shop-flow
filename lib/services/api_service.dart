@@ -1,6 +1,40 @@
 import 'package:dio/dio.dart';
+import 'storage_service.dart';
+
 
 class ApiService {
+  final StorageService storageService = StorageService();
+
+
+  Exception _handleDioException(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return Exception(
+          'Connection timeout. Please try again.',
+        );
+
+      case DioExceptionType.receiveTimeout:
+        return Exception(
+          'Server took too long to respond.',
+        );
+
+      case DioExceptionType.connectionError:
+        return Exception(
+          'No Internet connection.',
+        );
+
+      case DioExceptionType.badResponse:
+        return Exception(
+          'Server error: ${e.response?.statusCode}',
+        );
+
+      default:
+        return Exception(
+          'Something went wrong.',
+        );
+    }
+  }
+
   final Dio _dio = Dio(
     BaseOptions(
       baseUrl: 'https://dummyjson.com',
@@ -11,6 +45,44 @@ class ApiService {
       },
     ),
   );
+
+  ApiService(){
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await storageService.getToken();
+
+          if(token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+
+          print(
+            'REQUEST: ${options.method} ${options.uri}',
+          );
+          print(
+            'HEADERS: ${options.headers}',
+          );
+
+          handler.next(options);
+        },
+
+        onResponse: (response, handler){
+          print('RESPONSE: ${response.statusCode} ${response.requestOptions.uri}',);
+
+          handler.next(response);
+        },
+
+        onError: (error, handler){
+          print('ERROR: ${error.requestOptions.uri}',);
+
+          print('MESSAGE: ${error.message}',);
+
+          handler.next(error);
+        },
+      ),
+    );
+  }
+
 
   Future<Response> getProducts({
     int limit = 10,
@@ -27,9 +99,42 @@ class ApiService {
 
       return response;
     } on DioException catch (e) {
-      throw Exception(
-        e.message ?? 'Something went wrong',
-      );
+      throw _handleDioException(e);
+      // throw Exception(
+      //   e.message ?? 'Something went wrong',
+      // );
+
+
+      // switch (e.type) {
+      //   case DioExceptionType.connectionTimeout:
+      //     throw Exception(
+      //       'Connection timeout. Please try again.',
+      //     );
+      //
+      //   case DioExceptionType.receiveTimeout:
+      //     throw Exception(
+      //       'Server took too long to respond',
+      //     );
+      //
+      //   case DioExceptionType.connectionError:
+      //     throw Exception(
+      //       'No Internet connection.',
+      //     );
+      //
+      //   case DioExceptionType.badResponse:
+      //     throw Exception(
+      //       'Server error: ${e.response?.statusCode}',
+      //     );
+      //
+      //   default:
+      //     throw Exception(
+      //       'Something went wrong.',
+      //     );
+      // }
+
+      // throw Exception(
+      //   'Unexpected error occurred.',
+      // );
     }
   }
 
@@ -48,9 +153,10 @@ class ApiService {
 
       return response;
     } on DioException catch (e) {
-      throw Exception(
-        e.message ?? 'Failed to create product',
-      );
+      // throw Exception(
+      //   e.message ?? 'Failed to create product',
+      // );
+      throw _handleDioException(e);
     }
   }
 
@@ -113,9 +219,11 @@ class ApiService {
       return response;
     }
     on DioException catch(e) {
-      throw Exception(
-        e.message ?? 'Failed to delete Product',
-      );
+
+      throw _handleDioException(e);
+      // throw Exception(
+      //   e.message ?? 'Failed to delete Product',
+      // );
     }
   }
 
