@@ -1,4 +1,3 @@
-import '';
 
 class ProductModel {
   final int id;
@@ -12,6 +11,7 @@ class ProductModel {
   final String category;
   final String thumbnail;
   final List<String> images;
+  final List<dynamic> reviews;
 
   ProductModel({
     required this.id,
@@ -25,6 +25,7 @@ class ProductModel {
     required this.category,
     required this.images,
     required this.thumbnail,
+    required this.reviews,
 });
 
   factory ProductModel.fromJson(Map<String, dynamic> json){
@@ -40,6 +41,7 @@ class ProductModel {
       category: json['category'] ?? '',
       thumbnail: json['thumbnail'] ?? '',
       images: List<String>.from(json['images'] ?? []),
+      reviews: List<dynamic>.from(json['reviews'] ?? [],)
     );
   }
 }

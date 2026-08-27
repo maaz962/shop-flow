@@ -5,5 +5,6 @@ class AppRoutes {
   static const addProduct = '/add-product';
   static const editProduct = '/edit-product';
   static const login = '/login';
+  static const productDetails = '/product-details';
 }
 

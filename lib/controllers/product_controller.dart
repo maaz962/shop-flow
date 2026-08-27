@@ -122,6 +122,7 @@ class ProductController extends GetxController{
           category: products[index].category,
           thumbnail: products[index].thumbnail,
           images: products[index].images,
+          reviews: products[index].reviews,
         );
 
         products.refresh();

@@ -8,6 +8,7 @@ import '../../views/settings/settings_screen.dart';
 import 'app_routes.dart';
 import '../../views/products/add_product_screen.dart';
 import '../../views/auth/login_screen.dart';
+import '../../views/products/product_details_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -39,6 +40,12 @@ class AppPages {
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginScreen(),
+    ),
+
+
+    GetPage(
+      name: AppRoutes.productDetails,
+      page: () => const ProductDetailsScreen(),
     ),
 
 

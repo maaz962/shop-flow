@@ -120,7 +120,8 @@ class HomeScreen extends StatelessWidget {
                           // EDIT PRODUCT
                           onTap: () {
                             Get.toNamed(
-                              AppRoutes.editProduct,
+                              // AppRoutes.editProduct,
+                              AppRoutes.productDetails,
                               arguments: product,
                             );
                           },
