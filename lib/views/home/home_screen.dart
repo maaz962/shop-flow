@@ -14,14 +14,44 @@ class HomeScreen extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
     final productController = Get.put(ProductController());
 
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'ShopFlow',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+        title: Row(
+          children: [
+            const Text('ShopFlow',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(width: 20,),
+
+            Expanded(
+              child: SizedBox(
+                height: 42,
+                child: TextField(
+                  onChanged: (value) {
+                    productController.searchProducts(value);
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search products...',
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+
 
         actions: [
 
@@ -76,6 +106,19 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
+
+                  if(productController.products.isEmpty){
+                    return const Center(
+                      child: Text(
+                        'No Products found',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }
+
                   int columns;
 
                   if (constraints.maxWidth >= 1200) {
@@ -89,6 +132,7 @@ class HomeScreen extends StatelessWidget {
                   }
 
                   return GridView.builder(
+                    key: ValueKey(productController.products.length),
                     padding: const EdgeInsets.all(16),
 
                     itemCount:
@@ -384,6 +428,29 @@ class HomeScreen extends StatelessWidget {
           ],
         );
       }),
+
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(onPressed: (){},
+                icon: const Icon(Icons.home),
+            ),
+            IconButton(onPressed: (){
+              Get.toNamed(AppRoutes.wishlist);
+            },
+                icon: const Icon(Icons.favorite_border),
+            ),
+            IconButton(onPressed: (){},
+              icon: const Icon(Icons.shopping_cart_outlined),
+            ),
+            IconButton(onPressed: (){},
+              icon: const Icon(Icons.person_outline),
+            ),
+
+          ],
+        )
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:shop_flow_app/main.dart';
 import 'package:get/get.dart';
 import 'package:shop_flow_app/views/auth/login_screen.dart';
+import 'package:shop_flow_app/views/auth/signup_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
 import '../../views/home/home_screen.dart';
 import '../../views/splash/splash_screen.dart';
@@ -49,5 +50,14 @@ class AppPages {
     ),
 
 
+    GetPage(
+      name: AppRoutes.signup,
+      page: () => const SignupScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.wishlist,
+      page: () => const WishlistScreen(),
+    ),
   ];
 }

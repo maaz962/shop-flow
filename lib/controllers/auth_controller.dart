@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
 import 'package:shop_flow_app/services/storage_service.dart';
 import '../services/auth_service.dart';
-import '../services/storage_service.dart';
-import '../app/routes/app_routes.dart';
+
 
 class AuthController extends GetxController{
   final AuthService authService = AuthService();
@@ -22,12 +21,12 @@ class AuthController extends GetxController{
   Future<void> loadToken() async {
     final savedToken = await storageService.getToken();
 
-    if(savedToken != null){
+    if(savedToken != null && savedToken.isNotEmpty){
       token.value = savedToken;
     }
   }
 
-  Future<void> login({
+  Future<bool> login({
     required String username,
     required String password,
 }) async {
@@ -35,19 +34,90 @@ class AuthController extends GetxController{
       isLoading.value = true;
       errorMessage.value = '';
 
+      // check if user has signed up
+      final savedUsername = await storageService.getSignupUsername();
+      final savedPassword = await storageService.getSignupPassword();
+
+      if(savedUsername == null || savedPassword == null){
+        errorMessage.value = 'Please signup first';
+        return false;
+      }
+
+      // check signup credentials
+      if(username != savedUsername || password != savedPassword){
+        errorMessage.value = 'Invalid username or password';
+        return false;
+      }
+
+      // Login successful // create local session token
+      token.value = 'local_token_${DateTime.now().millisecondsSinceEpoch}';
+
+      await storageService.saveToken(token.value);
+      print('Login successful');
+      print('Token saved: ${token.value}');
+      return true;
+      // login API
       final response = await authService.login(
         username: username,
         password: password,
       );
 
-      token.value = response.data['accessToken'];
+      final accessToken = response.data['accessToken'];
+      if(accessToken == null || accessToken.toString().isEmpty){
+        errorMessage.value = 'Login Failed: Token not received';
+        return false;
+      }
+      token.value = accessToken.toString();
 
       await storageService.saveToken(token.value,);
 
        print('Token saved: ${token.value}');
+
+       // successful login
+      return true;
     } catch (e) {
       errorMessage.value = e.toString();
+      return false;
     } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> signup({
+    required String username,
+    required String email,
+    required String password,
+    required String confirmPassword,
+}) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      //confirm password validation
+      if(password != confirmPassword){
+        errorMessage.value = 'Passwords do not match';
+        return false;
+      }
+
+      // signup API
+      final response = await authService.signup(
+        username: username,
+        email: email,
+        password : password,
+        confirmPassword: '',
+      );
+      print('Signup successful: ${response.data}');
+
+      // save signup user locally
+      await storageService.saveSignupUser(username: username, password: password);
+      return true;
+    }
+    catch (e) {
+      errorMessage.value = e.toString();
+
+      return false;
+    }
+    finally {
       isLoading.value = false;
     }
   }

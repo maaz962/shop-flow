@@ -20,4 +20,26 @@ class StorageService {
 
     await prefs.remove(tokenKey);
   }
+
+  Future<void> saveSignupUser({
+    required String username,
+    required String password,
+}) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('signup_username', username);
+    await prefs.setString('signup_password', password);
+  }
+
+  Future<String?> getSignupUsername() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getString('signup_username');
+  }
+
+  Future<String?> getSignupPassword() async{
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getString('signup_password');
+  }
 }

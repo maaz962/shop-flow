@@ -14,8 +14,8 @@ class LoginScreen extends StatefulWidget{
 }
 
 class _LoginScreenState extends State<LoginScreen>{
-  final usernameController = TextEditingController(text: 'emilys');
-  final passwordController = TextEditingController(text : 'emilyspass');
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
   final AuthController authController = Get.find<AuthController>();
 
   @override
@@ -26,15 +26,17 @@ class _LoginScreenState extends State<LoginScreen>{
   }
 
   Future<void> login() async {
-    await authController.login(
+    final success = await authController.login(
       username: usernameController.text.trim(),
       password: passwordController.text.trim(),
     );
 
-    if(authController.token.value.isNotEmpty) {
+    if(success){
       Get.offNamed(AppRoutes.home);
 
-      Get.snackbar('Success', 'Login successful');
+      Get.snackbar('Success', 'Login successful',);
+    } else {
+      Get.snackbar('Login failed', authController.errorMessage.value,);
     }
   }
 
@@ -71,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen>{
 
                 const SizedBox(height: 24),
 
+                // Login Button
                 Obx(
                       () => SizedBox(
                     width: double.infinity,
@@ -83,6 +86,24 @@ class _LoginScreenState extends State<LoginScreen>{
                     ),
                   ),
                 ),
+
+                const SizedBox(height: 16,),
+                //Signup
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don't have an account?",
+                    ),
+
+                    TextButton(onPressed: (){
+                      Get.toNamed(AppRoutes.signup);
+                    },
+                        child: const Text('Sign Up',),
+                    ),
+
+
+                  ],
+                )
               ],
             ),
         ),

@@ -1,11 +1,15 @@
 import 'package:get/get.dart';
+
 import '../models/product_model.dart';
 import '../services/api_service.dart';
 
-class ProductController extends GetxController{
+class ProductController extends GetxController {
   final ApiService apiService = ApiService();
 
   final products = <ProductModel>[].obs;
+
+  // All products of current page
+  final allProducts = <ProductModel>[].obs;
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
@@ -13,135 +17,189 @@ class ProductController extends GetxController{
   int currentPage = 1;
   final int limit = 10;
 
-  int get skip => (currentPage -1 ) * limit;
+  int get skip => (currentPage - 1) * limit;
 
+  final searchQuery = ''.obs;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
 
     fetchProducts();
   }
 
-  Future<void> fetchProducts() async{
-    try{
+  // GET PRODUCTS
+  Future<void> fetchProducts() async {
+    try {
       isLoading.value = true;
       errorMessage.value = '';
 
       final response = await apiService.getProducts(
-        limit: 10,
-        skip: 0,
+        limit: limit,
+        skip: skip,
       );
 
       final List<dynamic> data = response.data['products'];
 
-      products.value = data
-      .map(
-          (json) => ProductModel.fromJson(json),
+      final fetchedProducts = data
+          .map(
+            (json) => ProductModel.fromJson(json),
       )
-      .toList();
+          .toList();
+
+      allProducts.assignAll(fetchedProducts);
+
+      // Apply existing search after loading new page
+      if (searchQuery.value.isEmpty) {
+        products.assignAll(fetchedProducts);
+      } else {
+        searchProducts(searchQuery.value);
+      }
     } catch (e) {
       errorMessage.value = e.toString();
-    }finally {
+    } finally {
       isLoading.value = false;
     }
   }
 
+
+  // SEARCH
+  void searchProducts(String query) {
+    final search = query.trim().toLowerCase();
+
+    searchQuery.value = search;
+
+    if (search.isEmpty) {
+      products.assignAll(allProducts);
+      return;
+    }
+
+    final results = allProducts.where((product) {
+      return product.title.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    products.assignAll(results);
+  }
+
+
   Future<void> goToPage(int page) async {
+    if (page < 1) return;
+
     currentPage = page;
 
     await fetchProducts();
   }
 
+
+  // POST
   Future<void> createProduct({
     required String title,
     required double price,
-}) async {
+  }) async {
     try {
       final response = await apiService.createProduct(
-          title: title,
-        price: price,);
+        title: title,
+        price: price,
+      );
 
       final newProduct = ProductModel.fromJson(response.data);
-      products.insert(0, newProduct);
 
+      allProducts.insert(0, newProduct);
+
+      searchProducts(searchQuery.value);
     } catch (e) {
       errorMessage.value = e.toString();
     }
   }
 
+  // PUT
   Future<void> updateProduct({
     required int id,
     required String title,
     required double price,
-}) async{
+  }) async {
     try {
       final response = await apiService.updateProduct(
-          id: id,
-          title: title,
-          price: price);
-
-      final updateProduct = ProductModel.fromJson(response.data);
-
-      final index = products.indexWhere(
-          (product) => product.id == id,
+        id: id,
+        title: title,
+        price: price,
       );
 
-      if(index != -1){
-        products[index] = updateProduct;
-        products.refresh();
+      final updatedProduct = ProductModel.fromJson(response.data);
+
+      final index = allProducts.indexWhere(
+            (product) => product.id == id,
+      );
+
+      if (index != -1) {
+        allProducts[index] = updatedProduct;
+        allProducts.refresh();
+
+        searchProducts(searchQuery.value);
       }
     } catch (e) {
-      errorMessage.value = e.toString();}}
+      errorMessage.value = e.toString();
+    }
+  }
 
+
+  // PATCH
   Future<void> patchProduct({
     required int id,
     required double price,
-}) async {
-    try{
-      final response = await apiService.patchProduct(
-          id: id,
-          price: price);
-
-      final patchProduct = ProductModel.fromJson(response.data);
-
-      final index = products.indexWhere(
-          (product) => product.id == id,
+  }) async {
+    try {
+      await apiService.patchProduct(
+        id: id,
+        price: price,
       );
+
+      final index = allProducts.indexWhere(
+            (product) => product.id == id,
+      );
+
       if (index != -1) {
-        products[index] = ProductModel(
-          id: products[index].id,
-          title: products[index].title,
-          description: products[index].description,
+        allProducts[index] = ProductModel(
+          id: allProducts[index].id,
+          title: allProducts[index].title,
+          description: allProducts[index].description,
           price: price,
-          discountPercentage:
-          products[index].discountPercentage,
-          rating: products[index].rating,
-          stock: products[index].stock,
-          brand: products[index].brand,
-          category: products[index].category,
-          thumbnail: products[index].thumbnail,
-          images: products[index].images,
-          reviews: products[index].reviews,
+          discountPercentage: allProducts[index].discountPercentage,
+          rating: allProducts[index].rating,
+          stock: allProducts[index].stock,
+          brand: allProducts[index].brand,
+          category: allProducts[index].category,
+          thumbnail: allProducts[index].thumbnail,
+          images: allProducts[index].images,
+          reviews: allProducts[index].reviews,
         );
 
-        products.refresh();
+        allProducts.refresh();
+
+        searchProducts(searchQuery.value);
       }
     } catch (e) {
       errorMessage.value = e.toString();
     }
   }
-  Future<void> deleteProduct(int id) async{
-    try{
-      await apiService.deleteProduct(id: id);
+
+
+  // DELETE
+  Future<void> deleteProduct(int id) async {
+    try {
+      await apiService.deleteProduct(
+        id: id,
+      );
+
+      allProducts.removeWhere(
+            (product) => product.id == id,
+      );
 
       products.removeWhere(
-          (product) => product.id == id
+            (product) => product.id == id,
       );
-    }catch (e) {
+    } catch (e) {
       errorMessage.value = e.toString();
     }
   }
-
-
 }

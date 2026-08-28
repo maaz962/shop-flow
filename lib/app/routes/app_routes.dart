@@ -6,5 +6,7 @@ class AppRoutes {
   static const editProduct = '/edit-product';
   static const login = '/login';
   static const productDetails = '/product-details';
+  static const signup = '/signup';
+  static const wishlist = '/wishlist';
 }
 
