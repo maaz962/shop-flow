@@ -10,6 +10,7 @@ import 'app_routes.dart';
 import '../../views/products/add_product_screen.dart';
 import '../../views/auth/login_screen.dart';
 import '../../views/products/product_details_screen.dart';
+import '../../views/wishlist/wishlist_screen.dart';
 
 class AppPages {
   static final pages = [

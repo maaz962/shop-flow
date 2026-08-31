@@ -15,8 +15,15 @@ class WishlistController extends GetxController{
           (item) => item.id == product.id,
       );
     } else {
-
+      wishlistProducts.add(product);
     }
 
   }
+
+  // check whether product is already fav
+bool isFavorite(int productId) {
+    return wishlistProducts.any(
+        (item) => item.id == productId,
+    );
+}
 }

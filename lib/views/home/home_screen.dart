@@ -5,6 +5,7 @@ import '../../app/routes/app_routes.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/product_controller.dart';
 import '../../widgets/product_skeleton.dart';
+import '../../controllers/wishlist_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
     final productController = Get.put(ProductController());
-
+    final wishlistController = Get.put(WishlistController());
 
     return Scaffold(
       appBar: AppBar(
@@ -240,6 +241,23 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+
+                                    Positioned(
+                                        top: 8,
+                                        right: 8,
+                                        child: Obx(
+                                            () => IconButton(onPressed: () {
+                                              wishlistController.toggleWishlist(product);
+                                            },
+                                                icon: Icon(
+                                                  wishlistController.isFavorite(product.id)
+                                                      ? Icons.favorite
+                                                      : Icons.favorite_border,
+                                                  color: Colors.red,
+                                                ),
+                                            ),
+                                        ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -349,26 +367,68 @@ class HomeScreen extends StatelessWidget {
 
                                       const Spacer(),
 
-                                      // Free Shipping
+                                      // Free Shipping + Add ro cart
                                       Row(
                                         children: [
-                                          const Icon(
-                                            Icons.local_shipping,
-                                            size: 16,
-                                          ),
-                                          const SizedBox(
-                                              width: 4),
-                                          Text(
-                                            'Free Shipping',
-                                            style:
-                                            TextStyle(
-                                              fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w600,
-                                              color:
-                                              Colors.green,
+                                          Expanded(
+                                            child: Row(
+                                              children: [
+                                              const Icon(
+                                                Icons.local_shipping,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 4,),
+
+                                              Flexible(
+                                                child: Text(
+                                                  'Free Shipping',
+                                                  style:
+                                                  TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight:
+                                                    FontWeight.w600,
+                                                    color:
+                                                    Colors.green,
+                                                  ),
+                                                ),
+                                              ),
+                                  ],
                                             ),
                                           ),
+
+                                          const SizedBox(
+                                              width: 4),
+
+                                          SizedBox(
+                                            height: 32,
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+
+                                                Get.snackbar('Cart', '${product.title} added to cart',
+                                                );
+                                              },
+                                              icon: const Icon(
+                                                Icons.shopping_cart_outlined,
+                                                size: 15,
+                                              ),
+                                              label: const Text(
+                                                'Add',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+
+                                              style: ElevatedButton.styleFrom(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                ),
+                                                minimumSize: Size.zero,
+                                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              ),
+                                            ),
+
+                                          ),
+
                                         ],
                                       ),
                                     ],
