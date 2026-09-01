@@ -68,11 +68,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 16,),
 
-            ElevatedButton(onPressed: (){
-              authController.login(
+            ElevatedButton(onPressed: () async {
+              final success = await authController.login(
                 email: emailController.text.trim(),
                 password: passwordController.text.trim(),
               );
+              if(!success){
+                Get.snackbar('Login failed',
+                    authController.errorMessage.value,
+                );
+              }
             },
                 child: const Text('Login'),
             ),

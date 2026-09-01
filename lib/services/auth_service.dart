@@ -43,7 +43,24 @@ class AuthService {
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  Future<Object?> loginWithEmail({required String email, required String password}) async {}
+  Future<UserCredential> signUpWithEmail({
+    required String email,
+    required String password,
+}) async {
+    return await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password);
+  }
 
-  Future<Object?> signUpWithEmail({required String email, required String password}) async {}
+
+  Future<UserCredential> loginWithEmail({
+    required String email,
+    required String password})
+  async {
+    return await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password);
+  }
+
+
 }

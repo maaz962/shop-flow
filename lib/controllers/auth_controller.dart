@@ -52,7 +52,7 @@ class AuthController extends GetxController {
         password: password,
       );
 
-      if (userCredential?.user == null) {
+      if (userCredential.user == null) {
         errorMessage.value = 'Signup failed';
         return false;
       }
