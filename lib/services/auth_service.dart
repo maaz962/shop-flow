@@ -62,5 +62,34 @@ class AuthService {
         password: password);
   }
 
+  Future<void> sendOtp({
+    required String phoneNumber,
+    required void Function(String verificationId) onCodeSent,
+}) async {
+    await _auth.verifyPhoneNumber( phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+      await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e){
+      throw e;
+        },
+        codeSent: (String verificationId, int? resendToken){
+      onCodeSent(verificationId);
+        },
+        codeAutoRetrievalTimeout: (String verificationId){
+
+        },
+    );
+  }
+
+  Future<UserCredential> verifyOtp({
+    required String verificationId,
+    required String smsCode,
+}) async {
+    final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,);
+    return await _auth.signInWithCredential(credential);
+  }
 
 }

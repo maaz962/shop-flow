@@ -1,6 +1,7 @@
 import 'package:shop_flow_app/main.dart';
 import 'package:get/get.dart';
 import 'package:shop_flow_app/views/auth/login_screen.dart';
+import 'package:shop_flow_app/views/auth/otp_screen.dart';
 import 'package:shop_flow_app/views/auth/signup_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
 import '../../views/home/home_screen.dart';
@@ -60,5 +61,12 @@ class AppPages {
       name: AppRoutes.wishlist,
       page: () => const WishlistScreen(),
     ),
+
+    GetPage(
+        name: AppRoutes.otp,
+        page: () => const OtpScreen(),
+    ),
+
+
   ];
 }

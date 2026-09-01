@@ -8,5 +8,6 @@ class AppRoutes {
   static const productDetails = '/product-details';
   static const signup = '/signup';
   static const wishlist = '/wishlist';
+  static const otp = '/otp';
 }
 

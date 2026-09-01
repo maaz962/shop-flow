@@ -9,6 +9,7 @@ class AuthController extends GetxController {
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  final verificationId = ''.obs;
 
   // Current Firebase user
   final user = Rxn<User>();
@@ -133,6 +134,52 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<bool> sendOtp(String phoneNumber) async {
+    try{
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await authService.sendOtp(
+          phoneNumber: phoneNumber,
+          onCodeSent: (id) {
+            verificationId.value = id;
+          },
+      );
+      return true;
+    }
+    on FirebaseAuthException catch(e) {
+      errorMessage.value = _firebaseErrorMessage(e);
+      return false;
+    }
+    catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    }
+    finally{
+      isLoading.value= false;
+    }
+  }
+
+  Future<bool> verifyOtp(String smsCode) async{
+    try{
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await authService.verifyOtp(
+          verificationId: verificationId.value,
+          smsCode: smsCode,
+      );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      errorMessage.value = _firebaseErrorMessage(e);
+      return false;
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
 
   Future<void> logout() async {

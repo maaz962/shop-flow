@@ -17,10 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthController authController = Get.find<AuthController>();
   bool isPasswordHidden = true;
 
+  final phoneController = TextEditingController();
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    phoneController.dispose();
     super.dispose();
   }
 
@@ -135,18 +138,46 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 20),
 
+            TextField(
+              controller: phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(
+                labelText: 'Phone Number',
+                hintText: '+923001234567',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 16,),
+
             // phone login
             SizedBox(
               width: double.infinity,
               height: 50,
 
+
+
               child: OutlinedButton.icon(
-                onPressed: () {
-                  // phone authentication, we will implement it later.
-                  Get.snackbar(
-                    'Coming Soon',
-                    'Phone authentication will be added later.',
-                  );
+                onPressed: () async{
+                  final phone = phoneController.text.trim();
+
+                  if(phone.isEmpty){
+                    Get.snackbar('Error',
+                        'Please enter your phone number',
+                    );
+                    return;
+                  }
+
+                  final success = await authController.sendOtp(phone);
+                  if(success){
+                    Get.toNamed(AppRoutes.otp);
+                  } else {
+                    Get.snackbar(
+                      'OTP Failed',
+                      authController.errorMessage.value,
+                    );
+                  }
+
                 },
                 icon: const Icon(Icons.phone),
 
