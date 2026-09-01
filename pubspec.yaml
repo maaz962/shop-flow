@@ -41,6 +41,11 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   skeletonizer: ^2.1.0
   firebase_core:
+  firebase_auth: ^6.6.1
+  cloud_firestore: ^6.9.0
+  firebase_storage: ^13.5.0
+  fluttertoast:
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:

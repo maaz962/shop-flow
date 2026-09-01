@@ -12,16 +12,17 @@ class SignupScreen extends StatefulWidget{
 }
 
 class _SignupScreenState extends State<SignupScreen>{
-  final usernameController = TextEditingController();
+  // final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-
+  bool isPasswordHidden = true;
+  bool isConfirmPasswordHidden = true;
   final AuthController authController = Get.find<AuthController>();
 
   @override
   void dispose(){
-    usernameController.dispose();
+    // usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -30,7 +31,7 @@ class _SignupScreenState extends State<SignupScreen>{
 
   Future<void> signup() async {
     final success = await authController.signup(
-      username: usernameController.text.trim(),
+      // username: usernameController.text.trim(),
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
       confirmPassword: confirmPasswordController.text.trim(),
@@ -54,13 +55,13 @@ class _SignupScreenState extends State<SignupScreen>{
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextField(
-            controller: usernameController,
-            decoration: const InputDecoration(
-              labelText: 'Username',
-              border: OutlineInputBorder(),
-            ),
-          ),
+          // TextField(
+          //   controller: usernameController,
+          //   decoration: const InputDecoration(
+          //     labelText: 'Username',
+          //     border: OutlineInputBorder(),
+          //   ),
+          // ),
 
           const SizedBox(height:16),
           TextField(
@@ -74,18 +75,44 @@ class _SignupScreenState extends State<SignupScreen>{
           const SizedBox(height: 16,),
           TextField(
             controller: passwordController,
-            decoration: const InputDecoration(
+            obscureText: isPasswordHidden,
+            decoration:  InputDecoration(
               labelText: 'Create Password',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  isPasswordHidden
+                  ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+                onPressed: (){
+                  setState(() {
+                    isPasswordHidden = !isPasswordHidden;
+                  });
+                },
+              )
             ),
           ),
 
           const SizedBox(height: 16,),
           TextField(
             controller: confirmPasswordController,
-            decoration: const InputDecoration(
+            obscureText: isPasswordHidden,
+            decoration:  InputDecoration(
               labelText: 'Confirm Password',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                  icon: Icon(
+                    isConfirmPasswordHidden
+                    ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                onPressed: (){
+                    setState(() {
+                      isConfirmPasswordHidden = !isConfirmPasswordHidden;
+                    });
+                },
+              )
             ),
           ),
 
@@ -96,11 +123,34 @@ class _SignupScreenState extends State<SignupScreen>{
                 height: 50,
                 child: authController.isLoading.value
                 ? const AuthButtonSkeleton()
-                : ElevatedButton(onPressed: signup, child: const Text('Sign Up'),
+                : ElevatedButton(onPressed: signup,
+                  child: const Text('Create Account'),
                 ),
               ),
           ),
 
+          const SizedBox(height: 16,),
+
+          // Already have an account
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              const Text(
+                'Already have an account?',
+              ),
+
+              TextButton(
+                onPressed: () {
+                  Get.offNamed(AppRoutes.login,);
+                },
+
+                child: const Text(
+                  'Login',
+                ),
+              ),
+            ],
+          ),
         ],
       ),
       ),

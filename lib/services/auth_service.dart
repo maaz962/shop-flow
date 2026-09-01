@@ -1,44 +1,49 @@
-import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: 'https://dummyjson.com',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    ),
-  );
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<Response> login({
-    required String username,
-    required String password,
-}) async {
-    final response = await _dio.post(
-      '/auth/login',
-      data: {
-        'username': username,
-        'password': password,
-      },
+  Future<UserCredential> signInWithGoogle() async {
+    // 🌐 WEB
+    if (kIsWeb) {
+      final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      return await _auth.signInWithPopup(googleProvider);
+    }
+
+    // 📱 ANDROID
+    final GoogleSignInAccount? googleUser =
+    await GoogleSignIn.instance.authenticate();
+
+    if (googleUser == null) {
+      throw Exception('Google Sign-In cancelled');
+    }
+
+    final GoogleSignInAuthentication googleAuth =
+        googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
     );
-    return response;
+
+    return await _auth.signInWithCredential(credential);
   }
 
-  Future<Response> signup({
-    required String username,
-    required String email,
-    required String password,
-    required String confirmPassword,
-}) async {
-    final response =  await _dio.post(
-      '/users/add',
-      data: {
-        'username' : username,
-        'email' : email,
-        'password' : password,
+  Future<void> logout() async {
+    await _auth.signOut();
 
-      },
-    );
-    return response;
+    if (!kIsWeb) {
+      await GoogleSignIn.instance.signOut();
+    }
   }
+
+  User? get currentUser => _auth.currentUser;
+
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  Future<Object?> loginWithEmail({required String email, required String password}) async {}
+
+  Future<Object?> signUpWithEmail({required String email, required String password}) async {}
 }
