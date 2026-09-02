@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import '../../controllers/product_controller.dart';
+// import '../../controllers/product_controller.dart';
+import '../../controllers/firestore_product_controller.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -13,7 +14,8 @@ class _AddProductScreenState extends State<AddProductScreen>{
   final titleController = TextEditingController();
   final priceController = TextEditingController();
 
-  final productController = Get.find<ProductController>();
+  // final productController = Get.find<ProductController>();
+  final firestoreProductController = Get.find<FirestoreProductController>();
 
   @override
   void dispose() {
@@ -31,9 +33,13 @@ class _AddProductScreenState extends State<AddProductScreen>{
       return;
     }
 
-    await productController.createProduct(title: title, price: price);
+    // await productController.createProduct(title: title, price: price);
+    //
+    // Get.snackbar('Success', 'Product created successfully',);
 
-    Get.snackbar('Success', 'Product created successfully',);
+    await firestoreProductController.createProduct(
+        title: title,
+        price: price);
 
     titleController.clear();
     priceController.clear();

@@ -44,4 +44,41 @@ class ProductModel {
       reviews: List<dynamic>.from(json['reviews'] ?? [],)
     );
   }
+
+  // Deserialization / Data Mapping
+  factory ProductModel.fromMap(
+      String id,
+      Map<String, dynamic> map,
+      ) {
+    return ProductModel(
+        id: int.tryParse(id) ?? 0,
+        title: map['title'] ?? '',
+        description: map['description'] ?? '',
+        price: (map['price'] ?? 0).toDouble(),
+        discountPercentage: (map['discountPercentage'] ?? 0).toDouble(),
+        rating: (map['rating'] ?? 0).toDouble(),
+        stock: map['stock'] ?? 0,
+        brand: map['brand'] ?? '',
+        category: map['category'] ?? '',
+        images: List<String>.from(map['images'] ?? []),
+        thumbnail: map['thumbnail'] ?? '',
+        reviews: List<dynamic>.from(map['reviews'] ?? []),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'description': description,
+      'price': price,
+      'discountPercentage': discountPercentage,
+      'rating': rating,
+      'stock': stock,
+      'brand': brand,
+      'category': category,
+      'thumbnail': thumbnail,
+      'images': images,
+      'reviews': reviews,
+    };
+  }
 }
