@@ -85,7 +85,7 @@ class AuthController extends GetxController {
         password: password,
       );
 
-      if (userCredential?.user == null) {
+      if (userCredential.user == null) {
         errorMessage.value = 'Login failed';
         return false;
       }
@@ -139,15 +139,24 @@ class AuthController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      await authService.sendOtp(
+      final id = await authService.sendOtp(
           phoneNumber: phoneNumber,
-          onCodeSent: (id) {
-            verificationId.value = id;
-          },
       );
+
+      if(id == null){
+        errorMessage.value = 'Could not send OTP';
+        return false;
+      }
+
+      verificationId.value = id;
       return true;
+
     }
     on FirebaseAuthException catch(e) {
+
+      print('CODE: ${e.code}');
+      print('MESSAGE: ${e.message}');
+
       errorMessage.value = _firebaseErrorMessage(e);
       return false;
     }
@@ -234,8 +243,6 @@ class AuthController extends GetxController {
   }
 }
 
-extension on Object? {
-  get user => null;
-}
+
 
 

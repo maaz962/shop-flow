@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  ConfirmationResult? _confirmationResult;
 
   Future<UserCredential> signInWithGoogle() async {
     // 🌐 WEB
@@ -14,15 +16,14 @@ class AuthService {
     }
 
     // 📱 ANDROID
-    final GoogleSignInAccount? googleUser =
-    await GoogleSignIn.instance.authenticate();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
+        .authenticate();
 
     if (googleUser == null) {
       throw Exception('Google Sign-In cancelled');
     }
 
-    final GoogleSignInAuthentication googleAuth =
-        googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
     final credential = GoogleAuthProvider.credential(
       idToken: googleAuth.idToken,
@@ -46,50 +47,66 @@ class AuthService {
   Future<UserCredential> signUpWithEmail({
     required String email,
     required String password,
-}) async {
+  }) async {
     return await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password);
+      email: email,
+      password: password,
+    );
   }
-
 
   Future<UserCredential> loginWithEmail({
     required String email,
-    required String password})
-  async {
+    required String password,
+  }) async {
     return await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password);
-  }
-
-  Future<void> sendOtp({
-    required String phoneNumber,
-    required void Function(String verificationId) onCodeSent,
-}) async {
-    await _auth.verifyPhoneNumber( phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-      await _auth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e){
-      throw e;
-        },
-        codeSent: (String verificationId, int? resendToken){
-      onCodeSent(verificationId);
-        },
-        codeAutoRetrievalTimeout: (String verificationId){
-
-        },
+      email: email,
+      password: password,
     );
   }
+
+  Future<String?> sendOtp({
+    required String phoneNumber,
+    // required void Function(String verificationId) onCodeSent,
+  }) async {
+    if (kIsWeb) {
+      // Web
+      _confirmationResult = await _auth.signInWithPhoneNumber(phoneNumber);
+
+      return 'web';
+    }
+    String? verificationId;
+
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          throw e;
+        },
+        codeSent: (String id, int? resendToken) {
+          verificationId = id;
+        },
+        codeAutoRetrievalTimeout: (String id) {
+          verificationId = id;
+        },
+      );
+
+      return verificationId;
+    }
+
 
   Future<UserCredential> verifyOtp({
     required String verificationId,
     required String smsCode,
-}) async {
+  }) async {
+    if (kIsWeb) {
+      return await _confirmationResult!.confirm(smsCode);
+    }
     final credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: smsCode,);
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
     return await _auth.signInWithCredential(credential);
   }
-
 }

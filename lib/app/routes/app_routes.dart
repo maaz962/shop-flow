@@ -9,5 +9,6 @@ class AppRoutes {
   static const signup = '/signup';
   static const wishlist = '/wishlist';
   static const otp = '/otp';
+  static const profileScreen = '/profile';
 }
 

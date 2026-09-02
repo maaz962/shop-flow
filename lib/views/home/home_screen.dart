@@ -504,7 +504,9 @@ class HomeScreen extends StatelessWidget {
             IconButton(onPressed: (){},
               icon: const Icon(Icons.shopping_cart_outlined),
             ),
-            IconButton(onPressed: (){},
+            IconButton(onPressed: (){
+              Get.toNamed(AppRoutes.profileScreen);
+            },
               icon: const Icon(Icons.person_outline),
             ),
 

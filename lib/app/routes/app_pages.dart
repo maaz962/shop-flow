@@ -4,6 +4,7 @@ import 'package:shop_flow_app/views/auth/login_screen.dart';
 import 'package:shop_flow_app/views/auth/otp_screen.dart';
 import 'package:shop_flow_app/views/auth/signup_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
+import 'package:shop_flow_app/views/profile/profile_screen.dart';
 import '../../views/home/home_screen.dart';
 import '../../views/splash/splash_screen.dart';
 import '../../views/settings/settings_screen.dart';
@@ -67,6 +68,10 @@ class AppPages {
         page: () => const OtpScreen(),
     ),
 
+    GetPage(
+        name: AppRoutes.profileScreen,
+        page: () =>  ProfileScreen(),
+    ),
 
   ];
 }
