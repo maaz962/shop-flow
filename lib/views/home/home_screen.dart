@@ -6,6 +6,7 @@ import '../../controllers/theme_controller.dart';
 import '../../controllers/product_controller.dart';
 import '../../widgets/product_skeleton.dart';
 import '../../controllers/wishlist_controller.dart';
+import '../../controllers/firestore_product_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,6 +16,7 @@ class HomeScreen extends StatelessWidget {
     final themeController = Get.find<ThemeController>();
     final productController = Get.put(ProductController());
     final wishlistController = Get.put(WishlistController());
+    final firestoreProductController = Get.find<FirestoreProductController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -445,6 +447,89 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
+            const SizedBox(height: 20,),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Firestore Products',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),),
+
+            const SizedBox(height: 10,),
+
+            Obx(() {
+              if(firestoreProductController.isLoading.value){
+                return const Padding(
+                    padding: EdgeInsets.all(20),
+                child: CircularProgressIndicator(),);
+              }
+
+              if(firestoreProductController.errorMessage.value.isNotEmpty) {
+                return Padding(
+                    padding: const EdgeInsets.all(16),
+                child: Text(
+                  firestoreProductController.errorMessage.value,
+                ),);
+              }
+
+              if(firestoreProductController.products.isEmpty) {
+                return const Padding(padding: EdgeInsets.all(20),
+                child: Text('No Firestore products found'),);
+              }
+
+              return SizedBox(
+              height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: firestoreProductController.products.length,
+                  itemBuilder: (context, index){
+                    final product = firestoreProductController.products[index];
+
+                    return SizedBox(
+                      width: 180,
+                      child: Card(
+                        child: Padding(padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(product.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),),
+
+                            const SizedBox(height: 8),
+
+                            Text('\$${product.price.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),),
+
+                            const Spacer(),
+
+                            const Text(
+                              'From Firestore',
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }),
 
             Row(
               mainAxisAlignment:

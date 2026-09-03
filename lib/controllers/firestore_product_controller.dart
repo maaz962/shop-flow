@@ -8,6 +8,32 @@ class FirestoreProductController extends GetxController{
   final isLoading = false.obs;
   final errorMessage = ''.obs;
 
+  // Firestore Products List
+  final products = <ProductModel>[].obs;
+
+  @override
+  void onInit(){
+    super.onInit();
+    getProducts();
+  }
+
+  // Get/ Read Products
+  Future<void> getProducts() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final fetchedProducts = await firestoreService.getProducts();
+
+      products.assignAll(fetchedProducts);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Create Product
   Future<void> createProduct({
     required String title,
     required double price,
@@ -35,6 +61,8 @@ class FirestoreProductController extends GetxController{
 
       Get.snackbar('Success', 'Product created successfully',
       );
+
+      await getProducts();
     } catch (e) {
       errorMessage.value = e.toString();
 
