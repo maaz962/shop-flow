@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:shop_flow_app/app/routes/app_routes.dart';
-
+import '../services/user_service.dart';
+import '../models/user_model.dart';
 import '../services/auth_service.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
+  final UserService userService = UserService();
+  final userModel = Rxn<UserModel>();
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
