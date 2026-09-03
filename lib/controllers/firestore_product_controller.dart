@@ -55,6 +55,7 @@ class FirestoreProductController extends GetxController{
           images: [],
           thumbnail: '',
           reviews: [],
+        firestoreId: null,
       );
 
       await firestoreService.createProduct(product);
@@ -68,6 +69,26 @@ class FirestoreProductController extends GetxController{
 
       Get.snackbar('Error', 'Failed to create product',
       );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateProduct(ProductModel product) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await firestoreService.updateProduct(product);
+
+      Get.snackbar('Success', 'Product updated successfully',);
+
+      // updated data dobara firestore sy read
+      await getProducts();
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      Get.snackbar('Error', 'Failed to update product',);
     } finally {
       isLoading.value = false;
     }

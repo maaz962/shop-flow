@@ -12,6 +12,7 @@ class ProductModel {
   final String thumbnail;
   final List<String> images;
   final List<dynamic> reviews;
+  final String? firestoreId;
 
   ProductModel({
     required this.id,
@@ -26,6 +27,7 @@ class ProductModel {
     required this.images,
     required this.thumbnail,
     required this.reviews,
+    required this.firestoreId,
 });
 
   factory ProductModel.fromJson(Map<String, dynamic> json){
@@ -41,7 +43,8 @@ class ProductModel {
       category: json['category'] ?? '',
       thumbnail: json['thumbnail'] ?? '',
       images: List<String>.from(json['images'] ?? []),
-      reviews: List<dynamic>.from(json['reviews'] ?? [],)
+      reviews: List<dynamic>.from(json['reviews'] ?? [],),
+      firestoreId: null,
     );
   }
 
@@ -63,6 +66,7 @@ class ProductModel {
         images: List<String>.from(map['images'] ?? []),
         thumbnail: map['thumbnail'] ?? '',
         reviews: List<dynamic>.from(map['reviews'] ?? []),
+      firestoreId: id,
     );
   }
 

@@ -172,6 +172,7 @@ class ProductController extends GetxController {
           thumbnail: allProducts[index].thumbnail,
           images: allProducts[index].images,
           reviews: allProducts[index].reviews,
+          firestoreId: null,
         );
 
         allProducts.refresh();

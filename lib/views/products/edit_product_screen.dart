@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/product_controller.dart';
+// import '../../controllers/product_controller.dart';
 import '../../models/product_model.dart';
+import '../../controllers/firestore_product_controller.dart';
 
 class EditProductScreen extends StatefulWidget{
   final ProductModel product;
@@ -19,8 +20,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   late final TextEditingController titleController;
   late final TextEditingController priceController;
 
-  final productController = Get.find<ProductController>();
-
+  // final productController = Get.find<ProductController>();
+  final firestoreProductController = Get.find<FirestoreProductController>();
   @override
   void initState() {
     super.initState();
@@ -54,13 +55,34 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
 
-    await productController.updateProduct(
-      id: widget.product.id,
-      title: title,
-      price: price,
-    );
+    // Existing product ki copy bnaty hn:
+    final updatedProduct = ProductModel(
+        id: widget.product.id,
+        firestoreId: widget.product.firestoreId,
+        title: title,
+        description: widget.product.description,
+        price: price,
+        discountPercentage: widget.product.discountPercentage,
+        rating: widget.product.rating,
+        stock: widget.product.stock,
+        brand: widget.product.brand,
+        category: widget.product.category,
+        images: widget.product.images,
+        thumbnail: widget.product.thumbnail,
+        reviews: widget.product.reviews,
+        );
+
+    await firestoreProductController.updateProduct(updatedProduct);
 
     Get.back();
+
+    // await productController.updateProduct(
+    //   id: widget.product.id,
+    //   title: title,
+    //   price: price,
+    // );
+    //
+    // Get.back();
 
     Get.snackbar('Success', 'Product updated successfully.');
   }
@@ -103,32 +125,32 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
           ),
 
-          const SizedBox(height: 12),
-
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: () async {
-                final price = double.tryParse(
-                  priceController.text.trim(),
-                );
-                if(price == null){
-                  Get.snackbar('error', 'Please enter a valid price.');
-                  return;
-                }
-                await productController.patchProduct(
-                    id: widget.product.id,
-                    price: price);
-                Get.back();
-
-                Get.snackbar('Success',
-                'Price updated using patch');
-              },
-              child: const Text('Update price with patch'),
-            ),
-          ),
-        ],
-      ),),
+      //     const SizedBox(height: 12),
+      //
+      //     SizedBox(
+      //       width: double.infinity,
+      //       child: OutlinedButton(
+      //         onPressed: () async {
+      //           final price = double.tryParse(
+      //             priceController.text.trim(),
+      //           );
+      //           if(price == null){
+      //             Get.snackbar('error', 'Please enter a valid price.');
+      //             return;
+      //           }
+      //           await productController.patchProduct(
+      //               id: widget.product.id,
+      //               price: price);
+      //           Get.back();
+      //
+      //           Get.snackbar('Success',
+      //           'Price updated using patch');
+      //         },
+      //         child: const Text('Update price with patch'),
+      //       ),
+      //     ),
+         ],
+       ),),
     );
   }
 }

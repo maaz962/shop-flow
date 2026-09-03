@@ -44,9 +44,24 @@ class ProductDetailsScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 350,
-              child: Image.network(
+              child: product.thumbnail.isNotEmpty
+          ? Image.network(
                 product.thumbnail,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace){
+                  return const Center(
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
+                  );
+                },
+              )
+              : const Center(
+                child: Icon(Icons.image_not_supported_outlined,
+                size: 80,
+                color: Colors.grey,),
               ),
             ),
 

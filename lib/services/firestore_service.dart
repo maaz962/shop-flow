@@ -24,4 +24,17 @@ Future<List<ProductModel>> getProducts() async {
     );
   }).toList();
 }
+
+// Update product
+Future<void> updateProduct(ProductModel product) async {
+  final firestoreId = product.firestoreId;
+
+  if(firestoreId == null || firestoreId.isEmpty) {
+    throw Exception('Firestore document Id is missing');
+  }
+  await _firestore
+      .collection('products')
+      .doc(firestoreId)
+      .update(product.toMap());
+}
 }

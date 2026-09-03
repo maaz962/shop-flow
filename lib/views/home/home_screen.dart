@@ -492,38 +492,49 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index){
                     final product = firestoreProductController.products[index];
 
-                    return SizedBox(
-                      width: 180,
-                      child: Card(
-                        child: Padding(padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(product.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),),
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: SizedBox(
+                        width: 180,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Get.toNamed(AppRoutes.productDetails,
+                            arguments: product,);
+                          },
 
-                            const SizedBox(height: 8),
+                        child: Card(
+                          child: Padding(padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(product.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),),
 
-                            Text('\$${product.price.toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),),
+                              const SizedBox(height: 8),
 
-                            const Spacer(),
+                              Text('\$${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),),
 
-                            const Text(
-                              'From Firestore',
-                              style: TextStyle(
-                                fontSize: 12,
+                              const Spacer(),
+
+                              const Text(
+                                'From Firestore',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),),
+                            ],
+                          ),),
+                        ),
+                      ),
                       ),
                     );
                   },
