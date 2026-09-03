@@ -93,4 +93,30 @@ class FirestoreProductController extends GetxController{
       isLoading.value = false;
     }
   }
+
+  // Delete product
+Future<void> deleteProduct(ProductModel product) async {
+    try {
+      if(product.firestoreId == null || product.firestoreId!.isEmpty) {
+        throw Exception('Firestore document Id is missing');
+      }
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await firestoreService.deleteProduct(product.firestoreId!,);
+
+      // UI sy b remove
+      products.removeWhere(
+          (p) => p.firestoreId == product.firestoreId,
+      );
+
+      Get.snackbar('Success', 'Product deleted successfully',);
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      Get.snackbar('Error', 'Failed to delete product');
+    } finally {
+      isLoading.value = false;
+    }
+}
 }

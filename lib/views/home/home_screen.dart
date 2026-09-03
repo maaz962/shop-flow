@@ -484,7 +484,7 @@ class HomeScreen extends StatelessWidget {
               }
 
               return SizedBox(
-              height: 100,
+              height: 120,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -495,13 +495,14 @@ class HomeScreen extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: SizedBox(
-                        width: 180,
+                        width: 220,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {
                             Get.toNamed(AppRoutes.productDetails,
                             arguments: product,);
                           },
+
 
                         child: Card(
                           child: Padding(padding: const EdgeInsets.all(12),
@@ -531,6 +532,55 @@ class HomeScreen extends StatelessWidget {
                                   fontSize: 12,
                                 ),
                               ),
+
+                              const SizedBox(height: 5,),
+
+                              // Buttons
+                              Row(mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                // Edit
+                                IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      Get.toNamed(
+                                      AppRoutes.editProduct,
+                                      arguments: product,
+                                    );
+                                      },
+                                    icon: const Icon(
+                                      Icons.edit_outlined,
+                                      size: 20,
+                                    ),
+                                ),
+
+                                const SizedBox(height: 12,),
+
+                                //Delete
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () {
+                                    Get.defaultDialog(
+                                      title: 'Delete product',
+                                      middleText: 'Are you sure you want to delete "${product.title}"?',
+                                      textCancel: 'Cancel',
+                                      textConfirm: 'Delete',
+                                      onConfirm: () async {
+                                        Get.back();
+
+                                        await firestoreProductController.deleteProduct(product);
+                                      },
+                                    );
+                                  },
+
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],),
+
                             ],
                           ),),
                         ),

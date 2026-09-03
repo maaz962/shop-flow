@@ -37,4 +37,12 @@ Future<void> updateProduct(ProductModel product) async {
       .doc(firestoreId)
       .update(product.toMap());
 }
+
+// Delete product
+Future<void> deleteProduct(String firestoreId) async {
+  await _firestore
+      .collection('products')
+      .doc(firestoreId)
+      .delete();
+}
 }
