@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import '../../controllers/product_controller.dart';
+
 import '../../models/product_model.dart';
 import '../../controllers/firestore_product_controller.dart';
 
@@ -20,8 +20,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   late final TextEditingController titleController;
   late final TextEditingController priceController;
 
-  // final productController = Get.find<ProductController>();
   final firestoreProductController = Get.find<FirestoreProductController>();
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +58,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // Existing product ki copy bnaty hn:
     final updatedProduct = ProductModel(
         id: widget.product.id,
+        ownerId: widget.product.ownerId,
         firestoreId: widget.product.firestoreId,
         title: title,
         description: widget.product.description,
@@ -76,15 +77,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     Get.back();
 
-    // await productController.updateProduct(
-    //   id: widget.product.id,
-    //   title: title,
-    //   price: price,
-    // );
-    //
-    // Get.back();
-
-    Get.snackbar('Success', 'Product updated successfully.');
+    // Get.snackbar('Success', 'Product updated successfully.');
   }
 
   @override
@@ -125,30 +118,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
           ),
 
-      //     const SizedBox(height: 12),
-      //
-      //     SizedBox(
-      //       width: double.infinity,
-      //       child: OutlinedButton(
-      //         onPressed: () async {
-      //           final price = double.tryParse(
-      //             priceController.text.trim(),
-      //           );
-      //           if(price == null){
-      //             Get.snackbar('error', 'Please enter a valid price.');
-      //             return;
-      //           }
-      //           await productController.patchProduct(
-      //               id: widget.product.id,
-      //               price: price);
-      //           Get.back();
-      //
-      //           Get.snackbar('Success',
-      //           'Price updated using patch');
-      //         },
-      //         child: const Text('Update price with patch'),
-      //       ),
-      //     ),
          ],
        ),),
     );

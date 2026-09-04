@@ -1,4 +1,4 @@
-import 'package:shop_flow_app/main.dart';
+
 import 'package:get/get.dart';
 import 'package:shop_flow_app/views/auth/login_screen.dart';
 import 'package:shop_flow_app/views/auth/otp_screen.dart';
@@ -10,9 +10,9 @@ import '../../views/splash/splash_screen.dart';
 import '../../views/settings/settings_screen.dart';
 import 'app_routes.dart';
 import '../../views/products/add_product_screen.dart';
-import '../../views/auth/login_screen.dart';
 import '../../views/products/product_details_screen.dart';
 import '../../views/wishlist/wishlist_screen.dart';
+import '../../views/seller/seller_dashboard_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -21,9 +21,25 @@ class AppPages {
       page: () => const SplashScreen(),
     ),
 
+    // customer
     GetPage(
       name: AppRoutes.home,
       page: () => const HomeScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.productDetails,
+      page: () => const ProductDetailsScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.wishlist,
+      page: () => const WishlistScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.profileScreen,
+      page: () =>  ProfileScreen(),
     ),
 
     GetPage(
@@ -31,6 +47,23 @@ class AppPages {
       page: () => const SettingsScreen(),
     ),
 
+    // Auth
+    GetPage(
+      name: AppRoutes.login,
+      page: () => const LoginScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.signup,
+      page: () => const SignupScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.otp,
+      page: () => const OtpScreen(),
+    ),
+
+    // Seller/ admin
     GetPage(
       name: AppRoutes.addProduct,
       page: () => const AddProductScreen(),
@@ -42,36 +75,10 @@ class AppPages {
     ),
 
     GetPage(
-      name: AppRoutes.login,
-      page: () => const LoginScreen(),
+        name: AppRoutes.sellerDashboard,
+        page: () => const SellerDashboardScreen(),
     ),
 
-
-    GetPage(
-      name: AppRoutes.productDetails,
-      page: () => const ProductDetailsScreen(),
-    ),
-
-
-    GetPage(
-      name: AppRoutes.signup,
-      page: () => const SignupScreen(),
-    ),
-
-    GetPage(
-      name: AppRoutes.wishlist,
-      page: () => const WishlistScreen(),
-    ),
-
-    GetPage(
-        name: AppRoutes.otp,
-        page: () => const OtpScreen(),
-    ),
-
-    GetPage(
-        name: AppRoutes.profileScreen,
-        page: () =>  ProfileScreen(),
-    ),
 
   ];
 }

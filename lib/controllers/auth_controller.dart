@@ -9,21 +9,26 @@ class AuthController extends GetxController {
   final AuthService authService = AuthService();
   final UserService userService = UserService();
   final userModel = Rxn<UserModel>();
+  // Current Firebase user
+  final user = Rxn<User>();
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final verificationId = ''.obs;
-
-  // Current Firebase user
-  final user = Rxn<User>();
 
   @override
   void onInit() {
     super.onInit();
 
     // Firebase user state listen karega
-    authService.authStateChanges.listen((firebaseUser) {
+    authService.authStateChanges.listen((firebaseUser) async {
       user.value = firebaseUser;
+
+      if(firebaseUser != null){
+        await loadUserData();
+      } else {
+        userModel.value = null;
+      }
     });
   }
   
@@ -64,7 +69,7 @@ class AuthController extends GetxController {
         return false;
       }
 
-      // Firestore UserModel
+      // Firestore UserModel , customer/user
       final newUser = UserModel(
         uid: firebaseUser.uid,
         name: name,
@@ -79,6 +84,9 @@ class AuthController extends GetxController {
 
       Get.snackbar('Success', 'Account created successfully',);
 
+      // customer home
+      Get.offNamed(AppRoutes.home);
+
       return true;
     } on FirebaseAuthException catch (e) {
       errorMessage.value = _firebaseErrorMessage(e);
@@ -91,7 +99,25 @@ class AuthController extends GetxController {
     }
   }
 
+  // User data fetch krna
+  Future<void> loadUserData() async {
+    try {
+      final firebaseUser = authService.currentUser;
 
+      if(firebaseUser == null) {
+        userModel.value = null;
+        return;
+      }
+
+      final data = await userService.getUser(
+        firebaseUser.uid,
+      );
+
+      userModel.value = data;
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
+  }
 
   Future<bool> login({
     required String email,
@@ -106,13 +132,27 @@ class AuthController extends GetxController {
         password: password,
       );
 
-      if (userCredential.user == null) {
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
         errorMessage.value = 'Login failed';
         return false;
       }
 
+      // firebase login ky baad
+      // firestore user data load kro
+      await loadUserData();
+
+      if(userModel.value == null) {
+        errorMessage.value = 'User profile not found';
+        return false;
+      }
+
       Get.snackbar('Success', 'Login successful',);
-      Get.offNamed(AppRoutes.home);
+
+      // role ky according navigation
+      await navigateByRole();
+
       return true;
     }
     on FirebaseAuthException catch (e) {
@@ -128,8 +168,20 @@ class AuthController extends GetxController {
     }
   }
 
+  // role based navigation
+  Future<void> navigateByRole() async{
+    final role = userModel.value?.role;
 
+    if(role == 'admin'){
+      Get.offNamed(
+        AppRoutes.sellerDashboard,
+      );
+    } else {
+      Get.offNamed(AppRoutes.home,);
+    }
+  }
 
+  // google login
   Future<bool> googleLogin() async {
     try {
       isLoading.value = true;
@@ -138,10 +190,22 @@ class AuthController extends GetxController {
       final userCredential =
       await authService.signInWithGoogle();
 
-      // if (userCredential == null) {
-      //   errorMessage.value = 'Google login cancelled';
-      //   return false;
-      // }
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
+        errorMessage.value = 'Google login cancelled';
+        return false;
+      }
+
+      // Existing firestore profile load kro
+      await loadUserData();
+
+      if(userModel.value == null) {
+        errorMessage.value = 'User profile not found';
+        return false;
+      }
+
+      await navigateByRole();
 
       return true;
     } on FirebaseAuthException catch (e) {
@@ -155,6 +219,7 @@ class AuthController extends GetxController {
     }
   }
 
+  // send otp
   Future<bool> sendOtp(String phoneNumber) async {
     try{
       isLoading.value = true;
@@ -175,8 +240,8 @@ class AuthController extends GetxController {
     }
     on FirebaseAuthException catch(e) {
 
-      print('CODE: ${e.code}');
-      print('MESSAGE: ${e.message}');
+      // print('CODE: ${e.code}');
+      // print('MESSAGE: ${e.message}');
 
       errorMessage.value = _firebaseErrorMessage(e);
       return false;
@@ -190,6 +255,7 @@ class AuthController extends GetxController {
     }
   }
 
+  // verify OTP
   Future<bool> verifyOtp(String smsCode) async{
     try{
       isLoading.value = true;
@@ -199,6 +265,17 @@ class AuthController extends GetxController {
           verificationId: verificationId.value,
           smsCode: smsCode,
       );
+
+      // otp login ke baad user data load
+      await loadUserData();
+
+      if(userModel.value == null) {
+        errorMessage.value = 'User profile not found';
+        return false;
+      }
+
+      await navigateByRole();
+
       return true;
     } on FirebaseAuthException catch (e) {
       errorMessage.value = _firebaseErrorMessage(e);
@@ -211,23 +288,38 @@ class AuthController extends GetxController {
     }
   }
 
-
+  // logout
   Future<void> logout() async {
     try {
       await authService.logout();
 
       user.value = null;
+      userModel.value = null;
+
+      Get.offAllNamed(
+        AppRoutes.login,
+      );
     } catch (e) {
       errorMessage.value = e.toString();
     }
   }
   
 
+  // GETTERS
   bool get isLoggedIn {
     return user.value != null;
   }
+
+  bool get isAdmin{
+    return userModel.value?.role == 'admin';
+  }
+
+  bool get isUser{
+    return userModel.value?.role == 'user';
+  }
   
 
+  // firebase error messages
   String _firebaseErrorMessage(FirebaseAuthException e) {
     switch (e.code) {
       case 'invalid-email':

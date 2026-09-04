@@ -25,6 +25,23 @@ Future<List<ProductModel>> getProducts() async {
   }).toList();
 }
 
+// Get my products
+  Future<List<ProductModel>> getProductsByOwner(
+      String ownerId,
+      ) async {
+  final snapshot = await _firestore
+      .collection('products')
+      .where(
+    'ownerId',
+    isEqualTo: ownerId,
+  )
+      .get();
+
+  return snapshot.docs.map((doc) {
+    return ProductModel.fromMap(doc.id, doc.data(),);
+  }).toList();
+  }
+
 // Update product
 Future<void> updateProduct(ProductModel product) async {
   final firestoreId = product.firestoreId;

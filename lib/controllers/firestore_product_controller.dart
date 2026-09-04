@@ -1,15 +1,20 @@
 import 'package:get/get.dart';
 import '../models/product_model.dart';
 import '../services/firestore_service.dart';
+import 'auth_controller.dart';
 
 class FirestoreProductController extends GetxController{
   final FirestoreService firestoreService = FirestoreService();
+  final AuthController authController = Get.find<AuthController>();
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
 
-  // Firestore Products List
+  // All Firestore Products List
   final products = <ProductModel>[].obs;
+
+  // search text
+  final searchQuery = ''.obs;
 
   @override
   void onInit(){
@@ -33,12 +38,42 @@ class FirestoreProductController extends GetxController{
     }
   }
 
+  // Get seller products
+  Future<void> getMyProducts() async {
+    try{
+      final uid = authController.user.value?.uid;
+
+      if(uid == null) {
+        errorMessage.value = 'User is not logged In';
+        return;
+      }
+
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final fetchedProducts = await firestoreService.getProductsByOwner(uid);
+
+      products.assignAll(fetchedProducts);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Create Product
   Future<void> createProduct({
     required String title,
     required double price,
 }) async {
     try {
+      final uid = authController.user.value?.uid;
+
+      if(uid == null) {
+        Get.snackbar('Login Required', 'Please login first');
+        return;
+      }
+
       isLoading.value = true;
       errorMessage.value = '';
 
@@ -56,6 +91,7 @@ class FirestoreProductController extends GetxController{
           thumbnail: '',
           reviews: [],
         firestoreId: null,
+        ownerId: '',
       );
 
       await firestoreService.createProduct(product);
@@ -63,6 +99,7 @@ class FirestoreProductController extends GetxController{
       Get.snackbar('Success', 'Product created successfully',
       );
 
+      // refresh products
       await getProducts();
     } catch (e) {
       errorMessage.value = e.toString();
@@ -76,6 +113,12 @@ class FirestoreProductController extends GetxController{
 
   Future<void> updateProduct(ProductModel product) async {
     try {
+      if(product.firestoreId == null || product.firestoreId!.isEmpty) {
+        throw Exception(
+          'Firestore document ID is missing',
+        );
+      }
+
       isLoading.value = true;
       errorMessage.value = '';
 
@@ -97,7 +140,8 @@ class FirestoreProductController extends GetxController{
   // Delete product
 Future<void> deleteProduct(ProductModel product) async {
     try {
-      if(product.firestoreId == null || product.firestoreId!.isEmpty) {
+      final firestoreId = product.firestoreId;
+      if(firestoreId == null || firestoreId!.isEmpty) {
         throw Exception('Firestore document Id is missing');
       }
       isLoading.value = true;
@@ -118,5 +162,27 @@ Future<void> deleteProduct(ProductModel product) async {
     } finally {
       isLoading.value = false;
     }
+}
+
+// Search products
+void searchProducts(String query) {
+    searchQuery.value = query;
+
+    if(query.trim().isEmpty){
+      getProducts();
+      return;
+    }
+
+    final allProducts = products.toList();
+
+    final filteredProducts = allProducts.where((product) {
+      final title = product.title.toLowerCase();
+      final category = product.category.toLowerCase();
+      final brand = product.brand.toLowerCase();
+      final search = query.toLowerCase().trim();
+      return title.contains(search) || category.contains(search) || brand.contains(search);
+    }).toList();
+
+    products.assignAll(filteredProducts);
 }
 }

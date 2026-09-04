@@ -13,25 +13,29 @@ class ProductDetailsScreen extends StatelessWidget {
     final ProductModel product = Get.arguments;
 
     // Original price calculate karna
-    final double originalPrice =
+    double originalPrice =
         product.price /
             (1 - product.discountPercentage / 100);
+
+    if (product.discountPercentage > 0 && product.discountPercentage < 100) {
+      originalPrice = product.price / (1 - product.discountPercentage / 100);
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Details'),
 
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.toNamed(
-                AppRoutes.editProduct,
-                arguments: product,
-              );
-            },
-            icon: const Icon(Icons.edit),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Get.toNamed(
+        //         AppRoutes.editProduct,
+        //         arguments: product,
+        //       );
+        //     },
+        //     icon: const Icon(Icons.edit),
+        //   ),
+        // ],
       ),
 
       body: SingleChildScrollView(

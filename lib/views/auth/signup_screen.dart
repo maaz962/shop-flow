@@ -35,6 +35,7 @@ class _SignupScreenState extends State<SignupScreen>{
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
       confirmPassword: confirmPasswordController.text.trim(),
+      name: '',
     );
     if(success){
       Get.toNamed(AppRoutes.login);

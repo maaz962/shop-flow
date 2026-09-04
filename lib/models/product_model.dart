@@ -1,6 +1,9 @@
 
 class ProductModel {
   final int id;
+
+  // firebase auth user uid
+  final String ownerId;
   final String title;
   final String description;
   final double price;
@@ -12,10 +15,13 @@ class ProductModel {
   final String thumbnail;
   final List<String> images;
   final List<dynamic> reviews;
+
+  // firestore doc id
   final String? firestoreId;
 
   ProductModel({
     required this.id,
+    required this.ownerId,
     required this.title,
     required this.description,
     required this.price,
@@ -30,9 +36,11 @@ class ProductModel {
     required this.firestoreId,
 });
 
+  // JSON -> ProductModel
   factory ProductModel.fromJson(Map<String, dynamic> json){
     return ProductModel(
       id: json['id'] ?? 0,
+      ownerId: json['ownerId'] ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
       price: (json['price'] ?? 0) .toDouble(),
@@ -48,6 +56,7 @@ class ProductModel {
     );
   }
 
+  // Firestore -> ProductModel
   // Deserialization / Data Mapping
   factory ProductModel.fromMap(
       String id,
@@ -55,6 +64,7 @@ class ProductModel {
       ) {
     return ProductModel(
         id: int.tryParse(id) ?? 0,
+        ownerId: map['ownerId'] ?? '',
         title: map['title'] ?? '',
         description: map['description'] ?? '',
         price: (map['price'] ?? 0).toDouble(),
@@ -70,6 +80,7 @@ class ProductModel {
     );
   }
 
+  // ProductModel -> Firestore
   Map<String, dynamic> toMap() {
     return {
       'title': title,
