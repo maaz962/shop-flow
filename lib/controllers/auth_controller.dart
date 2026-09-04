@@ -29,6 +29,7 @@ class AuthController extends GetxController {
   
 
   Future<bool> signup({
+    required String name,
     required String email,
     required String password,
     required String confirmPassword,
@@ -56,10 +57,27 @@ class AuthController extends GetxController {
         password: password,
       );
 
-      if (userCredential.user == null) {
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
         errorMessage.value = 'Signup failed';
         return false;
       }
+
+      // Firestore UserModel
+      final newUser = UserModel(
+        uid: firebaseUser.uid,
+        name: name,
+        email: email,
+        role: 'user'
+      );
+
+      // users/{uid} document
+      await userService.createUser(newUser);
+
+      userModel.value = newUser;
+
+      Get.snackbar('Success', 'Account created successfully',);
 
       return true;
     } on FirebaseAuthException catch (e) {
