@@ -1,6 +1,7 @@
 class AppRoutes {
   // general
   static const splash = '/splash';
+  static const welcome = '/welcome';
 
   // customer
   static const home = '/home';

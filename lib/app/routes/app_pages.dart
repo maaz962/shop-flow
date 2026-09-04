@@ -13,6 +13,9 @@ import '../../views/products/add_product_screen.dart';
 import '../../views/products/product_details_screen.dart';
 import '../../views/wishlist/wishlist_screen.dart';
 import '../../views/seller/seller_dashboard_screen.dart';
+import '../../views/seller/my_products_screen.dart';
+import '../../views/cart/cart_screen.dart';
+import '../../views/welcome/welcome_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -21,7 +24,7 @@ class AppPages {
       page: () => const SplashScreen(),
     ),
 
-    // customer
+             // customer
     GetPage(
       name: AppRoutes.home,
       page: () => const HomeScreen(),
@@ -47,7 +50,7 @@ class AppPages {
       page: () => const SettingsScreen(),
     ),
 
-    // Auth
+             // Auth
     GetPage(
       name: AppRoutes.login,
       page: () => const LoginScreen(),
@@ -63,7 +66,7 @@ class AppPages {
       page: () => const OtpScreen(),
     ),
 
-    // Seller/ admin
+             // Seller/ admin
     GetPage(
       name: AppRoutes.addProduct,
       page: () => const AddProductScreen(),
@@ -79,6 +82,20 @@ class AppPages {
         page: () => const SellerDashboardScreen(),
     ),
 
+    GetPage(
+      name: AppRoutes.myProducts,
+      page: () => const MyProductsScreen(),
+    ),
+
+    GetPage(
+        name: AppRoutes.cart,
+        page: () => const CartScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.welcome,
+      page: () => const WelcomeScreen(),
+    ),
 
   ];
 }

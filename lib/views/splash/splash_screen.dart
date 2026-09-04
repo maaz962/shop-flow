@@ -24,9 +24,9 @@ class _SplashScreenState extends State<SplashScreen>{
         final loggedIn = await authController.isLoggedIn;
 
         if(loggedIn){
-          Get.offNamed(AppRoutes.home);
+          await authController.navigateByRole();
         } else {
-          Get.offNamed(AppRoutes.login);
+          Get.offNamed(AppRoutes.welcome);
         }
         },
     );

@@ -521,7 +521,7 @@ class HomeScreen extends StatelessWidget {
             // Cart
             IconButton(
               onPressed: () {
-                // Guest/User cart logic will be added later.
+                Get.toNamed(AppRoutes.cart);
               },
               icon: const Icon(
                 Icons.shopping_cart_outlined,
