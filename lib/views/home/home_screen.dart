@@ -54,6 +54,16 @@ class HomeScreen extends StatelessWidget {
         ),
 
         actions: [
+          // Orders
+          IconButton(
+            onPressed: () {
+              Get.toNamed(AppRoutes.orders);
+            },
+            icon: const Icon(
+              Icons.receipt_long_outlined,
+            ),
+          ),
+
           // Theme
           Obx(
                 () => IconButton(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../app/routes/app_routes.dart';
 
 class CartScreen extends StatelessWidget{
   const CartScreen({super.key});
@@ -54,7 +56,9 @@ class CartScreen extends StatelessWidget{
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.checkout);
+                      },
                       child: const Text(
                         'Proceed to checkout',
                       ),

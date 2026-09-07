@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:shop_flow_app/views/auth/login_screen.dart';
 import 'package:shop_flow_app/views/auth/otp_screen.dart';
 import 'package:shop_flow_app/views/auth/signup_screen.dart';
+import 'package:shop_flow_app/views/checkout/checkout_screen.dart';
+import 'package:shop_flow_app/views/orders/orders_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
 import 'package:shop_flow_app/views/profile/profile_screen.dart';
 import '../../views/home/home_screen.dart';
@@ -16,6 +18,8 @@ import '../../views/seller/seller_dashboard_screen.dart';
 import '../../views/seller/my_products_screen.dart';
 import '../../views/cart/cart_screen.dart';
 import '../../views/welcome/welcome_screen.dart';
+import '../../views/checkout/checkout_screen.dart';
+import '../../views/orders/orders_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -95,6 +99,16 @@ class AppPages {
     GetPage(
       name: AppRoutes.welcome,
       page: () => const WelcomeScreen(),
+    ),
+
+    GetPage(
+        name: AppRoutes.checkout,
+        page: () => const CheckoutScreen(),
+    ),
+
+    GetPage(
+        name: AppRoutes.orders,
+        page: () => const OrdersScreen(),
     ),
 
   ];

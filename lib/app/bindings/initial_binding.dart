@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shop_flow_app/controllers/order_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
@@ -10,5 +11,6 @@ class InitialBinding extends Bindings{
     Get.put(ThemeController());
     Get.put(AuthController());
     Get.put(FirestoreProductController());
+    Get.put(OrderController());
   }
 }
