@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../app/routes/app_routes.dart';
+import '../../controllers/cart_controller.dart';
 import '../../controllers/order_controller.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -9,57 +10,120 @@ class CheckoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OrderController orderController = Get.find<OrderController>();
+    final OrderController orderController =
+    Get.find<OrderController>();
+
+    final CartController cartController =
+    Get.find<CartController>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
       ),
-      body: SafeArea(
+      body: Obx(() {
+        if (cartController.cartItems.isEmpty) {
+          return const Center(
+            child: Text(
+              'Your cart is empty.',
+            ),
+          );
+        }
+
+        final subtotal = cartController.subtotal;
+        const double shipping = 0.0;
+        final total = subtotal + shipping;
+
+        return SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
               children: [
                 Text(
                   'Order Summary',
                   style: Theme.of(context)
-                  .textTheme
-                    .titleLarge
-                    ?.copyWith(
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // Product placeholder
-                Card(
-                  child: ListTile(
-                    leading: const Icon(
-                      Icons.image_outlined,
-                      size: 45,
-                    ),
-                    title: const Text(
-                      'Product Name',
-                    ),
-                    subtitle: const Text(
-                      'Quantity: 1',
-                    ),
-                    trailing: const Text(
-                      '\$0.00',
-                    ),
-                  ),
+                // Real cart products
+                ...cartController.cartItems.map(
+                      (product) {
+                    final quantity =
+                    cartController.getQuantity(product);
+
+                    final itemTotal =
+                        product.price * quantity;
+
+                    return Card(
+                      margin: const EdgeInsets.only(
+                        bottom: 10,
+                      ),
+                      child: ListTile(
+                        contentPadding:
+                        const EdgeInsets.all(10),
+                        leading:
+                        product.thumbnail.isNotEmpty
+                            ? ClipRRect(
+                          borderRadius:
+                          BorderRadius.circular(8),
+                          child: Image.network(
+                            product.thumbnail,
+                            width: 55,
+                            height: 55,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (
+                                context,
+                                error,
+                                stackTrace,
+                                ) {
+                              return const Icon(
+                                Icons
+                                    .image_not_supported_outlined,
+                                size: 40,
+                              );
+                            },
+                          ),
+                        )
+                            : const Icon(
+                          Icons.image_outlined,
+                          size: 40,
+                        ),
+                        title: Text(
+                          product.title,
+                          maxLines: 2,
+                          overflow:
+                          TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(
+                          'Quantity: $quantity',
+                        ),
+                        trailing: Text(
+                          '\$${itemTotal.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
 
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
                 Text(
                   'Order Details',
                   style: Theme.of(context)
-                  .textTheme
-                    .titleLarge
-                    ?.copyWith(
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -71,7 +135,9 @@ class CheckoutScreen extends StatelessWidget {
                   leading: Icon(
                     Icons.location_on_outlined,
                   ),
-                  title: Text('Delivery Address'),
+                  title: Text(
+                    'Delivery Address',
+                  ),
                   subtitle: Text(
                     'Address will be added later',
                   ),
@@ -86,17 +152,22 @@ class CheckoutScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Price Summary
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Subtotal'),
-                    Text('\$0.00'),
+                    const Text('Subtotal'),
+                    Text(
+                      '\$${subtotal.toStringAsFixed(2)}',
+                    ),
                   ],
                 ),
 
                 const SizedBox(height: 10),
+
                 const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
                   children: [
                     Text('Shipping'),
                     Text('\$0.00'),
@@ -105,10 +176,11 @@ class CheckoutScreen extends StatelessWidget {
 
                 const Divider(height: 30),
 
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       'Total',
                       style: TextStyle(
                         fontSize: 18,
@@ -116,8 +188,8 @@ class CheckoutScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\$0.00',
-                      style: TextStyle(
+                      '\$${total.toStringAsFixed(2)}',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -129,49 +201,70 @@ class CheckoutScreen extends StatelessWidget {
 
                 // Place Order
                 Obx(
-                  () => SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                      onPressed: orderController.isLoading.value
-                        ? null
-                        : () async {
-                        final success = await orderController.createOrder(
-                          items: [
-                            {
-                              'productId': 'test_product',
-                              'title': 'product Name',
-                              'price': 0.0,
-                              'quantity': 1,
-                            }
-                          ],
-                          totalAmount: 0.0,
+                      () => SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed:
+                      orderController.isLoading.value
+                          ? null
+                          : () async {
+                        final items =
+                        cartController.cartItems
+                            .map(
+                              (product) {
+                            return {
+                              'productId':
+                              product.firestoreId,
+                              'title':
+                              product.title,
+                              'price':
+                              product.price,
+                              'quantity':
+                              cartController
+                                  .getQuantity(
+                                product,
+                              ),
+                            };
+                          },
+                        ).toList();
+
+                        final success =
+                        await orderController
+                            .createOrder(
+                          items: items,
+                          totalAmount: total,
                         );
+
                         if (success) {
+                          cartController.clearCart();
+
                           Get.offNamed(
                             AppRoutes.orders,
                           );
                         }
                       },
-                    child: orderController
-                    .isLoading.value
-                    ? const SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : const Text(
-                      'Place Order',
-                    ),
+                      child: orderController
+                          .isLoading.value
+                          ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child:
+                        CircularProgressIndicator(
+                          strokeWidth: 2,
                         ),
+                      )
+                          : const Text(
+                        'Place Order',
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-      ),
+        );
+      }),
     );
   }
 }

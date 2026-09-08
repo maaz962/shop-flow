@@ -101,7 +101,9 @@ class WishlistScreen extends StatelessWidget{
                             }, icon: const Icon(
                               Icons.favorite,
                               color: Colors.red,
-                            ),),
+                            ),
+                            tooltip: 'Remove from wishlist',
+                            ),
                           ),
 
                         ],

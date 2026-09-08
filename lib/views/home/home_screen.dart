@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../app/routes/app_routes.dart';
+import '../../controllers/auth_controller.dart';
+import '../../controllers/cart_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/wishlist_controller.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -15,6 +18,10 @@ class HomeScreen extends StatelessWidget {
 
     final firestoreProductController =
     Get.find<FirestoreProductController>();
+
+    final authController = Get.find<AuthController>();
+
+    final cartController = Get.find<CartController>();
 
     final wishlistController = Get.put(WishlistController());
 
@@ -28,9 +35,7 @@ class HomeScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(width: 20),
-
             Expanded(
               child: SizedBox(
                 height: 42,
@@ -52,7 +57,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-
         actions: [
           // Orders
           IconButton(
@@ -308,7 +312,7 @@ class HomeScreen extends StatelessWidget {
                                           icon: Icon(
                                             wishlistController
                                                 .isFavorite(
-                                              product.id,
+                                              product.firestoreId ?? '',
                                             )
                                                 ? Icons.favorite
                                                 : Icons
@@ -395,7 +399,7 @@ class HomeScreen extends StatelessWidget {
 
                                           const Spacer(),
 
-                                          // Stock
+                                          // STOCK
                                           Text(
                                             product.stock > 0
                                                 ? 'In stock'
@@ -451,12 +455,27 @@ class HomeScreen extends StatelessWidget {
                                             height: 32,
                                             child:
                                             ElevatedButton.icon(
-                                              onPressed: () {
-                                                // Cart logic will be
-                                                // added later.
-                                                Get.snackbar(
-                                                  'Cart',
-                                                  'Login required to add products to cart',
+                                              onPressed:
+                                              product.stock <= 0
+                                                  ? null
+                                                  : () {
+                                                // Guest
+                                                // cannot
+                                                // add to cart.
+                                                if (!authController
+                                                    .isLoggedIn) {
+                                                  Get.toNamed(
+                                                    AppRoutes
+                                                        .login,
+                                                  );
+                                                  return;
+                                                }
+
+                                                // Logged-in
+                                                // user.
+                                                cartController
+                                                    .addToCart(
+                                                  product,
                                                 );
                                               },
                                               icon: const Icon(
@@ -529,12 +548,38 @@ class HomeScreen extends StatelessWidget {
             ),
 
             // Cart
-            IconButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.cart);
-              },
-              icon: const Icon(
-                Icons.shopping_cart_outlined,
+            Obx(
+                  () => Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.cart);
+                    },
+                    icon: const Icon(
+                      Icons.shopping_cart_outlined,
+                    ),
+                  ),
+
+                  if (cartController.itemCount > 0)
+                    Positioned(
+                      right: 2,
+                      top: 2,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${cartController.itemCount}',
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
 

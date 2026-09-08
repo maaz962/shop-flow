@@ -1,29 +1,39 @@
 import 'package:get/get.dart';
+
 import '../models/product_model.dart';
 
-class WishlistController extends GetxController{
+class WishlistController extends GetxController {
   final wishlistProducts = <ProductModel>[].obs;
 
-  // add / remove product
-  void toggleWishlist(ProductModel product){
+  // Add / remove product from wishlist
+  void toggleWishlist(ProductModel product) {
+    final productId = product.firestoreId;
+
+    if (productId == null || productId.isEmpty) {
+      Get.snackbar(
+        'Wishlist',
+        'Product ID is missing',
+      );
+      return;
+    }
+
     final alreadyExists = wishlistProducts.any(
-        (item) => item.id == product.id,
+          (item) => item.firestoreId == productId,
     );
 
-    if(alreadyExists) {
+    if (alreadyExists) {
       wishlistProducts.removeWhere(
-          (item) => item.id == product.id,
+            (item) => item.firestoreId == productId,
       );
     } else {
       wishlistProducts.add(product);
     }
-
   }
 
-  // check whether product is already fav
-bool isFavorite(int productId) {
+  // Check whether product is favorite
+  bool isFavorite(String productId) {
     return wishlistProducts.any(
-        (item) => item.id == productId,
+          (item) => item.firestoreId == productId,
     );
-}
+  }
 }
