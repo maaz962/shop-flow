@@ -16,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final phoneController = TextEditingController();
+  // final phoneController = TextEditingController();
 
   final AuthController authController =
   Get.find<AuthController>();
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    phoneController.dispose();
+    // phoneController.dispose();
     super.dispose();
   }
 
@@ -144,6 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         password:
                         passwordController.text
                             .trim(),
+                        loginType: loginType,
                       );
 
                       if (!success) {
@@ -182,7 +183,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       final success =
                       await authController
-                          .googleLogin();
+                          .googleLogin(
+                        loginType: loginType,
+                      );
 
                       if (!success) {
                         AppSnackbar.show(
@@ -206,100 +209,108 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              const SizedBox(height: 20),
-
-              // OR
-              Row(
-                children: const [
-                  Expanded(
-                    child: Divider(),
-                  ),
-                  Padding(
-                    padding:
-                    EdgeInsets.symmetric(
-                      horizontal: 10,
-                    ),
-                    child: Text('OR'),
-                  ),
-                  Expanded(
-                    child: Divider(),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // Phone
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                  hintText: '+923001234567',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Phone Login
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    final phone =
-                    phoneController.text.trim();
-
-                    if (phone.isEmpty) {
-                      AppSnackbar.show(
-                        'Error',
-                        'Please enter your phone number',
-                      );
-                      return;
-                    }
-
-                    final success =
-                    await authController.sendOtp(
-                      phone,
-                    );
-
-                    if (success) {
-                      Get.toNamed(AppRoutes.otp);
-                    } else {
-                      AppSnackbar.show(
-                        'OTP Failed',
-                        authController
-                            .errorMessage.value,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.phone),
-                  label: const Text(
-                    'Continue with Phone',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-
               const SizedBox(height: 24),
 
+              // // OR
+              // Row(
+              //   children: const [
+              //     Expanded(
+              //       child: Divider(),
+              //     ),
+              //     Padding(
+              //       padding:
+              //       EdgeInsets.symmetric(
+              //         horizontal: 10,
+              //       ),
+              //       child: Text('OR'),
+              //     ),
+              //     Expanded(
+              //       child: Divider(),
+              //     ),
+              //   ],
+              // ),
+              //
+              // const SizedBox(height: 20),
+              //
+              // // Phone
+              // TextField(
+              //   controller: phoneController,
+              //   keyboardType: TextInputType.phone,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Phone Number',
+              //     hintText: '+923001234567',
+              //     border: OutlineInputBorder(),
+              //   ),
+              // ),
+              //
+              // const SizedBox(height: 16),
+              //
+              // // Phone Login
+              // SizedBox(
+              //   width: double.infinity,
+              //   height: 50,
+              //   child: OutlinedButton.icon(
+              //     onPressed: () async {
+              //       final phone =
+              //       phoneController.text.trim();
+              //
+              //       if (phone.isEmpty) {
+              //         AppSnackbar.show(
+              //           'Error',
+              //           'Please enter your phone number',
+              //         );
+              //         return;
+              //       }
+              //
+              //       final success =
+              //       await authController.sendOtp(
+              //         phone,
+              //       );
+              //
+              //       if (success) {
+              //         Get.toNamed(AppRoutes.otp);
+              //       } else {
+              //         AppSnackbar.show(
+              //           'OTP Failed',
+              //           authController
+              //               .errorMessage.value,
+              //         );
+              //       }
+              //     },
+              //     icon: const Icon(Icons.phone),
+              //     label: const Text(
+              //       'Continue with Phone',
+              //       style: TextStyle(fontSize: 16),
+              //     ),
+              //   ),
+              // ),
+              //
+              // const SizedBox(height: 24),
+
               // Signup
-              if (!isSeller)
+              // if (!isSeller)
                 Row(
                   mainAxisAlignment:
                   MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Don't have an account?",
+                     Text(
+                      isSeller
+                       ? "Don't have a seller account?"
+                      : "Don't have an account?",
                     ),
                     TextButton(
                       onPressed: () {
                         Get.toNamed(
                           AppRoutes.signup,
+                          arguments: isSeller
+                            ? 'seller'
+                              : 'customer',
                         );
                       },
-                      child: const Text('Sign Up'),
+                      child: Text(
+                          isSeller
+                          ? 'Seller Sign Up'
+                          : 'Sign Up'),
                     ),
                   ],
                 ),

@@ -28,6 +28,18 @@ class _SignupScreenState
   final AuthController authController =
   Get.find<AuthController>();
 
+  String signupType = 'customer';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Login screen se seller argument aya hy
+    if(Get.arguments == 'seller') {
+      signupType = 'seller';
+    }
+  }
+
   @override
   void dispose() {
     nameController.dispose();
@@ -83,6 +95,9 @@ class _SignupScreenState
       email: email,
       password: password,
       confirmPassword: confirmPassword,
+      role: signupType == 'seller'
+        ? 'seller'
+          : 'user',
     );
 
     if (!success) {
@@ -98,9 +113,14 @@ class _SignupScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isSeller = signupType == 'seller';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: Text(
+            isSeller
+            ? 'Seller Sign Up'
+            : 'Create Account'),
       ),
 
       body: SafeArea(
@@ -111,8 +131,19 @@ class _SignupScreenState
             children: [
               const SizedBox(height: 30),
 
+              Icon(
+                isSeller
+                ? Icons.store_outlined
+                    : Icons.shopping_bag_outlined,
+                size: 70,
+              ),
+
+              const SizedBox(height: 16,),
+
               Text(
-                'Create your ShopFlow account',
+                isSeller
+                ? 'Create your seller account'
+                 : 'Create your ShopFlow account',
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
@@ -129,9 +160,13 @@ class _SignupScreenState
                 controller: nameController,
                 textInputAction:
                 TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  hintText: 'Enter your name',
+                decoration: InputDecoration(
+                  labelText: isSeller
+                  ? 'Seller Name'
+                  : 'Full Name',
+                  hintText: isSeller
+                  ? 'Enter seller name'
+                  : 'Enter your name',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -218,8 +253,10 @@ class _SignupScreenState
                       ? const AuthButtonSkeleton()
                       : ElevatedButton(
                     onPressed: signup,
-                    child: const Text(
-                      'Create Account',
+                    child:  Text(
+                      isSeller
+                      ? 'Create Seller Account'
+                      : 'Create Account',
                     ),
                   ),
                 ),
@@ -232,16 +269,24 @@ class _SignupScreenState
                 mainAxisAlignment:
                 MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Already have an account?',
+                  Text(
+                    isSeller
+                    ? 'Already a seller?'
+                    : 'Already have an account?',
                   ),
                   TextButton(
                     onPressed: () {
                       Get.offNamed(
                         AppRoutes.login,
+                        arguments: isSeller
+                          ? 'seller'
+                            : 'customer',
                       );
                     },
-                    child: const Text('Login'),
+                    child: Text(
+                        isSeller
+                        ? 'Seller Login'
+                        : 'Login'),
                   ),
                 ],
               ),

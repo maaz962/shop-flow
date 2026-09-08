@@ -1,0 +1,69 @@
+
+```text
+android/
+assets/
+build/
+ios/
+lib/
+├── app/
+│   ├── bindings/
+│   │   └── initial_binding.dart
+│   ├── routes/
+│   │   ├── app_pages.dart
+│   │   └── app_routes.dart
+│   ├── theme/
+│   │   └── app_theme.dart
+│   └── utils/
+│       └── app_snackbar.dart
+├── controllers/
+│   ├── auth_controller.dart
+│   ├── cart_controller.dart
+│   ├── firestore_product_controller.dart
+│   ├── order_controller.dart
+│   ├── theme_controller.dart
+│   └── wishlist_controller.dart
+├── models/
+│   ├── order_model.dart
+│   ├── product_model.dart
+│   └── user_model.dart
+├── services/
+│   ├── auth_service.dart
+│   ├── firestore_service.dart
+│   ├── order_service.dart
+│   ├── storage_service.dart
+│   └── user_service.dart
+├── views/
+│   ├── auth/
+│   │   ├── login_screen.dart
+│   │   ├── otp_screen.dart
+│   │   └── signup_screen.dart
+│   ├── cart/
+│   │   └── cart_screen.dart
+│   ├── checkout/
+│   │   └── checkout_screen.dart
+│   ├── home/
+│   │   └── home_screen.dart
+│   ├── orders/
+│   │   └── orders_screen.dart
+│   ├── products/
+│   │   ├── add_product_screen.dart
+│   │   ├── edit_product_screen.dart
+│   │   └── product_details_screen.dart
+│   ├── profile/
+│   │   └── profile_screen.dart
+│   ├── seller/
+│   │   ├── my_products_screen.dart
+│   │   └── seller_dashboard_screen.dart
+│   ├── settings/
+│   │   └── settings_screen.dart
+│   ├── splash/
+│   │   └── splash_screen.dart
+│   ├── welcome/
+│   │   └── welcome_screen.dart
+│   └── wishlist/
+│       └── wishlist_screen.dart
+├── widgets/
+├── firebase_options.dart
+└── main.dart
+
+```

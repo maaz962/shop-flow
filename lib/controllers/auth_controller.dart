@@ -4,6 +4,7 @@ import 'package:shop_flow_app/app/routes/app_routes.dart';
 import '../services/user_service.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
@@ -14,7 +15,7 @@ class AuthController extends GetxController {
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
-  final verificationId = ''.obs;
+  // final verificationId = ''.obs;
 
   @override
   void onInit() {
@@ -31,13 +32,14 @@ class AuthController extends GetxController {
       }
     });
   }
-  
 
+// SIGNUP
   Future<bool> signup({
     required String name,
     required String email,
     required String password,
     required String confirmPassword,
+    required String role,
   }) async {
     try {
       isLoading.value = true;
@@ -74,7 +76,7 @@ class AuthController extends GetxController {
         uid: firebaseUser.uid,
         name: name,
         email: email,
-        role: 'user'
+        role: role,
       );
 
       // users/{uid} document
@@ -82,7 +84,17 @@ class AuthController extends GetxController {
 
       userModel.value = newUser;
 
-      Get.snackbar('Success', 'Account created successfully',);
+      AppSnackbar.show(
+        'Success',
+        role == 'seller'
+            ? 'Seller account created successfully'
+        : 'Account created successfully',
+      );
+
+      // Role based navigation
+      await navigateByRole();
+
+      return true;
 
       // customer home
       Get.offNamed(AppRoutes.home);
@@ -119,9 +131,11 @@ class AuthController extends GetxController {
     }
   }
 
+  // LOGIN
   Future<bool> login({
     required String email,
     required String password,
+    required String loginType,
   }) async {
     try {
       isLoading.value = true;
@@ -148,7 +162,33 @@ class AuthController extends GetxController {
         return false;
       }
 
-      Get.snackbar('Success', 'Login successful',);
+      final role = userModel.value!.role;
+
+      // Seller login mein seller account required
+      if(loginType == 'seller' && role != 'seller') {
+        await authService.logout();
+
+        user.value = null;
+        userModel.value = null;
+
+        errorMessage.value = 'This is not a seller account. Please use Seller Sign Up.';
+
+        return false;
+      }
+
+      // Customer login me customer account required
+      if(loginType == 'customer' && role != 'user' && role != 'admin') {
+        await authService.logout();
+
+        user.value = null;
+        userModel.value = null;
+
+        errorMessage.value = 'This account is not a customer account.';
+
+        return false;
+      }
+
+      AppSnackbar.show('Success', 'Login successful',);
 
       // role ky according navigation
       await navigateByRole();
@@ -172,7 +212,7 @@ class AuthController extends GetxController {
   Future<void> navigateByRole() async{
     final role = userModel.value?.role;
 
-    if(role == 'admin'){
+    if(role == 'admin' || role == 'seller'){
       Get.offNamed(
         AppRoutes.sellerDashboard,
       );
@@ -182,7 +222,9 @@ class AuthController extends GetxController {
   }
 
   // google login
-  Future<bool> googleLogin() async {
+  Future<bool> googleLogin({
+    required String loginType,
+  }) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
@@ -201,9 +243,41 @@ class AuthController extends GetxController {
       await loadUserData();
 
       if(userModel.value == null) {
-        errorMessage.value = 'User profile not found';
+        await authService.logout();
+
+        errorMessage.value = 'User profile not found. Please use email signup first.';
         return false;
       }
+
+      final role = userModel.value!.role;
+
+      //Seller google login
+      if(loginType == 'seller' && role != 'seller'){
+        await authService.logout();
+
+        user.value = null;
+        userModel.value = null;
+
+        errorMessage.value = 'This google account is not registered as a seller.';
+
+        return false;
+      }
+
+      // Customer google login
+      if(loginType == 'customer' && role != 'user' && role != 'admin'){
+        await authService.logout();
+
+        user.value = null;
+        userModel.value = null;
+
+        errorMessage.value = 'This account is not a customer account.';
+        return false;
+      }
+
+      AppSnackbar.show(
+        'Success',
+        'Login successfully',
+      );
 
       await navigateByRole();
 
@@ -219,74 +293,74 @@ class AuthController extends GetxController {
     }
   }
 
-  // send otp
-  Future<bool> sendOtp(String phoneNumber) async {
-    try{
-      isLoading.value = true;
-      errorMessage.value = '';
-
-      final id = await authService.sendOtp(
-          phoneNumber: phoneNumber,
-      );
-
-      if(id == null){
-        errorMessage.value = 'Could not send OTP';
-        return false;
-      }
-
-      verificationId.value = id;
-      return true;
-
-    }
-    on FirebaseAuthException catch(e) {
-
-      // print('CODE: ${e.code}');
-      // print('MESSAGE: ${e.message}');
-
-      errorMessage.value = _firebaseErrorMessage(e);
-      return false;
-    }
-    catch (e) {
-      errorMessage.value = e.toString();
-      return false;
-    }
-    finally{
-      isLoading.value= false;
-    }
-  }
-
-  // verify OTP
-  Future<bool> verifyOtp(String smsCode) async{
-    try{
-      isLoading.value = true;
-      errorMessage.value = '';
-
-      await authService.verifyOtp(
-          verificationId: verificationId.value,
-          smsCode: smsCode,
-      );
-
-      // otp login ke baad user data load
-      await loadUserData();
-
-      if(userModel.value == null) {
-        errorMessage.value = 'User profile not found';
-        return false;
-      }
-
-      await navigateByRole();
-
-      return true;
-    } on FirebaseAuthException catch (e) {
-      errorMessage.value = _firebaseErrorMessage(e);
-      return false;
-    } catch (e) {
-      errorMessage.value = e.toString();
-      return false;
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  // // send otp
+  // Future<bool> sendOtp(String phoneNumber) async {
+  //   try{
+  //     isLoading.value = true;
+  //     errorMessage.value = '';
+  //
+  //     final id = await authService.sendOtp(
+  //         phoneNumber: phoneNumber,
+  //     );
+  //
+  //     if(id == null){
+  //       errorMessage.value = 'Could not send OTP';
+  //       return false;
+  //     }
+  //
+  //     verificationId.value = id;
+  //     return true;
+  //
+  //   }
+  //   on FirebaseAuthException catch(e) {
+  //
+  //     // print('CODE: ${e.code}');
+  //     // print('MESSAGE: ${e.message}');
+  //
+  //     errorMessage.value = _firebaseErrorMessage(e);
+  //     return false;
+  //   }
+  //   catch (e) {
+  //     errorMessage.value = e.toString();
+  //     return false;
+  //   }
+  //   finally{
+  //     isLoading.value= false;
+  //   }
+  // }
+  //
+  // // verify OTP
+  // Future<bool> verifyOtp(String smsCode) async{
+  //   try{
+  //     isLoading.value = true;
+  //     errorMessage.value = '';
+  //
+  //     await authService.verifyOtp(
+  //         verificationId: verificationId.value,
+  //         smsCode: smsCode,
+  //     );
+  //
+  //     // otp login ke baad user data load
+  //     await loadUserData();
+  //
+  //     if(userModel.value == null) {
+  //       errorMessage.value = 'User profile not found';
+  //       return false;
+  //     }
+  //
+  //     await navigateByRole();
+  //
+  //     return true;
+  //   } on FirebaseAuthException catch (e) {
+  //     errorMessage.value = _firebaseErrorMessage(e);
+  //     return false;
+  //   } catch (e) {
+  //     errorMessage.value = e.toString();
+  //     return false;
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   // logout
   Future<void> logout() async {
@@ -313,6 +387,9 @@ class AuthController extends GetxController {
   bool get isAdmin{
     return userModel.value?.role == 'admin';
   }
+
+  bool get isSeller {
+    return userModel.value?.role == 'seller'; }
 
   bool get isUser{
     return userModel.value?.role == 'user';

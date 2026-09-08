@@ -13,7 +13,7 @@ class AppRoutes {
   // Auth
   static const signup = '/signup';
   static const login = '/login';
-  static const otp = '/otp';
+  // static const otp = '/otp';
 
   // Seller/ admin
   static const addProduct = '/add-product';

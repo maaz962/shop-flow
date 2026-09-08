@@ -1,7 +1,7 @@
 
 import 'package:get/get.dart';
 import 'package:shop_flow_app/views/auth/login_screen.dart';
-import 'package:shop_flow_app/views/auth/otp_screen.dart';
+// import 'package:shop_flow_app/views/auth/otp_screen.dart';
 import 'package:shop_flow_app/views/auth/signup_screen.dart';
 import 'package:shop_flow_app/views/checkout/checkout_screen.dart';
 import 'package:shop_flow_app/views/orders/orders_screen.dart';
@@ -65,10 +65,10 @@ class AppPages {
       page: () => const SignupScreen(),
     ),
 
-    GetPage(
-      name: AppRoutes.otp,
-      page: () => const OtpScreen(),
-    ),
+    // GetPage(
+    //   name: AppRoutes.otp,
+    //   page: () => const OtpScreen(),
+    // ),
 
              // Seller/ admin
     GetPage(
