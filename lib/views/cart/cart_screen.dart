@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../app/routes/app_routes.dart';
 import '../../controllers/cart_controller.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -211,7 +212,7 @@ class CartScreen extends StatelessWidget {
                               cartController
                                   .removeFromCart(product);
 
-                              Get.snackbar(
+                              AppSnackbar.show(
                                 'Cart',
                                 'Product removed from cart',
                               );

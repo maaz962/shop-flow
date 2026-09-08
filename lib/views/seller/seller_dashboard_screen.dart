@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
 
@@ -65,7 +66,7 @@ class SellerDashboardScreen extends StatelessWidget{
                     icon: Icons.shopping_cart_outlined,
                     title: 'Orders',
                     onTap: () {
-                      Get.snackbar('Coming Soon', 'Orders will be available soon');
+                      AppSnackbar.show('Coming Soon', 'Orders will be available soon');
                     },
                   ),
 
@@ -73,7 +74,7 @@ class SellerDashboardScreen extends StatelessWidget{
                     icon: Icons.store_outlined,
                     title: 'Store Profile',
                     onTap: () {
-                      Get.snackbar('Coming soon', 'Store profile will be available soon.',);
+                      AppSnackbar.show('Coming soon', 'Store profile will be available soon.',);
                     },
                   ),
 

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 // import '../../controllers/product_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -29,7 +30,7 @@ class _AddProductScreenState extends State<AddProductScreen>{
     final price = double.tryParse(priceController.text.trim());
 
     if(title.isEmpty || price == null) {
-      Get.snackbar('Error', 'Please enter a valid title & price.');
+      AppSnackbar.show('Error', 'Please enter a valid title & price.');
       return;
     }
 

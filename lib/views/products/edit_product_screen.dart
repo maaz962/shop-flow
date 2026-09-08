@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../models/product_model.dart';
 import '../../controllers/firestore_product_controller.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class EditProductScreen extends StatefulWidget{
   final ProductModel product;
@@ -49,7 +50,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
 
     if(title.isEmpty || price == null) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error', 'Please enter valid data.',
       );
       return;

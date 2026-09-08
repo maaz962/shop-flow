@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
 import '../../widgets/auth_button_skeleton.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -45,7 +46,7 @@ class _SignupScreenState
     confirmPasswordController.text.trim();
 
     if (name.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please enter your name',
       );
@@ -53,7 +54,7 @@ class _SignupScreenState
     }
 
     if (email.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please enter your email',
       );
@@ -61,7 +62,7 @@ class _SignupScreenState
     }
 
     if (password.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please enter a password',
       );
@@ -69,7 +70,7 @@ class _SignupScreenState
     }
 
     if (confirmPassword.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please confirm your password',
       );
@@ -85,7 +86,7 @@ class _SignupScreenState
     );
 
     if (!success) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Signup Failed',
         authController.errorMessage.value,
       );

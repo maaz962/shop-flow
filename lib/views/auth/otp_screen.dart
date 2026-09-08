@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../controllers/auth_controller.dart';
 import '../../widgets/auth_button_skeleton.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -28,7 +29,7 @@ class _OtpScreenState extends State<OtpScreen> {
     final otp = otpController.text.trim();
 
     if (otp.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please enter OTP',
       );
@@ -36,7 +37,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     if (otp.length != 6) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Please enter a valid 6-digit OTP',
       );
@@ -47,7 +48,7 @@ class _OtpScreenState extends State<OtpScreen> {
     await authController.verifyOtp(otp);
 
     if (!success) {
-      Get.snackbar(
+      AppSnackbar.show(
         'OTP Failed',
         authController.errorMessage.value,
       );

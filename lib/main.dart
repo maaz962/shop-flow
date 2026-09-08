@@ -28,6 +28,7 @@ class ShopFlowApp extends StatelessWidget {
 
       title: 'ShopFlow',
 
+
       initialBinding: InitialBinding(),
 
       theme: AppTheme.lightTheme,

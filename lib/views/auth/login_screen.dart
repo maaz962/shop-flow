@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../app/routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
 import '../../widgets/auth_button_skeleton.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -146,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
 
                       if (!success) {
-                        Get.snackbar(
+                        AppSnackbar.show(
                           'Login Failed',
                           authController
                               .errorMessage.value,
@@ -184,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           .googleLogin();
 
                       if (!success) {
-                        Get.snackbar(
+                        AppSnackbar.show(
                           'Login Failed',
                           authController
                               .errorMessage.value,
@@ -251,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     phoneController.text.trim();
 
                     if (phone.isEmpty) {
-                      Get.snackbar(
+                      AppSnackbar.show(
                         'Error',
                         'Please enter your phone number',
                       );
@@ -266,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (success) {
                       Get.toNamed(AppRoutes.otp);
                     } else {
-                      Get.snackbar(
+                      AppSnackbar.show(
                         'OTP Failed',
                         authController
                             .errorMessage.value,
