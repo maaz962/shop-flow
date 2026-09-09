@@ -94,6 +94,7 @@ class ProductModel {
       'thumbnail': thumbnail,
       'images': images,
       'reviews': reviews,
+      'ownerId': ownerId,
     };
   }
 }
