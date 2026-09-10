@@ -16,8 +16,7 @@ class InitialBinding extends Bindings{
     Get.put(FirestoreProductController());
     Get.put(OrderController());
     Get.put(CartController());
-    Get.lazyPut<StoreProfileController>(
-        () => StoreProfileController(),
-    );
+    Get.put(StoreProfileController());
+
   }
 }

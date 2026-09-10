@@ -87,10 +87,7 @@ class SellerDashboardScreen extends StatelessWidget {
                     icon: Icons.shopping_cart_outlined,
                     title: 'Orders',
                     onTap: () {
-                      AppSnackbar.show(
-                        'Coming Soon',
-                        'Orders will be available soon.',
-                      );
+                      Get.toNamed(AppRoutes.sellerOrders);
                     },
                   ),
 

@@ -22,6 +22,7 @@ import '../../views/welcome/welcome_screen.dart';
 import '../../views/checkout/checkout_screen.dart';
 import '../../views/orders/orders_screen.dart';
 import '../../views/seller/store_profile_screen.dart';
+import 'package:shop_flow_app/views/seller/seller_orders_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -116,7 +117,13 @@ class AppPages {
     GetPage(
       name: AppRoutes.storeProfile,
       page: () => StoreProfileScreen(),
-    )
+    ),
+
+    GetPage(
+      name: AppRoutes.sellerOrders,
+      page: () => const SellerOrdersScreen(),
+    ),
+
 
   ];
 }

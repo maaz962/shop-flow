@@ -216,6 +216,8 @@ class CheckoutScreen extends StatelessWidget {
                             return {
                               'productId':
                               product.firestoreId,
+                              'ownerId': product.ownerId,
+
                               'title':
                               product.title,
                               'price':

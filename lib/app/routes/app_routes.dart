@@ -21,6 +21,7 @@ class AppRoutes {
   static const sellerDashboard = '/seller-dashboard';
   static const myProducts = '/my-products';
   static const String storeProfile = '/store-profile';
+  static const String sellerOrders = '/seller-orders';
 
   // customer features
   static const cart = '/cart';
