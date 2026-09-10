@@ -20,6 +20,7 @@ class AppRoutes {
   static const editProduct = '/edit-product';
   static const sellerDashboard = '/seller-dashboard';
   static const myProducts = '/my-products';
+  static const String storeProfile = '/store-profile';
 
   // customer features
   static const cart = '/cart';

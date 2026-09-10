@@ -7,6 +7,7 @@ import 'package:shop_flow_app/views/checkout/checkout_screen.dart';
 import 'package:shop_flow_app/views/orders/orders_screen.dart';
 import 'package:shop_flow_app/views/products/edit_product_screen.dart';
 import 'package:shop_flow_app/views/profile/profile_screen.dart';
+import 'package:shop_flow_app/views/seller/store_profile_screen.dart';
 import '../../views/home/home_screen.dart';
 import '../../views/splash/splash_screen.dart';
 import '../../views/settings/settings_screen.dart';
@@ -20,6 +21,7 @@ import '../../views/cart/cart_screen.dart';
 import '../../views/welcome/welcome_screen.dart';
 import '../../views/checkout/checkout_screen.dart';
 import '../../views/orders/orders_screen.dart';
+import '../../views/seller/store_profile_screen.dart';
 
 class AppPages {
   static final pages = [
@@ -110,6 +112,11 @@ class AppPages {
         name: AppRoutes.orders,
         page: () => const OrdersScreen(),
     ),
+
+    GetPage(
+      name: AppRoutes.storeProfile,
+      page: () => StoreProfileScreen(),
+    )
 
   ];
 }

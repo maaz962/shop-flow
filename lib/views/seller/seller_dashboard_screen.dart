@@ -99,10 +99,7 @@ class SellerDashboardScreen extends StatelessWidget {
                     icon: Icons.store_outlined,
                     title: 'Store Profile',
                     onTap: () {
-                      AppSnackbar.show(
-                        'Coming Soon',
-                        'Store profile will be available soon.',
-                      );
+                      Get.toNamed(AppRoutes.storeProfile);
                     },
                   ),
 
