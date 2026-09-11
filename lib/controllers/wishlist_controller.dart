@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../models/product_model.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class WishlistController extends GetxController {
   final wishlistProducts = <ProductModel>[].obs;
@@ -10,7 +11,7 @@ class WishlistController extends GetxController {
     final productId = product.firestoreId;
 
     if (productId == null || productId.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Wishlist',
         'Product ID is missing',
       );

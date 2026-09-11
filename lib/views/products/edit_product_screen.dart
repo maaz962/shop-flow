@@ -78,7 +78,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     Get.back();
 
-    // Get.snackbar('Success', 'Product updated successfully.');
+    // AppSnackbar.show('Success', 'Product updated successfully.');
   }
 
   @override

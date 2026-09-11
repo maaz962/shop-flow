@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 import '../models/product_model.dart';
 
@@ -11,7 +12,7 @@ class CartController extends GetxController {
     final productId = product.firestoreId;
 
     if (productId == null || productId.isEmpty) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Cart',
         'Product ID is missing',
       );
@@ -19,7 +20,7 @@ class CartController extends GetxController {
     }
 
     if (product.stock <= 0) {
-      Get.snackbar(
+      AppSnackbar.show(
         'Cart',
         'This product is out of stock',
       );
@@ -38,7 +39,7 @@ class CartController extends GetxController {
     cartItems.add(product);
     quantities[productId] = 1;
 
-    Get.snackbar(
+    AppSnackbar.show(
       'Cart',
       '${product.title} added to cart',
     );

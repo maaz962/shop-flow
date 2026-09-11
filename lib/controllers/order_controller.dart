@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../models/order_model.dart';
 import '../services/order_service.dart';
 import 'auth_controller.dart';
-
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 class OrderController extends GetxController {
   final OrderService orderService = OrderService();
 
@@ -81,7 +81,7 @@ class OrderController extends GetxController {
         errorMessage.value =
         'User is not logged in';
 
-        Get.snackbar(
+        AppSnackbar.show(
           'Login Required',
           'Please login before placing an order.',
         );
@@ -123,7 +123,7 @@ class OrderController extends GetxController {
 
       orders.insert(0, order);
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Order placed successfully',
       );
@@ -132,7 +132,7 @@ class OrderController extends GetxController {
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to place order',
       );
@@ -165,14 +165,14 @@ class OrderController extends GetxController {
             order.copyWith(status: status);
       }
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Order status updated',
       );
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to update order status',
       );

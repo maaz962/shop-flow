@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../models/store_profile_model.dart';
 import '../services/store_profile_service.dart';
 import 'auth_controller.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class StoreProfileController extends GetxController {
   final StoreProfileService storeProfileService =
@@ -70,7 +71,7 @@ class StoreProfileController extends GetxController {
   Future<void> updateStoreProfile() async {
     try {
       if (storeNameController.text.trim().isEmpty) {
-        Get.snackbar(
+        AppSnackbar.show(
           'Required',
           'Please enter your store name',
         );
@@ -97,14 +98,14 @@ class StoreProfileController extends GetxController {
         );
       }
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Store profile updated successfully',
       );
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to update store profile',
       );

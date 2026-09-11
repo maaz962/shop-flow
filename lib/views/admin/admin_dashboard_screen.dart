@@ -159,7 +159,7 @@ class AdminDashboardScreen extends StatelessWidget {
   }
 }
 
-// ==================== Statistics Card ====================
+// Statistics Card
 
 class _StatCard extends StatelessWidget {
   final String title;
@@ -206,7 +206,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ==================== Dashboard Card ====================
+// Dashboard Card
 
 class _DashboardCard extends StatelessWidget {
   final IconData icon;

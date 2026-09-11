@@ -8,7 +8,6 @@ import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/wishlist_controller.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -16,8 +15,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
 
-    final firestoreProductController =
-    Get.find<FirestoreProductController>();
+    final firestoreProductController = Get.find<FirestoreProductController>();
 
     final authController = Get.find<AuthController>();
 
@@ -31,9 +29,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             const Text(
               'ShopFlow',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 20),
             Expanded(
@@ -43,9 +39,7 @@ class HomeScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: 'Search products...',
                     prefixIcon: const Icon(Icons.search),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 0,
-                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -63,14 +57,12 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               Get.toNamed(AppRoutes.orders);
             },
-            icon: const Icon(
-              Icons.receipt_long_outlined,
-            ),
+            icon: const Icon(Icons.receipt_long_outlined),
           ),
 
           // Theme
           Obx(
-                () => IconButton(
+            () => IconButton(
               onPressed: themeController.toggleTheme,
               icon: Icon(
                 themeController.isDarkMode.value
@@ -93,23 +85,16 @@ class HomeScreen extends StatelessWidget {
       body: Obx(() {
         // Loading
         if (firestoreProductController.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         // Error
-        if (firestoreProductController
-            .errorMessage
-            .value
-            .isNotEmpty) {
+        if (firestoreProductController.errorMessage.value.isNotEmpty) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Text(
-                firestoreProductController
-                    .errorMessage
-                    .value,
+                firestoreProductController.errorMessage.value,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -121,10 +106,7 @@ class HomeScreen extends StatelessWidget {
           return const Center(
             child: Text(
               'No products available',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
           );
         }
@@ -135,34 +117,18 @@ class HomeScreen extends StatelessWidget {
             children: [
               // Header
               const Padding(
-                padding: EdgeInsets.fromLTRB(
-                  16,
-                  20,
-                  16,
-                  4,
-                ),
+                padding: EdgeInsets.fromLTRB(16, 20, 16, 4),
                 child: Text(
                   'Discover Products',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ),
 
               const Padding(
-                padding: EdgeInsets.fromLTRB(
-                  16,
-                  0,
-                  16,
-                  10,
-                ),
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
                 child: Text(
                   'Explore products from our sellers',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ),
 
@@ -183,13 +149,10 @@ class HomeScreen extends StatelessWidget {
 
                   return GridView.builder(
                     shrinkWrap: true,
-                    physics:
-                    const NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
-                    itemCount:
-                    firestoreProductController.products.length,
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
+                    itemCount: firestoreProductController.products.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: columns,
                       crossAxisSpacing: 14,
                       mainAxisSpacing: 14,
@@ -197,16 +160,15 @@ class HomeScreen extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final product =
-                      firestoreProductController.products[index];
+                          firestoreProductController.products[index];
 
                       double originalPrice = product.price;
 
                       if (product.discountPercentage > 0 &&
                           product.discountPercentage < 100) {
-                        originalPrice = product.price /
-                            (1 -
-                                product.discountPercentage /
-                                    100);
+                        originalPrice =
+                            product.price /
+                            (1 - product.discountPercentage / 100);
                       }
 
                       return Card(
@@ -220,8 +182,7 @@ class HomeScreen extends StatelessWidget {
                             );
                           },
                           child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // IMAGE
                               Expanded(
@@ -231,67 +192,54 @@ class HomeScreen extends StatelessWidget {
                                     SizedBox(
                                       width: double.infinity,
                                       height: double.infinity,
-                                      child: product
-                                          .thumbnail
-                                          .isNotEmpty
+                                      child: product.thumbnail.isNotEmpty
                                           ? Image.network(
-                                        product.thumbnail,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (
-                                            context,
-                                            error,
-                                            stackTrace,
-                                            ) {
-                                          return const Center(
-                                            child: Icon(
-                                              Icons
-                                                  .image_not_supported_outlined,
-                                              size: 50,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
-                                      )
+                                              product.thumbnail,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                    return const Center(
+                                                      child: Icon(
+                                                        Icons
+                                                            .image_not_supported_outlined,
+                                                        size: 50,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    );
+                                                  },
+                                            )
                                           : const Center(
-                                        child: Icon(
-                                          Icons
-                                              .image_not_supported_outlined,
-                                          size: 50,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
+                                              child: Icon(
+                                                Icons
+                                                    .image_not_supported_outlined,
+                                                size: 50,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                     ),
 
                                     // DISCOUNT
-                                    if (product
-                                        .discountPercentage >
-                                        0)
+                                    if (product.discountPercentage > 0)
                                       Positioned(
                                         top: 8,
                                         left: 8,
                                         child: Container(
-                                          padding:
-                                          const EdgeInsets
-                                              .symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                             horizontal: 7,
                                             vertical: 4,
                                           ),
-                                          decoration:
-                                          BoxDecoration(
+                                          decoration: BoxDecoration(
                                             color: Colors.red,
-                                            borderRadius:
-                                            BorderRadius
-                                                .circular(5),
+                                            borderRadius: BorderRadius.circular(
+                                              5,
+                                            ),
                                           ),
                                           child: Text(
                                             '${product.discountPercentage.toStringAsFixed(0)}% OFF',
-                                            style:
-                                            const TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.bold,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                         ),
@@ -302,21 +250,18 @@ class HomeScreen extends StatelessWidget {
                                       top: 4,
                                       right: 4,
                                       child: Obx(
-                                            () => IconButton(
+                                        () => IconButton(
                                           onPressed: () {
-                                            wishlistController
-                                                .toggleWishlist(
+                                            wishlistController.toggleWishlist(
                                               product,
                                             );
                                           },
                                           icon: Icon(
-                                            wishlistController
-                                                .isFavorite(
-                                              product.firestoreId ?? '',
-                                            )
+                                            wishlistController.isFavorite(
+                                                  product.firestoreId ?? '',
+                                                )
                                                 ? Icons.favorite
-                                                : Icons
-                                                .favorite_border,
+                                                : Icons.favorite_border,
                                             color: Colors.red,
                                           ),
                                         ),
@@ -330,21 +275,18 @@ class HomeScreen extends StatelessWidget {
                               Expanded(
                                 flex: 4,
                                 child: Padding(
-                                  padding:
-                                  const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(10),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // TITLE
                                       Text(
                                         product.title,
                                         maxLines: 2,
-                                        overflow:
-                                        TextOverflow.ellipsis,
+                                        overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
-                                          fontWeight:
-                                          FontWeight.w600,
+                                          fontWeight: FontWeight.w600,
                                           fontSize: 14,
                                         ),
                                       ),
@@ -356,23 +298,18 @@ class HomeScreen extends StatelessWidget {
                                         '\$${product.price.toStringAsFixed(2)}',
                                         style: const TextStyle(
                                           fontSize: 18,
-                                          fontWeight:
-                                          FontWeight.bold,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
 
                                       // ORIGINAL PRICE
-                                      if (product
-                                          .discountPercentage >
-                                          0)
+                                      if (product.discountPercentage > 0)
                                         Text(
                                           '\$${originalPrice.toStringAsFixed(2)}',
-                                          style:
-                                          const TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 12,
                                             decoration:
-                                            TextDecoration
-                                                .lineThrough,
+                                                TextDecoration.lineThrough,
                                             color: Colors.grey,
                                           ),
                                         ),
@@ -389,10 +326,8 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                           const SizedBox(width: 3),
                                           Text(
-                                            product.rating
-                                                .toStringAsFixed(1),
-                                            style:
-                                            const TextStyle(
+                                            product.rating.toStringAsFixed(1),
+                                            style: const TextStyle(
                                               fontSize: 12,
                                             ),
                                           ),
@@ -406,10 +341,8 @@ class HomeScreen extends StatelessWidget {
                                                 : 'Out of stock',
                                             style: TextStyle(
                                               fontSize: 11,
-                                              fontWeight:
-                                              FontWeight.w600,
-                                              color: product.stock >
-                                                  0
+                                              fontWeight: FontWeight.w600,
+                                              color: product.stock > 0
                                                   ? Colors.green
                                                   : Colors.red,
                                             ),
@@ -426,22 +359,18 @@ class HomeScreen extends StatelessWidget {
                                             child: Row(
                                               children: [
                                                 Icon(
-                                                  Icons
-                                                      .local_shipping_outlined,
+                                                  Icons.local_shipping_outlined,
                                                   size: 16,
                                                 ),
                                                 SizedBox(width: 4),
                                                 Flexible(
                                                   child: Text(
                                                     'Free Shipping',
-                                                    style:
-                                                    TextStyle(
+                                                    style: TextStyle(
                                                       fontSize: 11,
                                                       fontWeight:
-                                                      FontWeight
-                                                          .w600,
-                                                      color:
-                                                      Colors.green,
+                                                          FontWeight.w600,
+                                                      color: Colors.green,
                                                     ),
                                                   ),
                                                 ),
@@ -453,54 +382,44 @@ class HomeScreen extends StatelessWidget {
 
                                           SizedBox(
                                             height: 32,
-                                            child:
-                                            ElevatedButton.icon(
-                                              onPressed:
-                                              product.stock <= 0
+                                            child: ElevatedButton.icon(
+                                              onPressed: product.stock <= 0
                                                   ? null
                                                   : () {
-                                                // Guest
-                                                // cannot
-                                                // add to cart.
-                                                if (!authController
-                                                    .isLoggedIn) {
-                                                  Get.toNamed(
-                                                    AppRoutes
-                                                        .login,
-                                                  );
-                                                  return;
-                                                }
+                                                      // Guest
+                                                      // cannot
+                                                      // add to cart.
+                                                      if (!authController
+                                                          .isLoggedIn) {
+                                                        Get.toNamed(
+                                                          AppRoutes.login,
+                                                        );
+                                                        return;
+                                                      }
 
-                                                // Logged-in
-                                                // user.
-                                                cartController
-                                                    .addToCart(
-                                                  product,
-                                                );
-                                              },
+                                                      // Logged-in
+                                                      // user.
+                                                      cartController.addToCart(
+                                                        product,
+                                                      );
+                                                    },
                                               icon: const Icon(
-                                                Icons
-                                                    .shopping_cart_outlined,
+                                                Icons.shopping_cart_outlined,
                                                 size: 15,
                                               ),
                                               label: const Text(
                                                 'Add',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                ),
+                                                style: TextStyle(fontSize: 11),
                                               ),
-                                              style: ElevatedButton
-                                                  .styleFrom(
+                                              style: ElevatedButton.styleFrom(
                                                 padding:
-                                                const EdgeInsets
-                                                    .symmetric(
-                                                  horizontal: 8,
-                                                ),
-                                                minimumSize:
-                                                Size.zero,
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                    ),
+                                                minimumSize: Size.zero,
                                                 tapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
                                               ),
                                             ),
                                           ),
@@ -528,37 +447,29 @@ class HomeScreen extends StatelessWidget {
       // BOTTOM NAVIGATION
       bottomNavigationBar: BottomAppBar(
         child: Row(
-          mainAxisAlignment:
-          MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             // Home
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.home),
-            ),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
 
             // Wishlist
             IconButton(
               onPressed: () {
                 Get.toNamed(AppRoutes.wishlist);
               },
-              icon: const Icon(
-                Icons.favorite_border,
-              ),
+              icon: const Icon(Icons.favorite_border),
             ),
 
             // Cart
             Obx(
-                  () => Stack(
+              () => Stack(
                 clipBehavior: Clip.none,
                 children: [
                   IconButton(
                     onPressed: () {
                       Get.toNamed(AppRoutes.cart);
                     },
-                    icon: const Icon(
-                      Icons.shopping_cart_outlined,
-                    ),
+                    icon: const Icon(Icons.shopping_cart_outlined),
                   ),
 
                   if (cartController.itemCount > 0)
@@ -567,9 +478,7 @@ class HomeScreen extends StatelessWidget {
                       top: 2,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
+                        decoration: const BoxDecoration(shape: BoxShape.circle),
                         child: Text(
                           '${cartController.itemCount}',
                           style: const TextStyle(
@@ -586,13 +495,9 @@ class HomeScreen extends StatelessWidget {
             // Profile
             IconButton(
               onPressed: () {
-                Get.toNamed(
-                  AppRoutes.profileScreen,
-                );
+                Get.toNamed(AppRoutes.profileScreen);
               },
-              icon: const Icon(
-                Icons.person_outline,
-              ),
+              icon: const Icon(Icons.person_outline),
             ),
           ],
         ),

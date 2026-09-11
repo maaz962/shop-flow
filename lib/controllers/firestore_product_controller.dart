@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../models/product_model.dart';
 import '../services/firestore_service.dart';
 import 'auth_controller.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class FirestoreProductController extends GetxController {
   final FirestoreService firestoreService = FirestoreService();
@@ -84,7 +85,7 @@ class FirestoreProductController extends GetxController {
       final uid = authController.user.value?.uid;
 
       if (uid == null) {
-        Get.snackbar(
+        AppSnackbar.show(
           'Login Required',
           'Please login first',
         );
@@ -113,7 +114,7 @@ class FirestoreProductController extends GetxController {
 
       await firestoreService.createProduct(product);
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Product created successfully',
       );
@@ -126,7 +127,7 @@ class FirestoreProductController extends GetxController {
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to create product',
       );
@@ -150,7 +151,7 @@ class FirestoreProductController extends GetxController {
 
       await firestoreService.updateProduct(product);
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Product updated successfully',
       );
@@ -163,7 +164,7 @@ class FirestoreProductController extends GetxController {
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to update product',
       );
@@ -198,14 +199,14 @@ class FirestoreProductController extends GetxController {
             (p) => p.firestoreId == product.firestoreId,
       );
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Success',
         'Product deleted successfully',
       );
     } catch (e) {
       errorMessage.value = e.toString();
 
-      Get.snackbar(
+      AppSnackbar.show(
         'Error',
         'Failed to delete product',
       );
