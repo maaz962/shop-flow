@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,14 +13,28 @@ class StoreProfileService {
 
   String? get uid => _auth.currentUser?.uid;
 
+  Future<User?> _getCurrentUser() async {
+    // If Firebase already has the user, use it directly.
+    if (_auth.currentUser != null) {
+      return _auth.currentUser;
+    }
+
+    // Wait for Firebase Auth to finish restoring the session.
+    try {
+      return await _auth.authStateChanges().first
+          .timeout(const Duration(seconds: 5));
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<StoreProfileModel> getStoreProfile() async {
-    final currentUid = uid;
+    final user = await _getCurrentUser();
+    final currentUid = user?.uid;
 
     if (currentUid == null) {
       throw Exception('User is not logged in');
     }
-
-    final user = _auth.currentUser;
 
     final doc = await _firestore
         .collection('users')
@@ -53,7 +69,8 @@ class StoreProfileService {
     required String storeDescription,
     required String phone,
   }) async {
-    final currentUid = uid;
+    final user = await _getCurrentUser();
+    final currentUid = user?.uid;
 
     if (currentUid == null) {
       throw Exception('User is not logged in');
