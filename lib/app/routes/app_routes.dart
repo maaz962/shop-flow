@@ -1,33 +1,31 @@
 class AppRoutes {
-  // general
+  // General
   static const splash = '/splash';
   static const welcome = '/welcome';
-
-  // customer
-  static const home = '/home';
-  static const wishlist = '/wishlist';
-  static const productDetails = '/product-details';
-  static const profileScreen = '/profile';
-  static const settings = '/settings';
 
   // Auth
   static const signup = '/signup';
   static const login = '/login';
   // static const otp = '/otp';
 
-  // Seller/ admin
-  static const addProduct = '/add-product';
-  static const editProduct = '/edit-product';
-  static const sellerDashboard = '/seller-dashboard';
-  static const myProducts = '/my-products';
-  static const String storeProfile = '/store-profile';
-  static const String sellerOrders = '/seller-orders';
-
-  // customer features
+  // Customer
+  static const home = '/home';
+  static const productDetails = '/product-details';
+  static const wishlist = '/wishlist';
   static const cart = '/cart';
   static const checkout = '/checkout';
   static const orders = '/orders';
+  static const profileScreen = '/profile';
+  static const settings = '/settings';
 
+  // Seller
+  static const sellerDashboard = '/seller-dashboard';
+  static const addProduct = '/add-product';
+  static const editProduct = '/edit-product';
+  static const myProducts = '/my-products';
+  static const storeProfile = '/store-profile';
+  static const sellerOrders = '/seller-orders';
 
+  // Admin
+  static const adminDashboard = '/admin-dashboard';
 }
-

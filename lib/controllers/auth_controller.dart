@@ -212,13 +212,14 @@ class AuthController extends GetxController {
   Future<void> navigateByRole() async{
     final role = userModel.value?.role;
 
-    if(role == 'admin' || role == 'seller'){
-      Get.offNamed(
-        AppRoutes.sellerDashboard,
-      );
+    if(role == 'admin') {
+      Get.offNamed(AppRoutes.adminDashboard);
+    } else if (role == 'seller') {
+      Get.offNamed(AppRoutes.sellerDashboard);
     } else {
-      Get.offNamed(AppRoutes.home,);
+      Get.offNamed(AppRoutes.home);
     }
+
   }
 
   // google login
