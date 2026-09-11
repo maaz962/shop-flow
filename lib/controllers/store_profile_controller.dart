@@ -3,10 +3,14 @@ import 'package:get/get.dart';
 
 import '../models/store_profile_model.dart';
 import '../services/store_profile_service.dart';
+import 'auth_controller.dart';
 
 class StoreProfileController extends GetxController {
   final StoreProfileService storeProfileService =
   StoreProfileService();
+
+  final AuthController authController =
+  Get.find<AuthController>();
 
   final isLoading = false.obs;
   final isSaving = false.obs;
@@ -26,7 +30,20 @@ class StoreProfileController extends GetxController {
     descriptionController = TextEditingController();
     phoneController = TextEditingController();
 
-    getStoreProfile();
+    // Wait for AuthController to get the Firebase user.
+    ever(authController.user, (user) {
+      if (user != null) {
+        getStoreProfile();
+      } else {
+        storeProfile.value = null;
+        errorMessage.value = '';
+      }
+    });
+
+    // If user is already available.
+    if (authController.user.value != null) {
+      getStoreProfile();
+    }
   }
 
   Future<void> getStoreProfile() async {
