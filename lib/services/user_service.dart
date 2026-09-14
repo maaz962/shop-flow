@@ -33,4 +33,36 @@ class UserService {
         .doc(user.uid)
         .update(user.toMap());
   }
+
+  // Get all users
+Future<List<UserModel>> getAllUsers() async {
+    final snapshot = await _firestore
+        .collection('users')
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return UserModel.fromMap(
+          doc.id,
+          doc.data(),
+      );
+    }).toList();
+}
+
+// Get all sellers
+Future<List<UserModel>> getAllSellers() async {
+    final snapshot = await _firestore
+        .collection('users')
+        .where(
+      'role',
+      isEqualTo: 'seller',
+    )
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return UserModel.fromMap(
+          doc.id,
+          doc.data(),
+      );
+    }).toList();
+}
 }

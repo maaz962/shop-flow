@@ -51,6 +51,19 @@ class OrderService {
     }).toList();
   }
 
+  // Get all orders for admin
+  Future<List<OrderModel>> getAllOrders() async {
+    final snapshot = await _firestore
+        .collection('orders')
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return OrderModel.fromMap(
+          doc.id, doc.data(),
+      );
+    }).toList();
+  }
+
   Future<void> updateOrderStatus({
     required String orderId,
     required String status,
