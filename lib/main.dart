@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -10,14 +11,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/notification_service.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print('BACKGROUND MESSAGE RECEIVED: ${message.messageId}');
+}
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform, );
 
-  // final notificationService = NotificationService();
-  // await notificationService.initialize();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  final notificationService = NotificationService();
+   await notificationService.initialize();
+
   runApp(const ShopFlowApp());
 }
 
@@ -31,59 +42,13 @@ class ShopFlowApp extends StatelessWidget {
 
       title: 'ShopFlow',
 
-
       initialBinding: InitialBinding(),
-
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-
       initialRoute: AppRoutes.splash,
       getPages: AppPages.pages,
 
     );
   }
 }
-
-// class HomeScreen extends StatelessWidget{
-//   const HomeScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context){
-//     final themeController = Get.find<ThemeController>();
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('ShopFlow'),
-//
-//
-//       actions: [
-//         Obx(
-//             () => IconButton(
-//               onPressed: themeController.toggleTheme,
-//               icon: Icon(
-//                 themeController.isDarkMode.value
-//                     ? Icons.light_mode
-//                     : Icons.dark_mode,
-//               ),
-//             ),
-//         ),
-//       ],
-//     ),
-//       body:  Center(
-//         child: Obx(
-//           () => Text(
-//             themeController.isDarkMode.value
-//                 ? 'Dark Mode'
-//                 : 'Light Mode',
-//
-//         style: TextStyle(
-//           fontSize: 28,
-//           fontWeight: FontWeight.bold,
-//         ),),
-//       ),
-//       ),
-//
-//     );
-//   }
-// }
