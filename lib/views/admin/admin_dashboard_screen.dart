@@ -12,9 +12,8 @@ class AdminDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authController = Get.find<AuthController>();
 
-    final adminController = Get.put(
-      AdminController(),
-    );
+    final adminController = Get.find<
+      AdminController>();
 
     final adminName =
         authController.userModel.value?.name ?? 'Admin';
@@ -369,7 +368,7 @@ class _ManagementGrid extends StatelessWidget {
         subtitle:
         'View and manage customer accounts',
         onTap: () {
-          // Phase 4
+          Get.toNamed(AppRoutes.adminUsers);
         },
       ),
       _ManagementData(

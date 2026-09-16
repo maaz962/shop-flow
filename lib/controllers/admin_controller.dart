@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 import '../models/order_model.dart';
 import '../models/product_model.dart';
 import '../models/user_model.dart';
@@ -62,5 +63,57 @@ class AdminController extends GetxController{
 
   Future<void> refreshDashboard() async {
     await loadDashboardData();
+  }
+
+  Future<void> updateUserStatus(
+      UserModel user,
+      bool isActive,
+      // dynamic isUpdatingUser,
+      ) async {
+    try {
+      // isUpdatingUser.value = true;
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await userService.updateUserStatus(
+          uid: user.uid,
+          isActive: isActive,
+      );
+
+      final index = users.indexWhere(
+          (item) => item.uid == user.uid,
+      );
+
+      if(index != -1) {
+        users[index] = user.copyWith(
+          isActive: isActive,
+        );
+      }
+
+      final sellerIndex = sellers.indexWhere(
+          (item) => item.uid == user.uid,
+      );
+
+      if(sellerIndex != -1) {
+        sellers[sellerIndex] = user.copyWith(
+          isActive: isActive,
+        );
+      }
+
+      AppSnackbar.show(
+          'Success',
+          isActive
+      ? 'User enabled successfully'
+      : 'User disabled successfully',
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      AppSnackbar.show('Error',
+      'Failed to update user status',
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

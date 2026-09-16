@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shop_flow_app/controllers/admin_controller.dart';
 import 'package:shop_flow_app/controllers/order_controller.dart';
 import 'package:shop_flow_app/controllers/store_profile_controller.dart';
 import '../../controllers/auth_controller.dart';
@@ -17,6 +18,7 @@ class InitialBinding extends Bindings{
     Get.put(OrderController());
     Get.put(CartController());
     Get.put(StoreProfileController());
+    Get.put(AdminController());
 
   }
 }

@@ -65,4 +65,16 @@ Future<List<UserModel>> getAllSellers() async {
       );
     }).toList();
 }
+
+Future<void> updateUserStatus({
+    required String uid,
+  required bool isActive,
+}) async {
+    await _firestore
+        .collection('users')
+        .doc(uid)
+        .update({
+      'isActive': isActive,
+    });
+}
 }

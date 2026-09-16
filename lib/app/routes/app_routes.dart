@@ -28,4 +28,6 @@ class AppRoutes {
 
   // Admin
   static const adminDashboard = '/admin-dashboard';
+
+  static const adminUsers = '/admin-users';
 }

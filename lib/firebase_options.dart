@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB1z9jvxVsuHFXnzmvcEg349tPYs7eBDx4',
+    apiKey: 'AIzaSyA-mRqjzinqcj6nkgNmUl2T6tL5kgXsA9M',
     appId: '1:463049131674:web:be4d4a704658536f858123',
     messagingSenderId: '463049131674',
     projectId: 'testing-cli-ab36b',
@@ -51,33 +51,35 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBpzY3ZmPBAncHt_hiInFGS1Mr23tjiJIY',
-    appId: '1:463049131674:android:01ac480e8dd96bc8858123',
+    apiKey: 'AIzaSyAJgEfxfbR7-NKu5iOgWgkR4UH_Ai_A7Fg',
+    appId: '1:463049131674:android:8a7f570093e83176858123',
     messagingSenderId: '463049131674',
     projectId: 'testing-cli-ab36b',
     storageBucket: 'testing-cli-ab36b.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD6FblyVzFIRTlc3EoNZkrn0KenG9VUrL4',
+    apiKey: 'AIzaSyAvwKWQusO1W0myV7ZdYIDCy7f5lEx_iZY',
     appId: '1:463049131674:ios:2cb86cd3db7bc82b858123',
     messagingSenderId: '463049131674',
     projectId: 'testing-cli-ab36b',
     storageBucket: 'testing-cli-ab36b.firebasestorage.app',
+    androidClientId: '463049131674-gkmeie1ocle3u67pvlbsfnfdqm1me2jk.apps.googleusercontent.com',
+    iosClientId: '463049131674-fjmp5hms56ugfq6ts82jdfcg2s962c1v.apps.googleusercontent.com',
     iosBundleId: 'com.example.mvcProject',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD6FblyVzFIRTlc3EoNZkrn0KenG9VUrL4',
+    apiKey: 'AIzaSyAvwKWQusO1W0myV7ZdYIDCy7f5lEx_iZY',
     appId: '1:463049131674:ios:2cb86cd3db7bc82b858123',
     messagingSenderId: '463049131674',
     projectId: 'testing-cli-ab36b',
     storageBucket: 'testing-cli-ab36b.firebasestorage.app',
+    androidClientId: '463049131674-gkmeie1ocle3u67pvlbsfnfdqm1me2jk.apps.googleusercontent.com',
+    iosClientId: '463049131674-fjmp5hms56ugfq6ts82jdfcg2s962c1v.apps.googleusercontent.com',
     iosBundleId: 'com.example.mvcProject',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyB1z9jvxVsuHFXnzmvcEg349tPYs7eBDx4',
+    apiKey: 'AIzaSyA-mRqjzinqcj6nkgNmUl2T6tL5kgXsA9M',
     appId: '1:463049131674:web:bc9ff60e1fb268f6858123',
     messagingSenderId: '463049131674',
     projectId: 'testing-cli-ab36b',
