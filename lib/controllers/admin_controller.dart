@@ -56,15 +56,6 @@ class AdminController extends GetxController {
         throw Exception('User is not logged in.');
       }
 
-      print('====================================');
-      print('ADMIN DASHBOARD START');
-      print('UID: ${currentUser.uid}');
-      print('EMAIL: ${currentUser.email}');
-      print('====================================');
-
-      // Check Admin Role
-      print('Checking admin role...');
-
       final adminDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(currentUser.uid)
@@ -78,8 +69,6 @@ class AdminController extends GetxController {
 
       final adminData = adminDoc.data();
 
-      print('ADMIN DOCUMENT: $adminData');
-
       final role = adminData?['role'];
 
       if (role != 'admin') {
@@ -88,27 +77,15 @@ class AdminController extends GetxController {
         );
       }
 
-      print('Admin role OK');
-
-      // Fetch Users
-      print('Fetching users...');
-
       try {
         final usersList = await userService.getAllUsers();
 
         users.assignAll(usersList);
-
-        print('USERS OK: ${usersList.length}');
       } catch (e) {
-        print('USERS FAILED: $e');
-
         throw Exception(
           'Users query failed: $e',
         );
       }
-
-      // Fetch Sellers
-      print('Fetching sellers...');
 
       try {
         final sellersList =
@@ -116,17 +93,13 @@ class AdminController extends GetxController {
 
         sellers.assignAll(sellersList);
 
-        print('SELLERS OK: ${sellersList.length}');
       } catch (e) {
-        print('SELLERS FAILED: $e');
 
         throw Exception(
           'Sellers query failed: $e',
         );
       }
 
-      // Fetch Products
-      print('Fetching products...');
 
       try {
         final productsList =
@@ -134,17 +107,13 @@ class AdminController extends GetxController {
 
         products.assignAll(productsList);
 
-        print('PRODUCTS OK: ${productsList.length}');
       } catch (e) {
-        print('PRODUCTS FAILED: $e');
 
         throw Exception(
           'Products query failed: $e',
         );
       }
 
-      // Fetch Orders
-      print('Fetching orders...');
 
       try {
         final ordersList =
@@ -152,29 +121,13 @@ class AdminController extends GetxController {
 
         orders.assignAll(ordersList);
 
-        print('ORDERS OK: ${ordersList.length}');
       } catch (e) {
-        print('ORDERS FAILED: $e');
 
         throw Exception(
           'Orders query failed: $e',
         );
       }
-
-      print('====================================');
-      print('ADMIN DASHBOARD LOADED SUCCESSFULLY');
-      print('Users: ${users.length}');
-      print('Sellers: ${sellers.length}');
-      print('Products: ${products.length}');
-      print('Orders: ${orders.length}');
-      print('Revenue: $totalRevenue');
-      print('====================================');
     } catch (e) {
-      print('====================================');
-      print('ADMIN DASHBOARD FAILED');
-      print('ERROR: $e');
-      print('====================================');
-
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
