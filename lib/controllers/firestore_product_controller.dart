@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../models/product_model.dart';
@@ -15,6 +16,7 @@ class FirestoreProductController extends GetxController {
   // All Firestore products
   // Used by Home / Customer side
   final products = <ProductModel>[].obs;
+  final allProducts = <ProductModel>[].obs;
 
   // Logged-in seller's products
   // Used by My Products / Seller Dashboard
@@ -22,11 +24,18 @@ class FirestoreProductController extends GetxController {
 
   // Search text
   final searchQuery = ''.obs;
+  final searchController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
     getProducts();
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose();
+    super.onClose();
   }
 
   // Get all Firestore products
@@ -37,6 +46,7 @@ class FirestoreProductController extends GetxController {
 
       final fetchedProducts = await firestoreService.getProducts();
 
+      allProducts.assignAll(fetchedProducts);
       products.assignAll(fetchedProducts);
     } catch (e) {
       errorMessage.value = e.toString();
@@ -67,6 +77,30 @@ class FirestoreProductController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // Search filter from all products
+  void searchProducts(String query) {
+    searchQuery.value = query;
+
+    if(query.trim().isEmpty) {
+      products.assignAll(allProducts);
+      return;
+    }
+
+    final search = query.toLowerCase().trim();
+
+    final filteredProducts = allProducts.where((product) {
+      final title = product.title.toLowerCase();
+      final category = product.category.toLowerCase();
+      final brand = product.brand.toLowerCase();
+
+      return title.contains(search) ||
+      category.contains(search) ||
+      brand.contains(search);
+    }).toList();
+
+    products.assignAll(filteredProducts);
   }
 
   // Create Product
@@ -215,29 +249,4 @@ class FirestoreProductController extends GetxController {
     }
   }
 
-  // Search all customer products
-  void searchProducts(String query) {
-    searchQuery.value = query;
-
-    if (query.trim().isEmpty) {
-      getProducts();
-      return;
-    }
-
-    final allProducts = products.toList();
-
-    final search = query.toLowerCase().trim();
-
-    final filteredProducts = allProducts.where((product) {
-      final title = product.title.toLowerCase();
-      final category = product.category.toLowerCase();
-      final brand = product.brand.toLowerCase();
-
-      return title.contains(search) ||
-          category.contains(search) ||
-          brand.contains(search);
-    }).toList();
-
-    products.assignAll(filteredProducts);
-  }
 }

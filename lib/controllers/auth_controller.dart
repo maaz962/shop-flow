@@ -162,6 +162,22 @@ class AuthController extends GetxController {
         return false;
       }
 
+      if(userModel.value == null) {
+        errorMessage.value = 'User profile not found';
+        return false;
+      }
+      // Disabled account check
+      if(userModel.value!.isActive == false) {
+        await authService.logout();
+
+        user.value = null;
+        userModel.value = null;
+
+        errorMessage.value = 'Your account has been disabled. Please contact support.';
+
+        return false;
+      }
+
       final role = userModel.value!.role;
 
       // Seller login mein seller account required
@@ -250,6 +266,15 @@ class AuthController extends GetxController {
         return false;
       }
 
+      // Disabled account check
+      if(userModel.value!.isActive == false) {
+        await authService.logout();
+
+        user.value = null;
+        userModel.value= null;
+        errorMessage.value = 'Your account has been disabled. Please contact support.';
+        return false;
+      }
       final role = userModel.value!.role;
 
       //Seller google login

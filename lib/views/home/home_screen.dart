@@ -37,9 +37,24 @@ class HomeScreen extends StatelessWidget {
               child: SizedBox(
                 height: 42,
                 child: TextField(
+                  controller: firestoreProductController.searchController,
+                  onChanged: (value) {
+                    firestoreProductController.searchProducts(value);
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search products...',
                     prefixIcon: const Icon(Icons.search),
+                    suffixIcon: Obx(() =>
+                    firestoreProductController.searchQuery.value.isNotEmpty
+                    ? IconButton(
+                      icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          firestoreProductController.searchController.clear();
+                          firestoreProductController.searchProducts('');
+                        },
+                    )
+                        : const SizedBox.shrink(),
+                    ),
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: 0,
                     ),
