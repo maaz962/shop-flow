@@ -18,7 +18,7 @@ class InitialBinding extends Bindings{
     Get.put(OrderController());
     Get.put(CartController());
     Get.put(StoreProfileController());
-    Get.put(AdminController());
+    Get.lazyPut<AdminController>(() => AdminController());
 
   }
 }
