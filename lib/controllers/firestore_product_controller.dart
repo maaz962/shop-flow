@@ -26,6 +26,8 @@ class FirestoreProductController extends GetxController {
   final searchQuery = ''.obs;
   final searchController = TextEditingController();
 
+  final selectedCategory = 'All'.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -36,6 +38,16 @@ class FirestoreProductController extends GetxController {
   void onClose() {
     searchController.dispose();
     super.onClose();
+  }
+
+  List<String> get categories {
+    final unique = allProducts
+        .map((p) => p.category.trim())
+        .where((c) => c.isNotEmpty)
+        .toSet()
+        .toList();
+    unique.sort();
+    return['All',  ...unique];
   }
 
   // Get all Firestore products
@@ -82,26 +94,42 @@ class FirestoreProductController extends GetxController {
   // Search filter from all products
   void searchProducts(String query) {
     searchQuery.value = query;
+    _applyFilters();
+  }
 
-    if(query.trim().isEmpty) {
-      products.assignAll(allProducts);
-      return;
+  void filterByCategory(String category) {
+    selectedCategory.value = category;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    var filtered = allProducts.toList();
+
+    if(selectedCategory.value != 'All') {
+      filtered = filtered
+          .where((p) =>
+      p.category.toLowerCase() == selectedCategory.value.toLowerCase())
+          .toList();
     }
 
-    final search = query.toLowerCase().trim();
+    if(searchQuery.trim().isNotEmpty) {
+      final search = searchQuery.value.toLowerCase().trim();
+      filtered = filtered.where((product) {
 
-    final filteredProducts = allProducts.where((product) {
-      final title = product.title.toLowerCase();
-      final category = product.category.toLowerCase();
-      final brand = product.brand.toLowerCase();
+        final title = product.title.toLowerCase();
+        final category = product.category.toLowerCase();
+        final brand = product.brand.toLowerCase();
 
-      return title.contains(search) ||
-      category.contains(search) ||
-      brand.contains(search);
-    }).toList();
+        return title.contains(search) ||
+            category.contains(search) ||
+            brand.contains(search);
+      }).toList();
 
-    products.assignAll(filteredProducts);
-  }
+      products.assignAll(filtered);
+    }
+      }
+
+
 
   // Create Product
   Future<void> createProduct({

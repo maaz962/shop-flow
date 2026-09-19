@@ -57,7 +57,8 @@ class _AddProductScreenState
     int.tryParse(stockController.text.trim());
 
     final brand = brandController.text.trim();
-    final category = categoryController.text.trim();
+    final category = _capitalize(categoryController.text.trim());
+
     final thumbnail =
     thumbnailController.text.trim();
 
@@ -320,5 +321,16 @@ class _AddProductScreenState
         ),
       ),
     );
+  }
+
+  // "bag" ya "BAG " -> "Bag"
+  String _capitalize(String text) {
+    if(text.isEmpty) return text;
+
+    return text
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .join(' ');
   }
 }

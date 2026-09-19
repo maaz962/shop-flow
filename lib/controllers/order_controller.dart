@@ -70,6 +70,7 @@ class OrderController extends GetxController {
   Future<bool> createOrder({
     required List<Map<String, dynamic>> items,
     required double totalAmount,
+    required Map<String, dynamic> deliveryAddress,
   }) async {
     try {
       isLoading.value = true;
@@ -117,6 +118,7 @@ class OrderController extends GetxController {
         totalAmount: totalAmount,
         status: 'pending',
         createdAt: DateTime.now(),
+        deliveryAddress: deliveryAddress,
       );
 
       await orderService.createOrder(order);

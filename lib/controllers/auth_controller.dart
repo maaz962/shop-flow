@@ -5,6 +5,7 @@ import '../services/user_service.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import 'package:shop_flow_app/app/utils/app_snackbar.dart';
+import '../models/address_model.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
@@ -31,6 +32,28 @@ class AuthController extends GetxController {
         userModel.value = null;
       }
     });
+  }
+
+  // Update user's default address
+  Future<bool> updateDefaultAddress(AddressModel address) async {
+    try{
+      final currentUser = userModel.value;
+
+      if(currentUser == null) {
+        errorMessage.value  = 'User not found';
+        return false;
+      }
+
+      final updatedUser = currentUser.copyWith(defaultAddress: address);
+
+      await userService.updateUser(updatedUser);
+
+      userModel.value = updatedUser;
+      return true;
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    }
   }
 
 // SIGNUP

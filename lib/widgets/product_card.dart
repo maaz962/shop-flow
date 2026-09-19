@@ -41,10 +41,11 @@ class ProductCard extends StatelessWidget {
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             // IMAGE + BADGES
-            Expanded(
-              flex: 5,
+            AspectRatio(
+              aspectRatio: 1.05,
               child: Stack(
                 children: [
                   SizedBox(
@@ -142,68 +143,69 @@ class ProductCard extends StatelessWidget {
             ),
 
             // PRODUCT INFO
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // TITLE
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // TITLE
+                  Text(
+                    product.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+
+                  const SizedBox(height: 5),
+
+                  // CURRENT PRICE
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  // ORIGINAL PRICE
+                  if (product.discountPercentage > 0)
                     Text(
-                      product.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                      '\$${originalPrice.toStringAsFixed(2)}',
                       style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 12,
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.grey,
                       ),
                     ),
 
-                    const SizedBox(height: 5),
+                  const SizedBox(height: 4),
 
-                    // CURRENT PRICE
-                    Text(
-                      '\$${product.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                  // RATING + STOCK
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        size: 16,
+                        color: Colors.amber,
                       ),
-                    ),
-
-                    // ORIGINAL PRICE
-                    if (product.discountPercentage > 0)
+                      const SizedBox(width: 3),
                       Text(
-                        '\$${originalPrice.toStringAsFixed(2)}',
+                        product.rating.toStringAsFixed(1),
                         style: const TextStyle(
                           fontSize: 12,
-                          decoration: TextDecoration.lineThrough,
-                          color: Colors.grey,
                         ),
                       ),
-
-                    const SizedBox(height: 4),
-
-                    // RATING + STOCK
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          size: 16,
-                          color: Colors.amber,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          product.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
+                      const Spacer(),
+                      Flexible(
+                        child: Text(
                           product.stock > 0
                               ? 'In stock'
                               : 'Out of stock',
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -212,75 +214,79 @@ class ProductCard extends StatelessWidget {
                                 : Colors.red,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
 
-                    const Spacer(),
+                  const SizedBox(height: 8),
 
-                    // SHIPPING + ADD TO CART
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.local_shipping_outlined,
-                                size: 16,
-                              ),
-                              SizedBox(width: 4),
-                              Flexible(
-                                child: Text(
-                                  'Free Shipping',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.green,
-                                  ),
+                  // SHIPPING + ADD TO CART
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.local_shipping_outlined,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            const Flexible(
+                              child: Text(
+                                'Free Shipping',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.green,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
 
-                        const SizedBox(width: 4),
+                      const SizedBox(width: 4),
 
-                        SizedBox(
-                          height: 32,
-                          child: ElevatedButton.icon(
-                            onPressed: product.stock <= 0
-                                ? null
-                                : () {
-                              // Guest user
-                              if (!authController.isLoggedIn) {
-                                Get.toNamed(AppRoutes.login);
-                                return;
-                              }
+                      SizedBox(
+                        height: 32,
+                        child: ElevatedButton.icon(
+                          onPressed: product.stock <= 0
+                              ? null
+                              : () {
+                            // Guest user
+                            if (!authController.isLoggedIn) {
+                              Get.toNamed(AppRoutes.login);
+                              return;
+                            }
 
-                              // Logged-in user
-                              cartController.addToCart(product);
-                            },
-                            icon: const Icon(
-                              Icons.shopping_cart_outlined,
-                              size: 15,
-                            ),
-                            label: const Text(
-                              'Add',
-                              style: TextStyle(fontSize: 11),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              minimumSize: Size.zero,
-                              tapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                            // Logged-in user
+                            cartController.addToCart(product);
+                          },
+                          icon: const Icon(
+                            Icons.shopping_cart_outlined,
+                            size: 15,
+                          ),
+                          label: const Text(
+                            'Add',
+                            style: TextStyle(
+                              fontSize: 11,
                             ),
                           ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                            ),
+                            minimumSize: Size.zero,
+                            tapTargetSize:
+                            MaterialTapTargetSize.shrinkWrap,
+                          ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],

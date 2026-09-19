@@ -1,9 +1,12 @@
+import 'address_model.dart';
+
 class UserModel {
   final String uid;
   final String name;
   final String email;
   final String role;
   final bool isActive;
+  final AddressModel? defaultAddress;
 
   UserModel({
     required this.uid,
@@ -11,6 +14,7 @@ class UserModel {
     required this.email,
     required this.role,
     this.isActive = true,
+    this.defaultAddress,
 });
 
   factory UserModel.fromMap(
@@ -23,8 +27,12 @@ class UserModel {
         email: map['email'] ?? '',
         role: map['role'] ?? 'user',
       isActive: map['isActive'] ?? true,
-    );
-  }
+        defaultAddress: map['defaultAddress'] != null
+        ? AddressModel.fromMap(
+          Map<String, dynamic>.from(map['defaultAddress']))
+              : null,
+        );
+      }
 
   Map<String, dynamic> toMap() {
     return {
@@ -32,6 +40,7 @@ class UserModel {
       'email': email,
       'role' : role,
       'isActive': isActive,
+      'defaultAddress' : defaultAddress?.toMap(),
     };
   }
 
@@ -40,6 +49,7 @@ class UserModel {
     String? email,
     String? role,
     bool? isActive,
+    AddressModel? defaultAddress,
 }) {
     return UserModel(
         uid: uid,
@@ -47,6 +57,7 @@ class UserModel {
         email: email ?? this.email,
         role: role ?? this.role,
     isActive: isActive ?? this.isActive,
+        defaultAddress: defaultAddress ?? this.defaultAddress,
     );
   }
 

@@ -6,6 +6,7 @@ class OrderModel {
   final double totalAmount;
   final String status;
   final DateTime createdAt;
+  final Map<String, dynamic> deliveryAddress;
 
   OrderModel({
     required this.orderId,
@@ -15,6 +16,7 @@ class OrderModel {
     required this.totalAmount,
     required this.status,
     required this.createdAt,
+    required this.deliveryAddress,
   });
 
   factory OrderModel.fromMap(
@@ -34,9 +36,11 @@ class OrderModel {
       (map['totalAmount'] ?? 0).toDouble(),
       status: map['status'] ?? 'pending',
       createdAt: DateTime.parse(
-        map['createdAt'],
-      ),
-    );
+        map['createdAt']),
+        deliveryAddress:
+        Map<String, dynamic>.from(map['deliveryAddress'] ?? {}),
+      );
+
   }
 
   Map<String, dynamic> toMap() {
@@ -47,6 +51,7 @@ class OrderModel {
       'totalAmount': totalAmount,
       'status': status,
       'createdAt': createdAt.toIso8601String(),
+      'deliveryAddress': deliveryAddress,
     };
   }
 
@@ -61,6 +66,7 @@ class OrderModel {
       totalAmount: totalAmount,
       status: status ?? this.status,
       createdAt: createdAt,
+        deliveryAddress: deliveryAddress,
     );
   }
 }
