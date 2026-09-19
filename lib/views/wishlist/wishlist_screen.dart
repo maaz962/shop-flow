@@ -34,15 +34,20 @@ class WishlistScreen extends StatelessWidget {
         return LayoutBuilder(
           builder: (context, constraints) {
             int columns;
+            double aspectRatio;
 
             if (constraints.maxWidth >= 1200) {
               columns = 5;
+              aspectRatio = 0.72;
             } else if (constraints.maxWidth >= 900) {
               columns = 4;
+              aspectRatio = 0.70;
             } else if (constraints.maxWidth >= 600) {
               columns = 3;
+              aspectRatio = 0.68;
             } else {
               columns = 2;
+              aspectRatio = 0.55;
             }
 
             return GridView.builder(
@@ -54,7 +59,7 @@ class WishlistScreen extends StatelessWidget {
                 crossAxisCount: columns,
                 crossAxisSpacing: 14,
                 mainAxisSpacing: 14,
-                childAspectRatio: 0.68,
+                childAspectRatio: aspectRatio,
               ),
               itemBuilder: (context, index) {
                 final product =
