@@ -27,59 +27,15 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            const Text(
-              'ShopFlow',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: SizedBox(
-                height: 42,
-                child: TextField(
-                  controller: firestoreProductController.searchController,
-                  onChanged: (value) {
-                    firestoreProductController.searchProducts(value);
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search products...',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: Obx(() =>
-                    firestoreProductController.searchQuery.value.isNotEmpty
-                    ? IconButton(
-                      icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          firestoreProductController.searchController.clear();
-                          firestoreProductController.searchProducts('');
-                        },
-                    )
-                        : const SizedBox.shrink(),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 0,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                  ),
-                ),
-              ),
-            ),
-          ],
+        title: const Text(
+          'ShopFlow',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          // Orders
           IconButton(
-            onPressed: () {
-              Get.toNamed(AppRoutes.orders);
-            },
+            onPressed: () => Get.toNamed(AppRoutes.orders),
             icon: const Icon(Icons.receipt_long_outlined),
           ),
-
-          // Theme
           Obx(
                 () => IconButton(
               onPressed: themeController.toggleTheme,
@@ -90,12 +46,8 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // Settings
           IconButton(
-            onPressed: () {
-              Get.toNamed(AppRoutes.settings);
-            },
+            onPressed: () => Get.toNamed(AppRoutes.settings),
             icon: const Icon(Icons.settings),
           ),
         ],
@@ -139,6 +91,41 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              //  SEARCH BAR
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                child: SizedBox(
+                  height: 46,
+                  child: TextField(
+                    controller: firestoreProductController.searchController,
+                    onChanged: (value) {
+                      firestoreProductController.searchProducts(value);
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search products...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: Obx(() =>
+                      firestoreProductController.searchQuery.value.isNotEmpty
+                          ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          firestoreProductController.searchController.clear();
+                          firestoreProductController.searchProducts('');
+                        },
+                      )
+                          : const SizedBox.shrink(),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                    ),
+                  ),
+                ),
+              ),
+
               // Header
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 20, 16, 4),
@@ -189,7 +176,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisCount: columns,
                       crossAxisSpacing: 14,
                       mainAxisSpacing: 14,
-                      childAspectRatio: 0.58,
+                      childAspectRatio: 0.52,
                     ),
                     itemBuilder: (context, index) {
                       final product =

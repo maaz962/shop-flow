@@ -45,7 +45,7 @@ class ProductCard extends StatelessWidget {
           children: [
             // IMAGE + BADGES
             AspectRatio(
-              aspectRatio: 1.05,
+              aspectRatio: 1.25,
               child: Stack(
                 children: [
                   SizedBox(
