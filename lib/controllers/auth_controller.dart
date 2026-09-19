@@ -6,6 +6,7 @@ import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 import '../models/address_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthController extends GetxController {
   final AuthService authService = AuthService();
@@ -106,6 +107,11 @@ class AuthController extends GetxController {
       await userService.createUser(newUser);
 
       userModel.value = newUser;
+
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken != null) {
+        await userService.updateFcmToken(uid: firebaseUser.uid, token: fcmToken);
+      }
 
       AppSnackbar.show(
         'Success',
@@ -229,6 +235,11 @@ class AuthController extends GetxController {
 
       AppSnackbar.show('Success', 'Login successful',);
 
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken != null) {
+        await userService.updateFcmToken(uid: firebaseUser.uid, token: fcmToken);
+      }
+
       // role ky according navigation
       await navigateByRole();
 
@@ -327,6 +338,11 @@ class AuthController extends GetxController {
         'Success',
         'Login successfully',
       );
+
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken != null) {
+        await userService.updateFcmToken(uid: firebaseUser.uid, token: fcmToken);
+      }
 
       await navigateByRole();
 

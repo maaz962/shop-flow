@@ -26,6 +26,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             const Text(
@@ -188,7 +189,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisCount: columns,
                       crossAxisSpacing: 14,
                       mainAxisSpacing: 14,
-                      childAspectRatio: 0.68,
+                      childAspectRatio: 0.58,
                     ),
                     itemBuilder: (context, index) {
                       final product =

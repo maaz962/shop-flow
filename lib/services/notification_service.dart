@@ -1,5 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/user_service.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging =
@@ -7,6 +9,8 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin _localNotifications =
   FlutterLocalNotificationsPlugin();
+
+  final UserService _userService = UserService();
 
   static const AndroidNotificationChannel _channel =
   AndroidNotificationChannel(
@@ -46,13 +50,17 @@ class NotificationService {
 
       // Get FCM token
       final token = await _firebaseMessaging.getToken();
-
       print('FCM TOKEN: $token');
+      await _saveTokenIfLoggedIn(token);
+
+      _firebaseMessaging.onTokenRefresh.listen((newToken) async {
+        print('FCM TOKEN REFRESHED: $newToken');
+      });
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen(
             (RemoteMessage message) {
-          print('FOREGROUND MESSAGE RECEIVED');
+          // print('FOREGROUND MESSAGE RECEIVED');
 
           final notification = message.notification;
 
@@ -64,9 +72,29 @@ class NotificationService {
           }
         },
       );
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
+        print('Notification tapped (background): ${message.data}');
+        // yahan navigation logic daal sakte ho, e.g. order id se order screen
+      });
+
+      // 👇 ADD — app terminated thi aur notification tap se khuli
+      final initialMessage = await _firebaseMessaging.getInitialMessage();
+      if (initialMessage != null) {
+        print('Notification tapped (terminated): ${initialMessage.data}');
+        // navigation logic
+      }
     } catch (e) {
       print('FCM ERROR: $e');
     }
+  }
+
+  // 👇 ADD — token ko current logged-in user se link karo
+  Future<void> _saveTokenIfLoggedIn(String? token) async {
+    if (token == null) return;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return; // abhi login nahi hai, baad mein save hoga
+    await _userService.updateFcmToken(uid: uid, token: token);
   }
 
   Future<void> _showLocalNotification({
