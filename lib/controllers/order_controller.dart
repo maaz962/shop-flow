@@ -4,9 +4,14 @@ import '../models/order_model.dart';
 import '../services/order_service.dart';
 import 'auth_controller.dart';
 import 'package:shop_flow_app/app/utils/app_snackbar.dart';
+import '../services/notification_sender_service.dart';
+import '../services/user_service.dart';
+
 class OrderController extends GetxController {
   final OrderService orderService = OrderService();
+  final NotificationSenderService notificationSender = NotificationSenderService();
 
+  final UserService userService = UserService();
   final AuthController authController =
   Get.find<AuthController>();
 
@@ -125,6 +130,20 @@ class OrderController extends GetxController {
 
       orders.insert(0, order);
 
+      for(final sellerId in sellerIds) {
+        final sellerToken = await userService.getFcmToken(sellerId);
+        if(sellerToken != null){
+          await notificationSender.sendNotification(
+              toToken: sellerToken,
+              title: 'New Order Received',
+              body: 'You have a new order worth \$${totalAmount.toStringAsFixed(2)}',
+            data: {
+                'type': 'order',
+              'orderId': orderId,
+            },
+          );
+        }
+      }
       AppSnackbar.show(
         'Success',
         'Order placed successfully',
@@ -165,6 +184,16 @@ class OrderController extends GetxController {
       if (index != -1) {
         sellerOrders[index] =
             order.copyWith(status: status);
+      }
+
+      final customerToken = await userService.getFcmToken(order.userId);
+      if (customerToken != null) {
+        await notificationSender.sendNotification(
+          toToken: customerToken,
+          title: 'Order Update',
+          body: 'Your order is now: $status',
+          data: {'type': 'order', 'orderId': order.orderId},
+        );
       }
 
       AppSnackbar.show(

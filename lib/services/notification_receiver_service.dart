@@ -2,8 +2,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/user_service.dart';
+import 'package:flutter/foundation.dart';
 
-class NotificationService {
+class NotificationReceiverService {
   final FirebaseMessaging _firebaseMessaging =
       FirebaseMessaging.instance;
 
@@ -21,6 +22,11 @@ class NotificationService {
   );
 
   Future<void> initialize() async {
+    if (kIsWeb) {
+      print('FCM disabled on Web.');
+      return;
+    }
+
     try {
       // Ask user for notification permission
       final settings = await _firebaseMessaging.requestPermission();

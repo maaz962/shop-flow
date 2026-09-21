@@ -22,16 +22,23 @@ class HomeScreen extends StatelessWidget {
     final cartController = Get.find<CartController>();
 
     // Make sure WishlistController exists before ProductCard uses it.
-    final wishlistController = Get.put(WishlistController());
+    // final wishlistController = Get.put(WishlistController());
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          'ShopFlow',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [
+        titleSpacing: 0,
+        title: Row(
+          children: [
+            const SizedBox(width: 16),
+            const Text(
+              'ShopFlow',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+
+            const Spacer(),
+
+        // actions: [
           IconButton(
             onPressed: () => Get.toNamed(AppRoutes.orders),
             icon: const Icon(Icons.receipt_long_outlined),
@@ -51,6 +58,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.settings),
           ),
         ],
+      ),
       ),
 
       body: Obx(() {

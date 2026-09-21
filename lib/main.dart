@@ -9,7 +9,7 @@ import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'services/notification_service.dart';
+import 'services/notification_receiver_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -36,7 +36,7 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  final notificationService = NotificationService();
+  final notificationService = NotificationReceiverService();
   await notificationService.initialize();
 
   runApp(const ShopFlowApp());
