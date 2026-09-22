@@ -91,7 +91,7 @@ class NotificationReceiverService {
       final initialMessage = await _firebaseMessaging.getInitialMessage();
       if (initialMessage != null) {
         print('Notification tapped (terminated): ${initialMessage.data}');
-        Future.delayed(const Duration(milliseconds: 800), () {
+        Future.delayed(const Duration(milliseconds: 2300), () {
           _handleNotificationTap(initialMessage);
         });
         // navigation logic
