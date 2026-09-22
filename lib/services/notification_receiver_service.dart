@@ -1,6 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
+import '../app/routes/app_routes.dart';
 import '../services/user_service.dart';
 import 'package:flutter/foundation.dart';
 
@@ -81,6 +83,7 @@ class NotificationReceiverService {
 
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
         print('Notification tapped (background): ${message.data}');
+        _handleNotificationTap(message);
         // yahan navigation logic daal sakte ho, e.g. order id se order screen
       });
 
@@ -88,10 +91,20 @@ class NotificationReceiverService {
       final initialMessage = await _firebaseMessaging.getInitialMessage();
       if (initialMessage != null) {
         print('Notification tapped (terminated): ${initialMessage.data}');
+        Future.delayed(const Duration(milliseconds: 800), () {
+          _handleNotificationTap(initialMessage);
+        });
         // navigation logic
       }
     } catch (e) {
       print('FCM ERROR: $e');
+    }
+  }
+
+  void _handleNotificationTap(RemoteMessage message) {
+    final type = message.data['type'];
+    if(type == 'order') {
+      Get.toNamed(AppRoutes.orders);
     }
   }
 

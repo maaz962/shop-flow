@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
     final cartController = Get.find<CartController>();
 
     // Make sure WishlistController exists before ProductCard uses it.
-    // final wishlistController = Get.put(WishlistController());
+    final wishlistController = Get.find<WishlistController>();
 
     return Scaffold(
       appBar: AppBar(
