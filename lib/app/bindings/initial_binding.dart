@@ -7,6 +7,7 @@ import '../../controllers/theme_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/cart_controller.dart';
 import '../../controllers/wishlist_controller.dart';
+import '../../controllers/payment_controller.dart';
 
 
 class InitialBinding extends Bindings{
@@ -19,6 +20,7 @@ class InitialBinding extends Bindings{
     Get.put(CartController());
     Get.put(StoreProfileController());
     Get.put(WishlistController());
+    Get.put(PaymentController());
     Get.lazyPut<AdminController>(() => AdminController());
 
   }

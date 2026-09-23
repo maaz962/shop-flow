@@ -10,12 +10,14 @@ import 'app/routes/app_routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/notification_receiver_service.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
+
     );
   } on FirebaseException catch (e) {
     if (e.code != 'duplicate-app') rethrow;
@@ -39,6 +41,9 @@ void main() async {
   final notificationService = NotificationReceiverService();
   await notificationService.initialize();
 
+  Stripe.publishableKey = 'pk_test_51UIiaY2KMdYaRhtzspuhH0aNPcpfCXZc1tckvhEBUKKxKZJDqEO5SGDkSWZjNiFCD6GIb08YPT74FnnHSPwdRPUd00GOdEz3Fs';
+  await Stripe.instance.applySettings();
+  
   runApp(const ShopFlowApp());
 }
 

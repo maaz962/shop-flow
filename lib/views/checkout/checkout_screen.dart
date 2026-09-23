@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_flow_app/app/utils/app_snackbar.dart';
+import 'package:shop_flow_app/controllers/payment_controller.dart';
 
 import '../../app/routes/app_routes.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/cart_controller.dart';
 import '../../controllers/order_controller.dart';
 import '../../models/address_model.dart';
+import '../../controllers/payment_controller.dart';
 
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key});
@@ -70,7 +73,7 @@ class CheckoutScreen extends StatelessWidget {
     final OrderController orderController = Get.find<OrderController>();
     final CartController cartController = Get.find<CartController>();
     final AuthController authController = Get.find<AuthController>();
-
+    final PaymentController paymentController = Get.find<PaymentController>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -233,10 +236,24 @@ class CheckoutScreen extends StatelessWidget {
 
                         if (currentAddress == null ||
                             !currentAddress.isComplete) {
-                          Get.snackbar(
+                          AppSnackbar.show(
                             'Address Required',
                             'Please add a delivery address before placing the order.',
                           );
+                          return;
+                        }
+
+                        final paymentSuccess = await paymentController.payWithStripe(
+                            amount: total,
+                        );
+
+                        if(!paymentSuccess) {
+                          AppSnackbar.show(
+                        'Payment Failed',
+                            paymentController.errorMessage.value.isNotEmpty
+                              ? paymentController.errorMessage.value
+                                : 'Payment was not completed.',
+                        );
                           return;
                         }
 
