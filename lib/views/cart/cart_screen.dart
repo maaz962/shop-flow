@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shop_flow_app/widgets/customer_bottom_nav.dart';
 
 import '../../app/routes/app_routes.dart';
 import '../../controllers/cart_controller.dart';
@@ -13,6 +14,8 @@ class CartScreen extends StatelessWidget {
     final cartController = Get.find<CartController>();
 
     return Scaffold(
+      extendBody: true,
+
       appBar: AppBar(
         title: Obx(
               () => Text(
@@ -284,6 +287,10 @@ class CartScreen extends StatelessWidget {
           ],
         );
       }),
+
+      bottomNavigationBar: const CustomerBottomNav(
+        currentIndex: 2,
+      ),
     );
   }
 }

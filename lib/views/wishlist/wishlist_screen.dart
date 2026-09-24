@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/wishlist_controller.dart';
+import '../../widgets/customer_bottom_nav.dart';
 import '../../widgets/product_card.dart';
+
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -14,6 +16,8 @@ class WishlistScreen extends StatelessWidget {
     final wishlistController = Get.put(WishlistController());
 
     return Scaffold(
+      extendBody: true,
+
       appBar: AppBar(
         title: const Text('My Wishlist'),
       ),
@@ -52,8 +56,7 @@ class WishlistScreen extends StatelessWidget {
 
             return GridView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount:
-              wishlistController.wishlistProducts.length,
+              itemCount: wishlistController.wishlistProducts.length,
               gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: columns,
@@ -73,6 +76,10 @@ class WishlistScreen extends StatelessWidget {
           },
         );
       }),
+
+      bottomNavigationBar: const CustomerBottomNav(
+        currentIndex: 1,
+      ),
     );
   }
 }

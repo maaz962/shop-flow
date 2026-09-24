@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../app/routes/app_routes.dart';
-import '../../controllers/auth_controller.dart';
-import '../../controllers/cart_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/wishlist_controller.dart';
+import '../../widgets/customer_bottom_nav.dart';
 import '../../widgets/product_card.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -19,46 +19,57 @@ class HomeScreen extends StatelessWidget {
     final firestoreProductController =
     Get.find<FirestoreProductController>();
 
-    final cartController = Get.find<CartController>();
-
     // Make sure WishlistController exists before ProductCard uses it.
-    final wishlistController = Get.find<WishlistController>();
+    Get.find<WishlistController>();
 
     return Scaffold(
+      extendBody: true,
+
       appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         title: Row(
           children: [
             const SizedBox(width: 16),
+
             const Text(
               'ShopFlow',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
             const Spacer(),
 
-        // actions: [
-          IconButton(
-            onPressed: () => Get.toNamed(AppRoutes.orders),
-            icon: const Icon(Icons.receipt_long_outlined),
-          ),
-          Obx(
-                () => IconButton(
-              onPressed: themeController.toggleTheme,
-              icon: Icon(
-                themeController.isDarkMode.value
-                    ? Icons.light_mode
-                    : Icons.dark_mode,
+            // Orders
+            IconButton(
+              onPressed: () => Get.toNamed(AppRoutes.orders),
+              icon: const Icon(
+                Icons.receipt_long_outlined,
               ),
             ),
-          ),
-          IconButton(
-            onPressed: () => Get.toNamed(AppRoutes.settings),
-            icon: const Icon(Icons.settings),
-          ),
-        ],
-      ),
+
+            // Theme
+            Obx(
+                  () => IconButton(
+                onPressed: themeController.toggleTheme,
+                icon: Icon(
+                  themeController.isDarkMode.value
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                ),
+              ),
+            ),
+
+            // Settings
+            IconButton(
+              onPressed: () => Get.toNamed(AppRoutes.settings),
+              icon: const Icon(
+                Icons.settings,
+              ),
+            ),
+          ],
+        ),
       ),
 
       body: Obx(() {
@@ -99,33 +110,55 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //  SEARCH BAR
+              // SEARCH BAR
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  12,
+                  16,
+                  0,
+                ),
                 child: SizedBox(
                   height: 46,
                   child: TextField(
-                    controller: firestoreProductController.searchController,
+                    controller:
+                    firestoreProductController.searchController,
                     onChanged: (value) {
                       firestoreProductController.searchProducts(value);
                     },
                     decoration: InputDecoration(
                       hintText: 'Search products...',
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: Obx(() =>
-                      firestoreProductController.searchQuery.value.isNotEmpty
-                          ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          firestoreProductController.searchController.clear();
-                          firestoreProductController.searchProducts('');
-                        },
-                      )
-                          : const SizedBox.shrink(),
+                      prefixIcon: const Icon(
+                        Icons.search,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      suffixIcon: Obx(
+                            () =>
+                        firestoreProductController
+                            .searchQuery
+                            .value
+                            .isNotEmpty
+                            ? IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                          ),
+                          onPressed: () {
+                            firestoreProductController
+                                .searchController
+                                .clear();
+
+                            firestoreProductController
+                                .searchProducts('');
+                          },
+                        )
+                            : const SizedBox.shrink(),
+                      ),
+                      contentPadding:
+                      const EdgeInsets.symmetric(
+                        vertical: 0,
+                      ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius:
+                        BorderRadius.circular(10),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
@@ -134,9 +167,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              // Header
+              // HEADER
               const Padding(
-                padding: EdgeInsets.fromLTRB(16, 20, 16, 4),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  20,
+                  16,
+                  4,
+                ),
                 child: Text(
                   'Discover Products',
                   style: TextStyle(
@@ -147,7 +185,12 @@ class HomeScreen extends StatelessWidget {
               ),
 
               const Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  0,
+                  16,
+                  10,
+                ),
                 child: Text(
                   'Explore products from our sellers',
                   style: TextStyle(
@@ -157,7 +200,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              // Products
+              // PRODUCTS
               LayoutBuilder(
                 builder: (context, constraints) {
                   int columns;
@@ -178,7 +221,9 @@ class HomeScreen extends StatelessWidget {
                     const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount:
-                    firestoreProductController.products.length,
+                    firestoreProductController
+                        .products
+                        .length,
                     gridDelegate:
                     SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: columns,
@@ -188,7 +233,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       final product =
-                      firestoreProductController.products[index];
+                      firestoreProductController
+                          .products[index];
 
                       return ProductCard(
                         product: product,
@@ -198,75 +244,16 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
 
+              // Extra space for floating navigation bar
               const SizedBox(height: 30),
             ],
           ),
         );
       }),
 
-      // BOTTOM NAVIGATION
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // Home
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.home),
-            ),
-
-            // Wishlist
-            IconButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.wishlist);
-              },
-              icon: const Icon(Icons.favorite_border),
-            ),
-
-            // Cart
-            Obx(
-                  () => Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.cart);
-                    },
-                    icon: const Icon(
-                      Icons.shopping_cart_outlined,
-                    ),
-                  ),
-                  if (cartController.itemCount > 0)
-                    Positioned(
-                      right: 2,
-                      top: 2,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '${cartController.itemCount}',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-
-            // Profile
-            IconButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.profileScreen);
-              },
-              icon: const Icon(Icons.person_outline),
-            ),
-          ],
-        ),
+      // REUSABLE CUSTOMER BOTTOM NAVIGATION
+      bottomNavigationBar: const CustomerBottomNav(
+        currentIndex: 0,
       ),
     );
   }

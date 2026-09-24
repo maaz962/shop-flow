@@ -24,6 +24,12 @@ class AppColors {
   // Light theme surfaces
   static const Color bgLight = Color(0xFFF3FBF6);
   static const Color surfaceLight = Color(0xFFFFFFFF);
+
+  // Glassmorphism colors
+  static const Color glassLight = Color(0x66FFFFFF);
+  static const Color glassDark = Color(0x8C141C1A);
+  static const Color glassBorder = Color(0x4D22D66B);
+
   static const Color ink = Color(0xFF0B1F17); // brand-tinted near-black text
   static const Color textOnLightMuted = Color(0xFF5A6B64);
 

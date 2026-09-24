@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/address_model.dart';
+import '../../widgets/customer_bottom_nav.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -80,6 +81,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+
       appBar: AppBar(
         title: const Text('Profile'),
       ),
@@ -155,6 +158,10 @@ class ProfileScreen extends StatelessWidget {
           ),
         );
       }),
+
+      bottomNavigationBar: const CustomerBottomNav(
+        currentIndex: 3,
+      ),
     );
   }
 }

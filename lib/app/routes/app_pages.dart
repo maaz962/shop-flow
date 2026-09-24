@@ -27,8 +27,8 @@ import 'package:shop_flow_app/views/seller/my_products_screen.dart';
 import 'package:shop_flow_app/views/seller/store_profile_screen.dart';
 import 'package:shop_flow_app/views/seller/seller_orders_screen.dart';
 
-import '../../views/admin/admin_dashboard_screen.dart';
-import '../../views/admin/admin_users_screen.dart';
+import 'package:shop_flow_app/views/admin/admin_dashboard_screen.dart';
+import 'package:shop_flow_app/views/admin/admin_users_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
