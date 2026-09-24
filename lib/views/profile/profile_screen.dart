@@ -1,13 +1,66 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../controllers/auth_controller.dart';
 import '../../models/address_model.dart';
 import '../../widgets/customer_bottom_nav.dart';
+import '../widgets/customer_bottom_nav.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
 
   final AuthController authController = Get.find<AuthController>();
+
+  void _showNameDialog(
+      BuildContext context,
+      String currentName,
+      ) {
+    final nameController =
+    TextEditingController(text: currentName);
+
+    Get.defaultDialog(
+      title: 'Edit Name',
+      content: TextField(
+        controller: nameController,
+        textCapitalization: TextCapitalization.words,
+        decoration: const InputDecoration(
+          labelText: 'Name',
+          hintText: 'Enter your name',
+        ),
+      ),
+      textCancel: 'Cancel',
+      textConfirm: 'Save',
+      confirmTextColor: Colors.white,
+      onConfirm: () async {
+        final name = nameController.text.trim();
+
+        if (name.isEmpty) {
+          Get.snackbar(
+            'Error',
+            'Name cannot be empty',
+          );
+          return;
+        }
+
+        final success =
+        await authController.updateName(name);
+
+        if (success) {
+          Get.back();
+
+          Get.snackbar(
+            'Success',
+            'Name updated successfully',
+          );
+        } else {
+          Get.snackbar(
+            'Error',
+            authController.errorMessage.value,
+          );
+        }
+      },
+    );
+  }
 
   void _showAddressDialog(
       BuildContext context,
@@ -15,13 +68,17 @@ class ProfileScreen extends StatelessWidget {
       ) {
     final streetController =
     TextEditingController(text: existing?.street ?? '');
+
     final cityController =
     TextEditingController(text: existing?.city ?? '');
+
     final phoneController =
     TextEditingController(text: existing?.phone ?? '');
 
     Get.defaultDialog(
-      title: existing == null ? 'Add Address' : 'Edit Address',
+      title: existing == null
+          ? 'Add Address'
+          : 'Edit Address',
       content: Column(
         children: [
           TextField(
@@ -30,14 +87,18 @@ class ProfileScreen extends StatelessWidget {
               labelText: 'Street Address',
             ),
           ),
+
           const SizedBox(height: 12),
+
           TextField(
             controller: cityController,
             decoration: const InputDecoration(
               labelText: 'City',
             ),
           ),
+
           const SizedBox(height: 12),
+
           TextField(
             controller: phoneController,
             keyboardType: TextInputType.phone,
@@ -55,8 +116,13 @@ class ProfileScreen extends StatelessWidget {
         final city = cityController.text.trim();
         final phone = phoneController.text.trim();
 
-        if (street.isEmpty || city.isEmpty || phone.isEmpty) {
-          Get.snackbar('Error', 'Please fill all address fields');
+        if (street.isEmpty ||
+            city.isEmpty ||
+            phone.isEmpty) {
+          Get.snackbar(
+            'Error',
+            'Please fill all address fields',
+          );
           return;
         }
 
@@ -67,12 +133,17 @@ class ProfileScreen extends StatelessWidget {
         );
 
         final success =
-        await authController.updateDefaultAddress(address);
+        await authController.updateDefaultAddress(
+          address,
+        );
 
         Get.back();
 
         if (success) {
-          Get.snackbar('Success', 'Address saved');
+          Get.snackbar(
+            'Success',
+            'Address saved',
+          );
         }
       },
     );
@@ -86,8 +157,10 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
+
       body: Obx(() {
-        final userModel = authController.userModel.value;
+        final userModel =
+            authController.userModel.value;
 
         if (userModel == null) {
           return const Center(
@@ -97,48 +170,81 @@ class ProfileScreen extends StatelessWidget {
 
         final address = userModel.defaultAddress;
 
-        return Padding(
+        return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               const CircleAvatar(
                 radius: 50,
-                child: Icon(Icons.person, size: 50),
+                child: Icon(
+                  Icons.person,
+                  size: 50,
+                ),
               ),
 
               const SizedBox(height: 20),
 
+              // NAME
               ListTile(
-                leading: const Icon(Icons.person_outline),
+                leading: const Icon(
+                  Icons.person_outline,
+                ),
                 title: const Text('Name'),
                 subtitle: Text(userModel.name),
+                trailing: TextButton(
+                  onPressed: () {
+                    _showNameDialog(
+                      context,
+                      userModel.name,
+                    );
+                  },
+                  child: const Text('Edit'),
+                ),
               ),
 
               const Divider(),
 
+              // EMAIL
               ListTile(
-                leading: const Icon(Icons.email_outlined),
+                leading: const Icon(
+                  Icons.email_outlined,
+                ),
                 title: const Text('Email'),
                 subtitle: Text(userModel.email),
               ),
 
               const Divider(),
 
-              // ADDRESS SECTION
+              // ADDRESS
               ListTile(
-                leading: const Icon(Icons.location_on_outlined),
-                title: const Text('Delivery Address'),
+                leading: const Icon(
+                  Icons.location_on_outlined,
+                ),
+                title: const Text(
+                  'Delivery Address',
+                ),
                 subtitle: Text(
-                  address != null && address.isComplete
-                      ? '${address.street}, ${address.city}\n${address.phone}'
+                  address != null &&
+                      address.isComplete
+                      ? '${address.street}, '
+                      '${address.city}\n'
+                      '${address.phone}'
                       : 'No address added yet',
                 ),
-                isThreeLine: address != null && address.isComplete,
+                isThreeLine:
+                address != null &&
+                    address.isComplete,
                 trailing: TextButton(
-                  onPressed: () =>
-                      _showAddressDialog(context, address),
+                  onPressed: () {
+                    _showAddressDialog(
+                      context,
+                      address,
+                    );
+                  },
                   child: Text(
-                    address == null ? 'Add' : 'Edit',
+                    address == null
+                        ? 'Add'
+                        : 'Edit',
                   ),
                 ),
               ),
@@ -147,19 +253,25 @@ class ProfileScreen extends StatelessWidget {
 
               const SizedBox(height: 30),
 
+              // LOGOUT
               ElevatedButton.icon(
                 onPressed: () async {
                   await authController.logout();
                 },
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout'),
+                icon: const Icon(
+                  Icons.logout,
+                ),
+                label: const Text(
+                  'Logout',
+                ),
               ),
             ],
           ),
         );
       }),
 
-      bottomNavigationBar: const CustomerBottomNav(
+      bottomNavigationBar:
+      const CustomerBottomNav(
         currentIndex: 3,
       ),
     );

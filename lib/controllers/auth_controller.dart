@@ -57,6 +57,35 @@ class AuthController extends GetxController {
     }
   }
 
+  // Updates user's name
+  Future<bool> updateName(String name) async {
+    try{
+      final currentUser = userModel.value;
+
+      if(currentUser == null) {
+        errorMessage.value = 'User not found';
+        return false;
+      }
+
+      if(name.trim().isEmpty) {
+        errorMessage.value = 'Name cannot be empty';
+        return false;
+      }
+
+      final updatedUser = currentUser.copyWith(
+        name: name.trim(),
+      );
+
+      await userService.updateUser(updatedUser);
+
+      userModel.value = updatedUser;
+      return true;
+    } catch(e){
+      errorMessage.value = e.toString();
+      return false;
+    }
+  }
+
 // SIGNUP
   Future<bool> signup({
     required String name,
