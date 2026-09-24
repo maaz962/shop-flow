@@ -55,7 +55,7 @@ class CheckoutScreen extends StatelessWidget {
         final phone = phoneController.text.trim();
 
         if (street.isEmpty || city.isEmpty || phone.isEmpty) {
-          Get.snackbar('Error', 'Please fill all address fields');
+          AppSnackbar.show('Error', 'Please fill all address fields');
           return;
         }
 

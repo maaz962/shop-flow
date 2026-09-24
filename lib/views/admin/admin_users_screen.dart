@@ -115,9 +115,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                // =========================
+
                 // SUMMARY
-                // =========================
                 Row(
                   children: [
                     Expanded(
@@ -144,9 +143,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
                 const SizedBox(height: 20),
 
-                // =========================
+
                 // SEARCH
-                // =========================
                 TextField(
                   controller: searchController,
                   decoration: InputDecoration(
@@ -172,9 +170,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
                 const SizedBox(height: 20),
 
-                // =========================
+
                 // SECTION TITLE
-                // =========================
                 Row(
                   mainAxisAlignment:
                   MainAxisAlignment.spaceBetween,
@@ -200,9 +197,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
 
                 const SizedBox(height: 10),
 
-                // =========================
                 // USER LIST
-                // =========================
                 if (filteredUsers.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -347,6 +342,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                   _buildRoleChip(
                     context,
                     user.role,
+
                   ),
                   _buildStatusChip(
                     context,
@@ -433,6 +429,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
         style: const TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w600,
+          color: Colors.white,
         ),
       ),
     );

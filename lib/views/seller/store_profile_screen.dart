@@ -141,11 +141,17 @@ class StoreProfileScreen extends StatelessWidget {
                         strokeWidth: 2,
                       ),
                     )
-                        : const Icon(Icons.save_outlined),
+                        : const Icon(
+                        Icons.save_outlined,
+                      color: Colors.white,
+                    ),
                     label: Text(
                       controller.isSaving.value
                           ? 'Saving...'
                           : 'Save Changes',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 );
@@ -170,6 +176,7 @@ class StoreProfileScreen extends StatelessWidget {
               child: Icon(
                 Icons.storefront_outlined,
                 size: 45,
+                color: Colors.white,
               ),
             ),
             const SizedBox(height: 14),

@@ -199,7 +199,12 @@ class ProductDetailsScreen extends StatelessWidget {
                             cartController.addToCart(product);
                             Get.toNamed(AppRoutes.checkout);
                           },
-                          child: const Text('Buy Now'),
+                          child: const Text(
+                              'Buy Now',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                          ),
                         ),
                       ),
                     ],

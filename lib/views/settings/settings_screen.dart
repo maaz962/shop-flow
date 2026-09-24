@@ -63,6 +63,7 @@ class SettingsScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 19,
                               fontWeight: FontWeight.bold,
+                              // color: Colors.white,
                             ),
                           ),
 

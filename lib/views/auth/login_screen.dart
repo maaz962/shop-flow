@@ -165,7 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         strokeWidth: 2,
                       ),
                     )
-                        : const Text('Login'),
+                        : const Text(
+                        'Login',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),),
                   ),
                 ),
               ),

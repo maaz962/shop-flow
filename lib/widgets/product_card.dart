@@ -267,11 +267,13 @@ class ProductCard extends StatelessWidget {
                           icon: const Icon(
                             Icons.shopping_cart_outlined,
                             size: 15,
+                            color: Colors.white,
                           ),
                           label: const Text(
                             'Add',
                             style: TextStyle(
                               fontSize: 11,
+                              color: Colors.white,
                             ),
                           ),
                           style: ElevatedButton.styleFrom(

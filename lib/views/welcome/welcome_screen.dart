@@ -60,9 +60,13 @@ class WelcomeScreen extends StatelessWidget{
                       },
                       icon: const Icon(
                         Icons.shopping_bag_outlined,
+                        color: Colors.white,
                       ),
                       label: const Text(
                         'Shop on ShopFlow',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),

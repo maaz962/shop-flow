@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../app/utils/app_snackbar.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/address_model.dart';
 import '../../widgets/customer_bottom_nav.dart';
-import '../widgets/customer_bottom_nav.dart';
+
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -35,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
         final name = nameController.text.trim();
 
         if (name.isEmpty) {
-          Get.snackbar(
+          AppSnackbar.show(
             'Error',
             'Name cannot be empty',
           );
@@ -48,12 +49,12 @@ class ProfileScreen extends StatelessWidget {
         if (success) {
           Get.back();
 
-          Get.snackbar(
+          AppSnackbar.show(
             'Success',
             'Name updated successfully',
           );
         } else {
-          Get.snackbar(
+          AppSnackbar.show(
             'Error',
             authController.errorMessage.value,
           );
@@ -119,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
         if (street.isEmpty ||
             city.isEmpty ||
             phone.isEmpty) {
-          Get.snackbar(
+          AppSnackbar.show(
             'Error',
             'Please fill all address fields',
           );
@@ -140,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
         Get.back();
 
         if (success) {
-          Get.snackbar(
+          AppSnackbar.show(
             'Success',
             'Address saved',
           );
@@ -156,6 +157,7 @@ class ProfileScreen extends StatelessWidget {
 
       appBar: AppBar(
         title: const Text('Profile'),
+
       ),
 
       body: Obx(() {
@@ -179,6 +181,7 @@ class ProfileScreen extends StatelessWidget {
                 child: Icon(
                   Icons.person,
                   size: 50,
+                  color: Colors.white,
                 ),
               ),
 
@@ -260,9 +263,13 @@ class ProfileScreen extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.logout,
+                  color: Colors.white,
                 ),
                 label: const Text(
                   'Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

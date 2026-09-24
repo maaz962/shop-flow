@@ -143,14 +143,13 @@ class _WelcomeSection extends StatelessWidget {
               height: 58,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: primaryColor.withValues(
-                  alpha: 0.1,
+                color: primaryColor,
                 ),
-              ),
-              child: Icon(
+
+              child: const Icon(
                 Icons.admin_panel_settings_outlined,
                 size: 32,
-                color: primaryColor,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 18),
@@ -321,13 +320,11 @@ class _StatCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius:
                 BorderRadius.circular(12),
-                color: primaryColor.withValues(
-                  alpha: 0.1,
-                ),
+                color: primaryColor,
               ),
               child: Icon(
                 data.icon,
-                color: primaryColor,
+                color: Colors.white,
                 size: 22,
               ),
             ),
@@ -498,13 +495,11 @@ class _ManagementCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius:
                   BorderRadius.circular(12),
-                  color: primaryColor.withValues(
-                    alpha: 0.1,
-                  ),
+                  color: primaryColor,
                 ),
                 child: Icon(
                   data.icon,
-                  color: primaryColor,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(width: 14),

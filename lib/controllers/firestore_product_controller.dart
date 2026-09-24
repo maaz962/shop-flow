@@ -59,7 +59,8 @@ class FirestoreProductController extends GetxController {
       final fetchedProducts = await firestoreService.getProducts();
 
       allProducts.assignAll(fetchedProducts);
-      products.assignAll(fetchedProducts);
+      // products.assignAll(fetchedProducts);
+      _applyFilters();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -102,31 +103,34 @@ class FirestoreProductController extends GetxController {
     _applyFilters();
   }
 
+  void clearSearch(){
+    searchController.clear();
+    searchQuery.value = '';
+    _applyFilters();
+  }
+
   void _applyFilters() {
     var filtered = allProducts.toList();
 
     if(selectedCategory.value != 'All') {
-      filtered = filtered
-          .where((p) =>
+      filtered = filtered.where((p) =>
       p.category.toLowerCase() == selectedCategory.value.toLowerCase())
           .toList();
     }
 
-    if(searchQuery.trim().isNotEmpty) {
-      final search = searchQuery.value.toLowerCase().trim();
+    final search = searchQuery.value.toLowerCase().trim();
+
+    if (search.isNotEmpty) {
       filtered = filtered.where((product) {
-
-        final title = product.title.toLowerCase();
-        final category = product.category.toLowerCase();
-        final brand = product.brand.toLowerCase();
-
-        return title.contains(search) ||
-            category.contains(search) ||
-            brand.contains(search);
+        return product.title.toLowerCase().contains(search) ||
+            product.category.toLowerCase().contains(search) ||
+            product.brand.toLowerCase().contains(search) ||
+            product.description.toLowerCase().contains(search);
       }).toList();
-
-      products.assignAll(filtered);
     }
+
+    // IMPORTANT: search result 0 ho tab bhi products update hon
+    products.assignAll(filtered);
       }
 
 

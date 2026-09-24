@@ -93,19 +93,6 @@ class HomeScreen extends StatelessWidget {
           );
         }
 
-        // Empty
-        if (firestoreProductController.products.isEmpty) {
-          return const Center(
-            child: Text(
-              'No products available',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          );
-        }
-
         return SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,6 +187,43 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
+              if(firestoreProductController.products.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(
+                    top: 60,
+                    left: 20,
+                    right: 20,
+                  ),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.search_off_outlined,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 12,),
+                        Text(
+                          'No products found',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 8,),
+                        Text(
+                          'Try a different search or category.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+
+              else
               // PRODUCTS
               LayoutBuilder(
                 builder: (context, constraints) {
