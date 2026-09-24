@@ -52,8 +52,7 @@ class _SellerOrdersScreenState
 
         if (orderController.sellerOrders.isEmpty) {
           return RefreshIndicator(
-            onRefresh:
-            orderController.getSellerOrders,
+            onRefresh: orderController.getSellerOrders,
             child: ListView(
               physics:
               const AlwaysScrollableScrollPhysics(),
@@ -70,8 +69,7 @@ class _SellerOrdersScreenState
         }
 
         return RefreshIndicator(
-          onRefresh:
-          orderController.getSellerOrders,
+          onRefresh: orderController.getSellerOrders,
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount:
@@ -82,10 +80,10 @@ class _SellerOrdersScreenState
 
               return _OrderCard(
                 order: order,
-                onStatusChanged: (status) {
+                onStatusChanged: (orderStatus) {
                   orderController.updateOrderStatus(
                     order,
-                    status,
+                    orderStatus,
                   );
                 },
               );
@@ -116,6 +114,7 @@ class _OrderCard extends StatelessWidget {
           crossAxisAlignment:
           CrossAxisAlignment.start,
           children: [
+            // ORDER HEADER
             Row(
               mainAxisAlignment:
               MainAxisAlignment.spaceBetween,
@@ -128,14 +127,17 @@ class _OrderCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                _StatusBadge(
-                  status: order.status,
+
+                // ORDER STATUS BADGE
+                _OrderStatusBadge(
+                  status: order.orderStatus,
                 ),
               ],
             ),
 
             const SizedBox(height: 8),
 
+            // DATE
             Text(
               'Date: ${_formatDate(order.createdAt)}',
               style: TextStyle(
@@ -144,8 +146,26 @@ class _OrderCard extends StatelessWidget {
               ),
             ),
 
+            const SizedBox(height: 12),
+
+            // PAYMENT STATUS
+            Row(
+              children: [
+                const Text(
+                  'Payment: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                _PaymentStatusBadge(
+                  status: order.paymentStatus,
+                ),
+              ],
+            ),
+
             const Divider(height: 24),
 
+            // ORDER ITEMS
             ...order.items.map(
                   (item) {
                 final title =
@@ -170,14 +190,18 @@ class _OrderCard extends StatelessWidget {
                           TextOverflow.ellipsis,
                         ),
                       ),
+
                       const SizedBox(width: 10),
+
                       Text(
                         'x$quantity',
                         style: const TextStyle(
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+
                       const SizedBox(width: 15),
+
                       Text(
                         '\$${price.toStringAsFixed(2)}',
                         style: const TextStyle(
@@ -192,6 +216,7 @@ class _OrderCard extends StatelessWidget {
 
             const Divider(height: 24),
 
+            // TOTAL
             Row(
               mainAxisAlignment:
               MainAxisAlignment.spaceBetween,
@@ -214,8 +239,9 @@ class _OrderCard extends StatelessWidget {
 
             const SizedBox(height: 14),
 
+            // ORDER STATUS DROPDOWN
             DropdownButtonFormField<String>(
-              value: order.status,
+              value: order.orderStatus,
               decoration: const InputDecoration(
                 labelText: 'Order Status',
                 border: OutlineInputBorder(),
@@ -244,7 +270,7 @@ class _OrderCard extends StatelessWidget {
               ],
               onChanged: (value) {
                 if (value != null &&
-                    value != order.status) {
+                    value != order.orderStatus) {
                   onStatusChanged(value);
                 }
               },
@@ -262,10 +288,11 @@ class _OrderCard extends StatelessWidget {
   }
 }
 
-class _StatusBadge extends StatelessWidget {
+// ORDER STATUS BADGE
+class _OrderStatusBadge extends StatelessWidget {
   final String status;
 
-  const _StatusBadge({
+  const _OrderStatusBadge({
     required this.status,
   });
 
@@ -278,14 +305,83 @@ class _StatusBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
+        color: _getOrderStatusColor(status)
+            .withOpacity(0.12),
       ),
       child: Text(
         status.toUpperCase(),
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 11,
           fontWeight: FontWeight.bold,
+          color: _getOrderStatusColor(status),
         ),
       ),
     );
+  }
+
+  Color _getOrderStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'processing':
+        return Colors.orange;
+
+      case 'shipped':
+        return Colors.blue;
+
+      case 'delivered':
+        return Colors.green;
+
+      case 'cancelled':
+        return Colors.red;
+
+      case 'pending':
+      default:
+        return Colors.grey;
+    }
+  }
+}
+
+// PAYMENT STATUS BADGE
+class _PaymentStatusBadge extends StatelessWidget {
+  final String status;
+
+  const _PaymentStatusBadge({
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: _getPaymentStatusColor(status)
+            .withOpacity(0.12),
+      ),
+      child: Text(
+        status.toUpperCase(),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: _getPaymentStatusColor(status),
+        ),
+      ),
+    );
+  }
+
+  Color _getPaymentStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'paid':
+        return Colors.green;
+
+      case 'failed':
+        return Colors.red;
+
+      case 'pending':
+      default:
+        return Colors.orange;
+    }
   }
 }

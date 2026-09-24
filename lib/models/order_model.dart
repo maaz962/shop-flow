@@ -4,7 +4,8 @@ class OrderModel {
   final List<String> sellerIds;
   final List<Map<String, dynamic>> items;
   final double totalAmount;
-  final String status;
+  final String orderStatus;
+  final String paymentStatus;
   final DateTime createdAt;
   final Map<String, dynamic> deliveryAddress;
 
@@ -14,7 +15,10 @@ class OrderModel {
     required this.sellerIds,
     required this.items,
     required this.totalAmount,
-    required this.status,
+    // Order status
+    required this.orderStatus,
+    // Payment status
+    required this.paymentStatus,
     required this.createdAt,
     required this.deliveryAddress,
   });
@@ -34,7 +38,13 @@ class OrderModel {
       ),
       totalAmount:
       (map['totalAmount'] ?? 0).toDouble(),
-      status: map['status'] ?? 'pending',
+      // ORDER STATUS
+      orderStatus: map['orderStatus'] ?? 'pending',
+
+      // PAYMENT STATUS
+      paymentStatus:
+      map['paymentStatus'] ?? 'pending',
+
       createdAt: DateTime.parse(
         map['createdAt']),
         deliveryAddress:
@@ -49,14 +59,19 @@ class OrderModel {
       'sellerIds': sellerIds,
       'items': items,
       'totalAmount': totalAmount,
-      'status': status,
+      // ORDER / SHIPPING STATUS
+      'orderStatus': orderStatus,
+      // PAYMENT STATUS
+      'paymentStatus': paymentStatus,
+
       'createdAt': createdAt.toIso8601String(),
       'deliveryAddress': deliveryAddress,
     };
   }
 
   OrderModel copyWith({
-    String? status,
+    String? orderStatus,
+    String? paymentStatus,
   }) {
     return OrderModel(
       orderId: orderId,
@@ -64,7 +79,15 @@ class OrderModel {
       sellerIds: sellerIds,
       items: items,
       totalAmount: totalAmount,
-      status: status ?? this.status,
+
+      // Agar new status diya hai to woh use hoga,
+      // warna purana status.
+      orderStatus: orderStatus ?? this.orderStatus,
+      // Agar new payment status diya hai to woh use hoga,
+      // warna purana payment status.
+      paymentStatus:
+      paymentStatus ?? this.paymentStatus,
+
       createdAt: createdAt,
         deliveryAddress: deliveryAddress,
     );

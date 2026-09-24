@@ -121,7 +121,8 @@ class OrderController extends GetxController {
         sellerIds: sellerIds,
         items: items,
         totalAmount: totalAmount,
-        status: 'pending',
+        orderStatus: 'pending',
+        paymentStatus: 'paid',
         createdAt: DateTime.now(),
         deliveryAddress: deliveryAddress,
       );
@@ -166,32 +167,35 @@ class OrderController extends GetxController {
 
   Future<void> updateOrderStatus(
       OrderModel order,
-      String status,
+      String orderStatus,
       ) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
+      // UPDATE FIRESTORE
       await orderService.updateOrderStatus(
         orderId: order.orderId,
-        status: status,
+        orderStatus: orderStatus,
       );
 
+      // UPDATE LOCAL SELLER ORDER
       final index = sellerOrders.indexWhere(
             (item) => item.orderId == order.orderId,
       );
 
       if (index != -1) {
         sellerOrders[index] =
-            order.copyWith(status: status);
+            order.copyWith(orderStatus: orderStatus);
       }
 
+      // NOTIFY CUSTOMER
       final customerToken = await userService.getFcmToken(order.userId);
       if (customerToken != null) {
         await notificationSender.sendNotification(
           toToken: customerToken,
           title: 'Order Update',
-          body: 'Your order is now: $status',
+          body: 'Your order is now: $orderStatus',
           data: {'type': 'order', 'orderId': order.orderId},
         );
       }

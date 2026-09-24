@@ -66,13 +66,13 @@ class OrderService {
 
   Future<void> updateOrderStatus({
     required String orderId,
-    required String status,
+    required String orderStatus,
   }) async {
     await _firestore
         .collection('orders')
         .doc(orderId)
         .update({
-      'status': status,
+      'orderStatus': orderStatus,
     });
   }
 }
