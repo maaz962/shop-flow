@@ -1,9 +1,9 @@
-
 class ProductModel {
   final int id;
 
-  // firebase auth user uid
+  // Firebase Auth user UID
   final String ownerId;
+
   final String title;
   final String description;
   final double price;
@@ -11,12 +11,18 @@ class ProductModel {
   final double rating;
   final int stock;
   final String brand;
-  final String category;
+
+  // Central category document ID
+  final String categoryId;
+
+  // Central category name
+  final String categoryName;
+
   final String thumbnail;
   final List<String> images;
   final List<dynamic> reviews;
 
-  // firestore doc id
+  // Firestore document ID
   final String? firestoreId;
 
   ProductModel({
@@ -29,29 +35,42 @@ class ProductModel {
     required this.rating,
     required this.stock,
     required this.brand,
-    required this.category,
+    required this.categoryId,
+    required this.categoryName,
     required this.images,
     required this.thumbnail,
     required this.reviews,
     required this.firestoreId,
-});
+  });
 
   // JSON -> ProductModel
-  factory ProductModel.fromJson(Map<String, dynamic> json){
+  factory ProductModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return ProductModel(
       id: json['id'] ?? 0,
       ownerId: json['ownerId'] ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
-      price: (json['price'] ?? 0) .toDouble(),
-      discountPercentage: (json['discountPercentage'] ?? 0).toDouble(),
+      price: (json['price'] ?? 0).toDouble(),
+      discountPercentage:
+      (json['discountPercentage'] ?? 0).toDouble(),
       rating: (json['rating'] ?? 0).toDouble(),
       stock: json['stock'] ?? 0,
       brand: json['brand'] ?? '',
-      category: json['category'] ?? '',
+
+      categoryId: json['categoryId'] ?? '',
+      categoryName: json['categoryName'] ??
+          json['category'] ??
+          '',
+
       thumbnail: json['thumbnail'] ?? '',
-      images: List<String>.from(json['images'] ?? []),
-      reviews: List<dynamic>.from(json['reviews'] ?? [],),
+      images: List<String>.from(
+        json['images'] ?? [],
+      ),
+      reviews: List<dynamic>.from(
+        json['reviews'] ?? [],
+      ),
       firestoreId: null,
     );
   }
@@ -63,19 +82,29 @@ class ProductModel {
       Map<String, dynamic> map,
       ) {
     return ProductModel(
-        id: int.tryParse(id) ?? 0,
-        ownerId: map['ownerId'] ?? '',
-        title: map['title'] ?? '',
-        description: map['description'] ?? '',
-        price: (map['price'] ?? 0).toDouble(),
-        discountPercentage: (map['discountPercentage'] ?? 0).toDouble(),
-        rating: (map['rating'] ?? 0).toDouble(),
-        stock: map['stock'] ?? 0,
-        brand: map['brand'] ?? '',
-        category: map['category'] ?? '',
-        images: List<String>.from(map['images'] ?? []),
-        thumbnail: map['thumbnail'] ?? '',
-        reviews: List<dynamic>.from(map['reviews'] ?? []),
+      id: int.tryParse(id) ?? 0,
+      ownerId: map['ownerId'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      price: (map['price'] ?? 0).toDouble(),
+      discountPercentage:
+      (map['discountPercentage'] ?? 0).toDouble(),
+      rating: (map['rating'] ?? 0).toDouble(),
+      stock: map['stock'] ?? 0,
+      brand: map['brand'] ?? '',
+
+      categoryId: map['categoryId'] ?? '',
+      categoryName: map['categoryName'] ??
+          map['category'] ??
+          '',
+
+      images: List<String>.from(
+        map['images'] ?? [],
+      ),
+      thumbnail: map['thumbnail'] ?? '',
+      reviews: List<dynamic>.from(
+        map['reviews'] ?? [],
+      ),
       firestoreId: id,
     );
   }
@@ -90,7 +119,10 @@ class ProductModel {
       'rating': rating,
       'stock': stock,
       'brand': brand,
-      'category': category,
+
+      'categoryId': categoryId,
+      'categoryName': categoryName,
+
       'thumbnail': thumbnail,
       'images': images,
       'reviews': reviews,

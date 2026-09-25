@@ -401,7 +401,7 @@ class _ManagementGrid extends StatelessWidget {
         subtitle:
         'Manage product categories',
         onTap: () {
-          // Phase 8
+          Get.toNamed(AppRoutes.adminCategories);
         },
       ),
       _ManagementData(

@@ -27,14 +27,16 @@ import 'package:shop_flow_app/views/seller/my_products_screen.dart';
 import 'package:shop_flow_app/views/seller/store_profile_screen.dart';
 import 'package:shop_flow_app/views/seller/seller_orders_screen.dart';
 
+// Admin
 import 'package:shop_flow_app/views/admin/admin_dashboard_screen.dart';
 import 'package:shop_flow_app/views/admin/admin_users_screen.dart';
+import 'package:shop_flow_app/views/admin/admin_categories_screen.dart';
+
 import 'app_routes.dart';
 
 class AppPages {
   static final pages = [
-
-    //  General
+    // General
 
     GetPage(
       name: AppRoutes.splash,
@@ -63,7 +65,7 @@ class AppPages {
     //   page: () => const OtpScreen(),
     // ),
 
-    //  Customer
+    // Customer
 
     GetPage(
       name: AppRoutes.home,
@@ -105,7 +107,7 @@ class AppPages {
       page: () => const SettingsScreen(),
     ),
 
-    //  Seller
+    // Seller
 
     GetPage(
       name: AppRoutes.sellerDashboard,
@@ -139,7 +141,8 @@ class AppPages {
       page: () => const SellerOrdersScreen(),
     ),
 
-    //  Admin
+    // Admin
+
     GetPage(
       name: AppRoutes.adminDashboard,
       page: () => const AdminDashboardScreen(),
@@ -150,5 +153,11 @@ class AppPages {
       page: () => const AdminUsersScreen(),
     ),
 
+    // Admin Categories
+
+    GetPage(
+      name: AppRoutes.adminCategories,
+      page: () => AdminCategoriesScreen(),
+    ),
   ];
 }

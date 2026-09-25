@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../app/routes/app_routes.dart';
+import '../../controllers/category_controller.dart';
 import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/theme_controller.dart';
 import '../../controllers/wishlist_controller.dart';
 import '../../widgets/customer_bottom_nav.dart';
 import '../../widgets/product_card.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeController = Get.find<ThemeController>();
+    final themeController =
+    Get.find<ThemeController>();
 
     final firestoreProductController =
     Get.find<FirestoreProductController>();
+
+    final categoryController =
+    Get.find<CategoryController>();
 
     // Make sure WishlistController exists before ProductCard uses it.
     Get.find<WishlistController>();
@@ -43,7 +47,8 @@ class HomeScreen extends StatelessWidget {
 
             // Orders
             IconButton(
-              onPressed: () => Get.toNamed(AppRoutes.orders),
+              onPressed: () =>
+                  Get.toNamed(AppRoutes.orders),
               icon: const Icon(
                 Icons.receipt_long_outlined,
               ),
@@ -63,7 +68,8 @@ class HomeScreen extends StatelessWidget {
 
             // Settings
             IconButton(
-              onPressed: () => Get.toNamed(AppRoutes.settings),
+              onPressed: () =>
+                  Get.toNamed(AppRoutes.settings),
               icon: const Icon(
                 Icons.settings,
               ),
@@ -73,29 +79,42 @@ class HomeScreen extends StatelessWidget {
       ),
 
       body: Obx(() {
-        // Loading
+        // Product loading
         if (firestoreProductController.isLoading.value) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        // Error
-        if (firestoreProductController.errorMessage.value.isNotEmpty) {
+        // Product error
+        if (firestoreProductController
+            .errorMessage
+            .value
+            .isNotEmpty) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Text(
-                firestoreProductController.errorMessage.value,
+                firestoreProductController
+                    .errorMessage
+                    .value,
                 textAlign: TextAlign.center,
               ),
             ),
           );
         }
 
+        // Central categories
+        final categories = [
+          'All',
+          ...categoryController.activeCategories
+              .map((category) => category.name),
+        ];
+
         return SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+            CrossAxisAlignment.start,
             children: [
               // SEARCH BAR
               Padding(
@@ -109,9 +128,11 @@ class HomeScreen extends StatelessWidget {
                   height: 46,
                   child: TextField(
                     controller:
-                    firestoreProductController.searchController,
+                    firestoreProductController
+                        .searchController,
                     onChanged: (value) {
-                      firestoreProductController.searchProducts(value);
+                      firestoreProductController
+                          .searchProducts(value);
                     },
                     decoration: InputDecoration(
                       hintText: 'Search products...',
@@ -130,11 +151,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             firestoreProductController
-                                .searchController
-                                .clear();
-
-                            firestoreProductController
-                                .searchProducts('');
+                                .clearSearch();
                           },
                         )
                             : const SizedBox.shrink(),
@@ -151,6 +168,114 @@ class HomeScreen extends StatelessWidget {
                       filled: true,
                     ),
                   ),
+                ),
+              ),
+
+              // CATEGORIES
+              const Padding(
+                padding: EdgeInsets.fromLTRB(
+                  16,
+                  18,
+                  16,
+                  10,
+                ),
+                child: Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+
+              // Horizontal category list
+              SizedBox(
+                height: 40,
+                child: categoryController
+                    .activeCategories
+                    .isEmpty
+                    ? const Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'No categories available',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                )
+                    : ListView.builder(
+                  scrollDirection:
+                  Axis.horizontal,
+                  padding:
+                  const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final category =
+                    categories[index];
+
+                    return Obx(() {
+                      final isSelected =
+                          firestoreProductController
+                              .selectedCategory
+                              .value ==
+                              category;
+
+                      return Padding(
+                        padding:
+                        const EdgeInsets.only(
+                          right: 8,
+                        ),
+                        child: ChoiceChip(
+                          label: Text(category),
+                          selected: isSelected,
+                          onSelected: (_) {
+                            firestoreProductController
+                                .filterByCategory(
+                              category,
+                            );
+                          },
+                          selectedColor:
+                          Theme.of(context)
+                              .colorScheme
+                              .primary,
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : Theme.of(context)
+                                .colorScheme
+                                .onSurface,
+                            fontWeight:
+                            FontWeight.w500,
+                          ),
+                          backgroundColor:
+                          Theme.of(context)
+                              .colorScheme
+                              .surface,
+                          side: BorderSide(
+                            color: isSelected
+                                ? Colors.transparent
+                                : Colors
+                                .grey
+                                .shade300,
+                          ),
+                          shape:
+                          RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius
+                                .circular(20),
+                          ),
+                          showCheckmark: false,
+                        ),
+                      );
+                    });
+                  },
                 ),
               ),
 
@@ -187,7 +312,51 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
 
-              if(firestoreProductController.products.isEmpty)
+              // PRODUCTS / EMPTY STATES
+
+              // No products exist in Firestore
+              if (firestoreProductController
+                  .allProducts
+                  .isEmpty)
+                const Padding(
+                  padding: EdgeInsets.only(
+                    top: 60,
+                    left: 20,
+                    right: 20,
+                  ),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          'No products available',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'There are currently no products available.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+
+              // Products exist, but search/category found nothing
+              else if (firestoreProductController
+                  .products
+                  .isEmpty)
                 const Padding(
                   padding: EdgeInsets.only(
                     top: 60,
@@ -202,7 +371,7 @@ class HomeScreen extends StatelessWidget {
                           size: 50,
                           color: Colors.grey,
                         ),
-                        SizedBox(height: 12,),
+                        SizedBox(height: 12),
                         Text(
                           'No products found',
                           style: TextStyle(
@@ -210,7 +379,7 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(height: 8,),
+                        SizedBox(height: 8),
                         Text(
                           'Try a different search or category.',
                           textAlign: TextAlign.center,
@@ -223,50 +392,51 @@ class HomeScreen extends StatelessWidget {
                   ),
                 )
 
+              // Products
               else
-              // PRODUCTS
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  int columns;
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    int columns;
 
-                  if (constraints.maxWidth >= 1200) {
-                    columns = 5;
-                  } else if (constraints.maxWidth >= 900) {
-                    columns = 4;
-                  } else if (constraints.maxWidth >= 600) {
-                    columns = 3;
-                  } else {
-                    columns = 2;
-                  }
+                    if (constraints.maxWidth >= 1200) {
+                      columns = 5;
+                    } else if (constraints.maxWidth >= 900) {
+                      columns = 4;
+                    } else if (constraints.maxWidth >= 600) {
+                      columns = 3;
+                    } else {
+                      columns = 2;
+                    }
 
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics:
-                    const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(16),
-                    itemCount:
-                    firestoreProductController
-                        .products
-                        .length,
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: columns,
-                      crossAxisSpacing: 14,
-                      mainAxisSpacing: 14,
-                      childAspectRatio: 0.52,
-                    ),
-                    itemBuilder: (context, index) {
-                      final product =
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics:
+                      const NeverScrollableScrollPhysics(),
+                      padding:
+                      const EdgeInsets.all(16),
+                      itemCount:
                       firestoreProductController
-                          .products[index];
+                          .products
+                          .length,
+                      gridDelegate:
+                      SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: columns,
+                        crossAxisSpacing: 14,
+                        mainAxisSpacing: 14,
+                        childAspectRatio: 0.52,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product =
+                        firestoreProductController
+                            .products[index];
 
-                      return ProductCard(
-                        product: product,
-                      );
-                    },
-                  );
-                },
-              ),
+                        return ProductCard(
+                          product: product,
+                        );
+                      },
+                    );
+                  },
+                ),
 
               // Extra space for floating navigation bar
               const SizedBox(height: 30),
@@ -275,8 +445,9 @@ class HomeScreen extends StatelessWidget {
         );
       }),
 
-      // REUSABLE CUSTOMER BOTTOM NAVIGATION
-      bottomNavigationBar: const CustomerBottomNav(
+      // CUSTOMER BOTTOM NAVIGATION
+      bottomNavigationBar:
+      const CustomerBottomNav(
         currentIndex: 0,
       ),
     );

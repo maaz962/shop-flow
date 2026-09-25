@@ -8,7 +8,8 @@ import 'package:shop_flow_app/app/utils/app_snackbar.dart';
 
 class FirestoreProductController extends GetxController {
   final FirestoreService firestoreService = FirestoreService();
-  final AuthController authController = Get.find<AuthController>();
+  final AuthController authController =
+  Get.find<AuthController>();
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
@@ -26,28 +27,21 @@ class FirestoreProductController extends GetxController {
   final searchQuery = ''.obs;
   final searchController = TextEditingController();
 
+  // Currently selected category name
   final selectedCategory = 'All'.obs;
 
   @override
   void onInit() {
     super.onInit();
+
     getProducts();
   }
 
   @override
   void onClose() {
     searchController.dispose();
-    super.onClose();
-  }
 
-  List<String> get categories {
-    final unique = allProducts
-        .map((p) => p.category.trim())
-        .where((c) => c.isNotEmpty)
-        .toSet()
-        .toList();
-    unique.sort();
-    return['All',  ...unique];
+    super.onClose();
   }
 
   // Get all Firestore products
@@ -56,10 +50,12 @@ class FirestoreProductController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final fetchedProducts = await firestoreService.getProducts();
+      final fetchedProducts =
+      await firestoreService.getProducts();
 
       allProducts.assignAll(fetchedProducts);
-      // products.assignAll(fetchedProducts);
+
+      // Apply current search/category filters
       _applyFilters();
     } catch (e) {
       errorMessage.value = e.toString();
@@ -92,48 +88,67 @@ class FirestoreProductController extends GetxController {
     }
   }
 
-  // Search filter from all products
+  // Search products
   void searchProducts(String query) {
     searchQuery.value = query;
+
     _applyFilters();
   }
 
-  void filterByCategory(String category) {
-    selectedCategory.value = category;
+  // Filter products by category name
+  void filterByCategory(String categoryName) {
+    selectedCategory.value = categoryName;
+
     _applyFilters();
   }
 
-  void clearSearch(){
+  // Clear search
+  void clearSearch() {
     searchController.clear();
     searchQuery.value = '';
+
     _applyFilters();
   }
 
+  // Apply category + search filters
   void _applyFilters() {
     var filtered = allProducts.toList();
 
-    if(selectedCategory.value != 'All') {
-      filtered = filtered.where((p) =>
-      p.category.toLowerCase() == selectedCategory.value.toLowerCase())
+    // Category filter
+    if (selectedCategory.value != 'All') {
+      filtered = filtered
+          .where(
+            (product) =>
+        product.categoryName.toLowerCase() ==
+            selectedCategory.value.toLowerCase(),
+      )
           .toList();
     }
 
-    final search = searchQuery.value.toLowerCase().trim();
+    // Search filter
+    final search =
+    searchQuery.value.toLowerCase().trim();
 
     if (search.isNotEmpty) {
       filtered = filtered.where((product) {
-        return product.title.toLowerCase().contains(search) ||
-            product.category.toLowerCase().contains(search) ||
-            product.brand.toLowerCase().contains(search) ||
-            product.description.toLowerCase().contains(search);
+        return product.title
+            .toLowerCase()
+            .contains(search) ||
+            product.categoryName
+                .toLowerCase()
+                .contains(search) ||
+            product.brand
+                .toLowerCase()
+                .contains(search) ||
+            product.description
+                .toLowerCase()
+                .contains(search);
       }).toList();
     }
 
-    // IMPORTANT: search result 0 ho tab bhi products update hon
+    // Update products even when result is empty
     products.assignAll(filtered);
-      }
-
-
+  }
 
   // Create Product
   Future<void> createProduct({
@@ -143,7 +158,11 @@ class FirestoreProductController extends GetxController {
     required double discountPercentage,
     required int stock,
     required String brand,
-    required String category,
+
+    // Central category information
+    required String categoryId,
+    required String categoryName,
+
     required String thumbnail,
     List<String> images = const [],
   }) async {
@@ -154,6 +173,22 @@ class FirestoreProductController extends GetxController {
         AppSnackbar.show(
           'Login Required',
           'Please login first',
+        );
+        return;
+      }
+
+      if (categoryId.trim().isEmpty) {
+        AppSnackbar.show(
+          'Category Required',
+          'Please select a category',
+        );
+        return;
+      }
+
+      if (categoryName.trim().isEmpty) {
+        AppSnackbar.show(
+          'Category Required',
+          'Please select a category',
         );
         return;
       }
@@ -170,7 +205,11 @@ class FirestoreProductController extends GetxController {
         rating: 0,
         stock: stock,
         brand: brand,
-        category: category,
+
+        // Central category
+        categoryId: categoryId,
+        categoryName: categoryName,
+
         images: images,
         thumbnail: thumbnail,
         reviews: [],
@@ -188,7 +227,7 @@ class FirestoreProductController extends GetxController {
       // Refresh ALL products for Home
       await getProducts();
 
-      // Refresh only seller's products
+      // Refresh seller's products
       await getMyProducts();
     } catch (e) {
       errorMessage.value = e.toString();
@@ -203,7 +242,9 @@ class FirestoreProductController extends GetxController {
   }
 
   // Update Product
-  Future<void> updateProduct(ProductModel product) async {
+  Future<void> updateProduct(
+      ProductModel product,
+      ) async {
     try {
       if (product.firestoreId == null ||
           product.firestoreId!.isEmpty) {
@@ -212,10 +253,24 @@ class FirestoreProductController extends GetxController {
         );
       }
 
+      if (product.categoryId.trim().isEmpty) {
+        throw Exception(
+          'Category ID is missing',
+        );
+      }
+
+      if (product.categoryName.trim().isEmpty) {
+        throw Exception(
+          'Category name is missing',
+        );
+      }
+
       isLoading.value = true;
       errorMessage.value = '';
 
-      await firestoreService.updateProduct(product);
+      await firestoreService.updateProduct(
+        product,
+      );
 
       AppSnackbar.show(
         'Success',
@@ -240,11 +295,14 @@ class FirestoreProductController extends GetxController {
   }
 
   // Delete Product
-  Future<void> deleteProduct(ProductModel product) async {
+  Future<void> deleteProduct(
+      ProductModel product,
+      ) async {
     try {
       final firestoreId = product.firestoreId;
 
-      if (firestoreId == null || firestoreId.isEmpty) {
+      if (firestoreId == null ||
+          firestoreId.isEmpty) {
         throw Exception(
           'Firestore document ID is missing',
         );
@@ -253,7 +311,9 @@ class FirestoreProductController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      await firestoreService.deleteProduct(firestoreId);
+      await firestoreService.deleteProduct(
+        firestoreId,
+      );
 
       // Remove from seller's products
       myProducts.removeWhere(
@@ -261,6 +321,11 @@ class FirestoreProductController extends GetxController {
       );
 
       // Remove from all products
+      allProducts.removeWhere(
+            (p) => p.firestoreId == product.firestoreId,
+      );
+
+      // Remove from currently displayed products
       products.removeWhere(
             (p) => p.firestoreId == product.firestoreId,
       );
@@ -280,5 +345,4 @@ class FirestoreProductController extends GetxController {
       isLoading.value = false;
     }
   }
-
 }

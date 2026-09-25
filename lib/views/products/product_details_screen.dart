@@ -14,10 +14,14 @@ class ProductDetailsScreen extends StatelessWidget {
     final cartController = Get.find<CartController>();
 
     double originalPrice =
-        product.price / (1 - product.discountPercentage / 100);
+        product.price /
+            (1 - product.discountPercentage / 100);
 
-    if (product.discountPercentage > 0 && product.discountPercentage < 100) {
-      originalPrice = product.price / (1 - product.discountPercentage / 100);
+    if (product.discountPercentage > 0 &&
+        product.discountPercentage < 100) {
+      originalPrice =
+          product.price /
+              (1 - product.discountPercentage / 100);
     }
 
     return Scaffold(
@@ -28,13 +32,14 @@ class ProductDetailsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 700),
+            constraints:
+            const BoxConstraints(maxWidth: 700),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
-
                   // Product Image
                   SizedBox(
                     width: double.infinity,
@@ -43,10 +48,12 @@ class ProductDetailsScreen extends StatelessWidget {
                         ? Image.network(
                       product.thumbnail,
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
+                      errorBuilder:
+                          (context, error, stackTrace) {
                         return const Center(
                           child: Icon(
-                            Icons.image_not_supported_outlined,
+                            Icons
+                                .image_not_supported_outlined,
                             size: 80,
                             color: Colors.grey,
                           ),
@@ -55,7 +62,8 @@ class ProductDetailsScreen extends StatelessWidget {
                     )
                         : const Center(
                       child: Icon(
-                        Icons.image_not_supported_outlined,
+                        Icons
+                            .image_not_supported_outlined,
                         size: 80,
                         color: Colors.grey,
                       ),
@@ -78,14 +86,21 @@ class ProductDetailsScreen extends StatelessWidget {
                   // Rating
                   Row(
                     children: [
-                      const Icon(Icons.star, color: Colors.amber),
+                      const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
                       const SizedBox(width: 5),
                       Text(
                         '${product.rating}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      Text('${product.reviews.length} Reviews'),
+                      Text(
+                        '${product.reviews.length} Reviews',
+                      ),
                     ],
                   ),
 
@@ -108,7 +123,8 @@ class ProductDetailsScreen extends StatelessWidget {
                       Text(
                         '\$${originalPrice.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
+                          decoration:
+                          TextDecoration.lineThrough,
                           color: Colors.grey,
                         ),
                       ),
@@ -128,20 +144,28 @@ class ProductDetailsScreen extends StatelessWidget {
                   // Shipping
                   Card(
                     child: ListTile(
-                      leading: const Icon(Icons.local_shipping),
-                      title: const Text('Free Shipping'),
-                      subtitle: const Text('Delivery in 2-4 days'),
+                      leading: const Icon(
+                        Icons.local_shipping,
+                      ),
+                      title: const Text(
+                        'Free Shipping',
+                      ),
+                      subtitle: const Text(
+                        'Delivery in 2-4 days',
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: 16), // <-- Gap added yahan
+                  const SizedBox(height: 16),
 
                   // Product Information
                   Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding:
+                      const EdgeInsets.all(16),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
                         children: [
                           const Text(
                             'Product Information',
@@ -150,10 +174,21 @@ class ProductDetailsScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           const SizedBox(height: 12),
-                          Text('Brand: ${product.brand}'),
-                          Text('Category: ${product.category}'),
-                          Text('Stock: ${product.stock}'),
+
+                          Text(
+                            'Brand: ${product.brand}',
+                          ),
+
+                          // Central category name
+                          Text(
+                            'Category: ${product.categoryName}',
+                          ),
+
+                          Text(
+                            'Stock: ${product.stock}',
+                          ),
                         ],
                       ),
                     ),
@@ -174,7 +209,9 @@ class ProductDetailsScreen extends StatelessWidget {
 
                   Text(
                     product.description,
-                    style: const TextStyle(fontSize: 15),
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
 
                   const SizedBox(height: 30),
@@ -185,9 +222,11 @@ class ProductDetailsScreen extends StatelessWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            cartController.addToCart(product);
+                            cartController
+                                .addToCart(product);
                           },
-                          child: const Text('Add to Cart'),
+                          child:
+                          const Text('Add to Cart'),
                         ),
                       ),
 
@@ -196,14 +235,18 @@ class ProductDetailsScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            cartController.addToCart(product);
-                            Get.toNamed(AppRoutes.checkout);
+                            cartController
+                                .addToCart(product);
+
+                            Get.toNamed(
+                              AppRoutes.checkout,
+                            );
                           },
                           child: const Text(
-                              'Buy Now',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                            'Buy Now',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
