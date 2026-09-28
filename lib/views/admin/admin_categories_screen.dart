@@ -117,7 +117,12 @@ class AdminCategoriesScreen extends StatelessWidget {
                 Get.back();
               }
             },
-            child: const Text('Add'),
+            child: const Text(
+                'Add',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            ),
           ),
         ],
       ),
