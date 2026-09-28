@@ -132,7 +132,6 @@ class ReviewController extends GetxController {
       );
 
       await reviewService.addReview(review);
-      await reviewService.updateProductRating(productId);
       await getProductReviews(productId);
 
       AppSnackbar.show(
@@ -206,15 +205,8 @@ class ReviewController extends GetxController {
         createdAt: review.createdAt,
       );
 
-      await reviewService.updateReview(
-        updatedReview,
-      );
-      await reviewService.updateProductRating(
-        review.productId,
-      );
-      await getProductReviews(
-        review.productId,
-      );
+      await reviewService.updateReview(updatedReview);
+      await getProductReviews(review.productId);
 
       AppSnackbar.show(
         'Success',
@@ -259,15 +251,8 @@ class ReviewController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      await reviewService.deleteReview(
-        review.id,
-      );
-      await reviewService.updateProductRating(
-        review.productId,
-      );
-      await getProductReviews(
-        review.productId,
-      );
+      await reviewService.deleteReview(review);   // review.id nahi, poora review
+      await getProductReviews(review.productId);
 
       AppSnackbar.show(
         'Success',

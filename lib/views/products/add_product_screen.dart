@@ -374,6 +374,9 @@ class _AddProductScreenState
                     )
                         : const Text(
                       'Create Product',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

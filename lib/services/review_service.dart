@@ -3,44 +3,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/review_model.dart';
 
 class ReviewService {
-  final FirebaseFirestore _firestore =
-      FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Add Review
-  Future<void> addReview(
-      ReviewModel review,
-      ) async {
-    await _firestore
-        .collection('reviews')
-        .add(review.toMap());
-  }
+  CollectionReference<Map<String, dynamic>> get _reviews =>
+      _firestore.collection('reviews');
+
+  CollectionReference<Map<String, dynamic>> get _products =>
+      _firestore.collection('products');
+
+  // One review per user per product. Firestore rules depend on this ID.
+  String _reviewId(String productId, String userId) =>
+      '${productId}_$userId';
+
+  // Add Review (review + product rating in one batch)
+  Future<void> addReview(ReviewModel review) => _save(review);
+
+  // Update Review (same, set() overwrites the user's own review)
+  Future<void> updateReview(ReviewModel review) => _save(review);
+
+  // Delete Review (review delete + product rating in one batch)
+  Future<void> deleteReview(ReviewModel review) =>
+      _save(review, delete: true);
 
   // Get reviews for a specific product
-  Future<List<ReviewModel>> getProductReviews(
-      String productId,
-      ) async {
-    final snapshot = await _firestore
-        .collection('reviews')
-        .where(
-      'productId',
-      isEqualTo: productId,
-    )
-        .get();
+  Future<List<ReviewModel>> getProductReviews(String productId) async {
+    final snapshot =
+    await _reviews.where('productId', isEqualTo: productId).get();
 
-    final reviews = snapshot.docs.map((doc) {
-      return ReviewModel.fromMap(
-        doc.id,
-        doc.data(),
-      );
-    }).toList();
+    final reviews = snapshot.docs
+        .map((doc) => ReviewModel.fromMap(doc.id, doc.data()))
+        .toList();
 
     // Newest reviews first
-    reviews.sort(
-          (a, b) => b.createdAt.compareTo(
-        a.createdAt,
-      ),
-    );
-
+    reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return reviews;
   }
 
@@ -49,99 +44,46 @@ class ReviewService {
       String productId,
       String userId,
       ) async {
-    final snapshot = await _firestore
-        .collection('reviews')
-        .where(
-      'productId',
-      isEqualTo: productId,
-    )
-        .where(
-      'userId',
-      isEqualTo: userId,
-    )
-        .limit(1)
-        .get();
-
-    if (snapshot.docs.isEmpty) {
-      return null;
-    }
-
-    final doc = snapshot.docs.first;
-
-    return ReviewModel.fromMap(
-      doc.id,
-      doc.data(),
-    );
+    final doc = await _reviews.doc(_reviewId(productId, userId)).get();
+    if (!doc.exists) return null;
+    return ReviewModel.fromMap(doc.id, doc.data()!);
   }
 
-  // Update Review
-  Future<void> updateReview(
-      ReviewModel review,
-      ) async {
-    if (review.id.isEmpty) {
-      throw Exception(
-        'Review ID is missing',
-      );
+  Future<void> _save(ReviewModel review, {bool delete = false}) async {
+    final reviewRef =
+    _reviews.doc(_reviewId(review.productId, review.userId));
+
+    // Ratings of all OTHER reviews of this product
+    final snapshot =
+    await _reviews.where('productId', isEqualTo: review.productId).get();
+
+    double sum = 0;
+    int count = 0;
+    for (final doc in snapshot.docs) {
+      if (doc.id == reviewRef.id) continue;
+      sum += ((doc.data()['rating'] ?? 0) as num).toDouble();
+      count++;
     }
 
-    await _firestore
-        .collection('reviews')
-        .doc(review.id)
-        .update(
-      review.toMap(),
-    );
-  }
-
-  // Delete Review
-  Future<void> deleteReview(
-      String reviewId,
-      ) async {
-    if (reviewId.isEmpty) {
-      throw Exception(
-        'Review ID is missing',
-      );
+    if (!delete) {
+      sum += review.rating;
+      count++;
     }
 
-    await _firestore
-        .collection('reviews')
-        .doc(reviewId)
-        .delete();
-  }
+    final average = count == 0 ? 0.0 : sum / count;
 
-  // Calculate average rating for a product
-  Future<double> calculateAverageRating(
-      String productId,
-      ) async {
-    final reviews = await getProductReviews(
-      productId,
-    );
+    final batch = _firestore.batch();
 
-    if (reviews.isEmpty) {
-      return 0;
+    if (delete) {
+      batch.delete(reviewRef);
+    } else {
+      batch.set(reviewRef, review.toMap());
     }
 
-    final total = reviews.fold<double>(
-      0,
-          (sum, review) => sum + review.rating,
-    );
-
-    return total / reviews.length;
-  }
-
-  // Update product rating in Firestore
-  Future<void> updateProductRating(
-      String productId,
-      ) async {
-    final averageRating =
-    await calculateAverageRating(productId);
-
-    await _firestore
-        .collection('products')
-        .doc(productId)
-        .update({
-      'rating': double.parse(
-        averageRating.toStringAsFixed(1),
-      ),
+    batch.update(_products.doc(review.productId), {
+      'rating': double.parse(average.toStringAsFixed(1)),
     });
+
+    await batch.commit();
   }
 }

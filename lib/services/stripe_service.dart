@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class StripeService {
-  static const String _secretKey = 'sk_test_51UIiaY2KMdYaRhtzk8g4bgwe2BxrT8rARlXI9fxXzkZpanKyjCswyiDvDra2mw0ddSg7tNgdbLwsxSgs08XxRuhU0047pZOxky';
+  static const String _secretKey =
+  String.fromEnvironment('STRIPE_SECRET_KEY');
 
   Future<String> createPaymentIntent({
     required double amount,

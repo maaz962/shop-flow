@@ -11,12 +11,10 @@ class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key});
 
   @override
-  State<ProductDetailsScreen> createState() =>
-      _ProductDetailsScreenState();
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
-class _ProductDetailsScreenState
-    extends State<ProductDetailsScreen> {
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   late final ProductModel product;
 
   late final CartController cartController;
@@ -39,33 +37,50 @@ class _ProductDetailsScreenState
     });
   }
 
+  // "1 review" / "2 reviews"
+  String _reviewsLabel(int count) => '$count ${count == 1 ? 'review' : 'reviews'}';
+
+  // Label on the left, value on the right
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.grey)),
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double originalPrice = product.price;
 
-    if (product.discountPercentage > 0 &&
-        product.discountPercentage < 100) {
-      originalPrice =
-          product.price /
-              (1 - product.discountPercentage / 100);
+    if (product.discountPercentage > 0 && product.discountPercentage < 100) {
+      originalPrice = product.price / (1 - product.discountPercentage / 100);
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Details'),
       ),
-
       body: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 700,
-            ),
+            constraints: const BoxConstraints(maxWidth: 700),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // =========================
                   // PRODUCT IMAGE
@@ -78,12 +93,10 @@ class _ProductDetailsScreenState
                         ? Image.network(
                       product.thumbnail,
                       fit: BoxFit.contain,
-                      errorBuilder:
-                          (context, error, stackTrace) {
+                      errorBuilder: (context, error, stackTrace) {
                         return const Center(
                           child: Icon(
-                            Icons
-                                .image_not_supported_outlined,
+                            Icons.image_not_supported_outlined,
                             size: 80,
                             color: Colors.grey,
                           ),
@@ -92,8 +105,7 @@ class _ProductDetailsScreenState
                     )
                         : const Center(
                       child: Icon(
-                        Icons
-                            .image_not_supported_outlined,
+                        Icons.image_not_supported_outlined,
                         size: 80,
                         color: Colors.grey,
                       ),
@@ -120,34 +132,24 @@ class _ProductDetailsScreenState
                   // RATING
                   // =========================
 
-                  Obx(
-                        () {
-                      final rating =
-                      reviewController.reviews.isNotEmpty
-                          ? reviewController.averageRating
-                          : product.rating;
+                  Obx(() {
+                    final rating = reviewController.reviews.isNotEmpty
+                        ? reviewController.averageRating
+                        : product.rating;
 
-                      return Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            rating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${reviewController.reviewCount} Reviews',
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                    return Row(
+                      children: [
+                        const Icon(Icons.star, color: Colors.amber),
+                        const SizedBox(width: 5),
+                        Text(
+                          rating.toStringAsFixed(1),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(_reviewsLabel(reviewController.reviewCount)),
+                      ],
+                    );
+                  }),
 
                   const SizedBox(height: 16),
 
@@ -174,8 +176,7 @@ class _ProductDetailsScreenState
                       Text(
                         '\$${originalPrice.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          decoration:
-                          TextDecoration.lineThrough,
+                          decoration: TextDecoration.lineThrough,
                           color: Colors.grey,
                         ),
                       ),
@@ -196,17 +197,11 @@ class _ProductDetailsScreenState
                   // SHIPPING
                   // =========================
 
-                  Card(
+                  const Card(
                     child: ListTile(
-                      leading: const Icon(
-                        Icons.local_shipping,
-                      ),
-                      title: const Text(
-                        'Free Shipping',
-                      ),
-                      subtitle: const Text(
-                        'Delivery in 2-4 days',
-                      ),
+                      leading: Icon(Icons.local_shipping),
+                      title: Text('Free Shipping'),
+                      subtitle: Text('Delivery in 2-4 days'),
                     ),
                   ),
 
@@ -216,35 +211,29 @@ class _ProductDetailsScreenState
                   // PRODUCT INFORMATION
                   // =========================
 
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Product Information',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                  SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Product Information',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          Text(
-                            'Brand: ${product.brand}',
-                          ),
-
-                          Text(
-                            'Category: ${product.categoryName}',
-                          ),
-
-                          Text(
-                            'Stock: ${product.stock}',
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            _infoRow('Brand', product.brand),
+                            const Divider(height: 1),
+                            _infoRow('Category', product.categoryName),
+                            const Divider(height: 1),
+                            _infoRow('Stock', '${product.stock}'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -267,9 +256,7 @@ class _ProductDetailsScreenState
 
                   Text(
                     product.description,
-                    style: const TextStyle(
-                      fontSize: 15,
-                    ),
+                    style: const TextStyle(fontSize: 15),
                   ),
 
                   const SizedBox(height: 30),
@@ -292,67 +279,126 @@ class _ProductDetailsScreenState
                   // RATING SUMMARY
                   // =========================
 
-                  Obx(
-                        () {
-                      final average =
-                          reviewController.averageRating;
+                  Obx(() {
+                    final average = reviewController.averageRating;
+                    final count = reviewController.reviewCount;
 
-                      return Card(
+                    // counts[0] = 5 star ... counts[4] = 1 star
+                    final counts = List<int>.generate(5, (i) {
+                      final star = 5 - i;
+                      return reviewController.reviews
+                          .where((r) => r.rating.round() == star)
+                          .length;
+                    });
+
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Card(
                         child: Padding(
-                          padding:
-                          const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // Left: average
                               Column(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
                                     average.toStringAsFixed(1),
                                     style: const TextStyle(
                                       fontSize: 36,
-                                      fontWeight:
-                                      FontWeight.bold,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   Row(
-                                    mainAxisSize:
-                                    MainAxisSize.min,
-                                    children:
-                                    List.generate(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: List.generate(
                                       5,
-                                          (index) {
-                                        return Icon(
-                                          index <
-                                              average
-                                                  .round()
-                                              ? Icons.star
-                                              : Icons
-                                              .star_border,
-                                          color:
-                                          Colors.amber,
-                                          size: 20,
-                                        );
-                                      },
+                                          (index) => Icon(
+                                        index < average.round()
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: Colors.amber,
+                                        size: 18,
+                                      ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 4),
-
                                   Text(
-                                    '${reviewController.reviewCount} reviews',
-                                    style:
-                                    const TextStyle(
-                                      color: Colors.grey,
-                                    ),
+                                    _reviewsLabel(count),
+                                    style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],
+                              ),
+
+                              const SizedBox(width: 20),
+
+                              // Right: star distribution bars
+                              Expanded(
+                                child: Column(
+                                  children: List.generate(5, (i) {
+                                    final star = 5 - i;
+                                    final value =
+                                    count == 0 ? 0.0 : counts[i] / count;
+
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 3,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '$star',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const Icon(
+                                            Icons.star,
+                                            size: 12,
+                                            color: Colors.amber,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: ClipRRect(
+                                              borderRadius:
+                                              BorderRadius.circular(4),
+                                              child: LinearProgressIndicator(
+                                                value: value,
+                                                minHeight: 6,
+                                                backgroundColor:
+                                                Colors.grey.shade300,
+                                                valueColor:
+                                                const AlwaysStoppedAnimation<
+                                                    Color>(Colors.amber),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          SizedBox(
+                                            width: 18,
+                                            child: Text(
+                                              '${counts[i]}',
+                                              textAlign: TextAlign.end,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 16),
 
@@ -360,18 +406,16 @@ class _ProductDetailsScreenState
                   // WRITE / EDIT REVIEW
                   // =========================
 
-                  Obx(
-                        () {
-                      final userReview =
-                          reviewController.userReview.value;
+                  Obx(() {
+                    final userReview = reviewController.userReview.value;
 
-                      return Card(
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Card(
                         child: Padding(
-                          padding:
-                          const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 userReview == null
@@ -379,8 +423,7 @@ class _ProductDetailsScreenState
                                     : 'Your Review',
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  fontWeight:
-                                  FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
 
@@ -388,53 +431,39 @@ class _ProductDetailsScreenState
 
                               // Rating Stars
                               Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children:
-                                List.generate(
-                                  5,
-                                      (index) {
-                                    final rating =
-                                        index + 1.0;
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: List.generate(5, (index) {
+                                  final rating = index + 1.0;
 
-                                    return IconButton(
-                                      onPressed: () {
-                                        reviewController
-                                            .selectedRating
-                                            .value = rating;
-                                      },
-                                      icon: Obx(
-                                            () => Icon(
-                                          reviewController
-                                              .selectedRating
-                                              .value >=
-                                              rating
-                                              ? Icons.star
-                                              : Icons
-                                              .star_border,
-                                          color:
-                                          Colors.amber,
-                                          size: 30,
-                                        ),
+                                  return IconButton(
+                                    onPressed: () {
+                                      reviewController.selectedRating.value =
+                                          rating;
+                                    },
+                                    icon: Obx(
+                                          () => Icon(
+                                        reviewController.selectedRating.value >=
+                                            rating
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: Colors.amber,
+                                        size: 30,
                                       ),
-                                    );
-                                  },
-                                ),
+                                    ),
+                                  );
+                                }),
                               ),
 
                               const SizedBox(height: 8),
 
                               // Review Text
                               TextField(
-                                controller: reviewController
-                                    .reviewTextController,
+                                controller:
+                                reviewController.reviewTextController,
                                 maxLines: 4,
-                                decoration:
-                                const InputDecoration(
-                                  hintText:
-                                  'Write your review...',
-                                  border:
-                                  OutlineInputBorder(),
+                                decoration: const InputDecoration(
+                                  hintText: 'Write your review...',
+                                  border: OutlineInputBorder(),
                                 ),
                               ),
 
@@ -444,54 +473,36 @@ class _ProductDetailsScreenState
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
-                                  onPressed:
-                                  reviewController
-                                      .isLoading
-                                      .value
+                                  onPressed: reviewController.isLoading.value
                                       ? null
                                       : () async {
-                                    final rating =
-                                        reviewController
-                                            .selectedRating
-                                            .value;
+                                    final rating = reviewController
+                                        .selectedRating.value;
 
-                                    final comment =
-                                        reviewController
-                                            .reviewTextController
-                                            .text;
+                                    final comment = reviewController
+                                        .reviewTextController.text;
 
-                                    if (userReview ==
-                                        null) {
-                                      await reviewController
-                                          .addReview(
-                                        productId:
-                                        product
-                                            .firestoreId ??
+                                    if (userReview == null) {
+                                      await reviewController.addReview(
+                                        productId: product.firestoreId ??
                                             product.id.toString(),
-                                        rating:
-                                        rating,
-                                        comment:
-                                        comment,
+                                        rating: rating,
+                                        comment: comment,
                                       );
                                     } else {
                                       await reviewController
                                           .updateReview(
-                                        review:
-                                        userReview,
-                                        rating:
-                                        rating,
-                                        comment:
-                                        comment,
+                                        review: userReview,
+                                        rating: rating,
+                                        comment: comment,
                                       );
                                     }
                                   },
-                                  child: reviewController
-                                      .isLoading.value
+                                  child: reviewController.isLoading.value
                                       ? const SizedBox(
                                     height: 20,
                                     width: 20,
-                                    child:
-                                    CircularProgressIndicator(
+                                    child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                     ),
                                   )
@@ -506,33 +517,25 @@ class _ProductDetailsScreenState
                               // Delete own review
                               if (userReview != null) ...[
                                 const SizedBox(height: 8),
-
                                 SizedBox(
                                   width: double.infinity,
                                   child: OutlinedButton(
-                                    onPressed:
-                                    reviewController
-                                        .isLoading
-                                        .value
+                                    onPressed: reviewController.isLoading.value
                                         ? null
                                         : () {
                                       reviewController
-                                          .deleteReview(
-                                        userReview,
-                                      );
+                                          .deleteReview(userReview);
                                     },
-                                    child: const Text(
-                                      'Delete Review',
-                                    ),
+                                    child: const Text('Delete Review'),
                                   ),
                                 ),
                               ],
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
 
                   const SizedBox(height: 20),
 
@@ -540,67 +543,46 @@ class _ProductDetailsScreenState
                   // REVIEWS LIST
                   // =========================
 
-                  Obx(
-                        () {
-                      if (reviewController
-                          .isLoading.value &&
-                          reviewController.reviews.isEmpty) {
-                        return const Center(
-                          child:
-                          CircularProgressIndicator(),
-                        );
-                      }
+                  Obx(() {
+                    if (reviewController.isLoading.value &&
+                        reviewController.reviews.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                      if (reviewController
-                          .reviews
-                          .isEmpty) {
-                        return const Card(
+                    if (reviewController.reviews.isEmpty) {
+                      return const SizedBox(
+                        width: double.infinity,
+                        child: Card(
                           child: Padding(
-                            padding:
-                            EdgeInsets.all(20),
+                            padding: EdgeInsets.all(20),
                             child: Center(
-                              child: Text(
-                                'No reviews yet.',
-                              ),
+                              child: Text('No reviews yet.'),
                             ),
                           ),
-                        );
-                      }
-
-                      return Column(
-                        children: reviewController
-                            .reviews
-                            .map(
-                              (review) => _ReviewCard(
-                            review: review,
-                            currentUserId:
-                            reviewController
-                                .authController
-                                .user
-                                .value
-                                ?.uid,
-                            onEdit: () {
-                              reviewController
-                                  .prepareEditReview(
-                                review,
-                              );
-
-                              // Scroll to review form.
-                              // The form already contains
-                              // the selected review data.
-                            },
-                            onDelete: () {
-                              reviewController
-                                  .deleteReview(
-                                review,
-                              );
-                            },
-                          ),
-                        )
-                            .toList(),
+                        ),
                       );
-                    },
-                  ),
+                    }
+
+                    return Column(
+                      children: reviewController.reviews
+                          .map(
+                            (review) => _ReviewCard(
+                          review: review,
+                          currentUserId: reviewController
+                              .authController.user.value?.uid,
+                          onEdit: () {
+                            reviewController.prepareEditReview(review);
+                          },
+                          onDelete: () {
+                            reviewController.deleteReview(review);
+                          },
+                        ),
+                      )
+                          .toList(),
+                    );
+                  }),
 
                   const SizedBox(height: 30),
 
@@ -613,32 +595,22 @@ class _ProductDetailsScreenState
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            cartController
-                                .addToCart(product);
+                            cartController.addToCart(product);
                           },
-                          child: const Text(
-                            'Add to Cart',
-                          ),
+                          child: const Text('Add to Cart'),
                         ),
                       ),
-
                       const SizedBox(width: 12),
-
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            cartController
-                                .addToCart(product);
+                            cartController.addToCart(product);
 
-                            Get.toNamed(
-                              AppRoutes.checkout,
-                            );
+                            Get.toNamed(AppRoutes.checkout);
                           },
                           child: const Text(
                             'Buy Now',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -675,109 +647,99 @@ class _ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOwnReview =
-        currentUserId == review.userId;
+    final isOwnReview = currentUserId == review.userId;
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
-          children: [
-            // User information
-            Row(
-              children: [
-                CircleAvatar(
-                  child: Text(
-                    review.userName.isNotEmpty
-                        ? review.userName[0]
-                        .toUpperCase()
-                        : 'C',
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // User information
+              Row(
+                children: [
+                  CircleAvatar(
+                    child: Text(
+                      review.userName.isNotEmpty
+                          ? review.userName[0].toUpperCase()
+                          : 'C',
+                    ),
                   ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        review.userName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          review.userName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
-
-                      const SizedBox(height: 2),
-
-                      Row(
-                        children: List.generate(
-                          5,
-                              (index) => Icon(
-                            index <
-                                review.rating.round()
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: Colors.amber,
-                            size: 18,
+                        const SizedBox(height: 2),
+                        Row(
+                          children: List.generate(
+                            5,
+                                (index) => Icon(
+                              index < review.rating.round()
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.amber,
+                              size: 18,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+
+                  // Own review menu
+                  if (isOwnReview)
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          onEdit();
+                        }
+
+                        if (value == 'delete') {
+                          onDelete();
+                        }
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Edit'),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // Review comment
+              Text(
+                review.comment,
+                style: const TextStyle(fontSize: 15),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Review date
+              Text(
+                _formatDate(review.createdAt),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
                 ),
-
-                // Own review menu
-                if (isOwnReview)
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        onEdit();
-                      }
-
-                      if (value == 'delete') {
-                        onDelete();
-                      }
-                    },
-                    itemBuilder: (context) => const [
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Edit'),
-                      ),
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            // Review comment
-            Text(
-              review.comment,
-              style: const TextStyle(
-                fontSize: 15,
               ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Review date
-            Text(
-              _formatDate(review.createdAt),
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
