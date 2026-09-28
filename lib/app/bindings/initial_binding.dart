@@ -9,6 +9,7 @@ import '../../controllers/firestore_product_controller.dart';
 import '../../controllers/cart_controller.dart';
 import '../../controllers/wishlist_controller.dart';
 import '../../controllers/payment_controller.dart';
+import '../../controllers/review_controller.dart';
 
 
 class InitialBinding extends Bindings{
@@ -23,6 +24,7 @@ class InitialBinding extends Bindings{
     Get.put(StoreProfileController());
     Get.put(WishlistController());
     Get.put(PaymentController());
+    Get.put(ReviewController());
     Get.lazyPut<AdminController>(() => AdminController());
 
   }
