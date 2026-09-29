@@ -374,7 +374,7 @@ class _ManagementGrid extends StatelessWidget {
         subtitle:
         'View and manage seller accounts',
         onTap: () {
-          // Phase 5
+          Get.toNamed(AppRoutes.adminSellers);
         },
       ),
       _ManagementData(
