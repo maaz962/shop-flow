@@ -1,194 +1,104 @@
-# 🛒 ShopFlow
+# 🛍️ ShopFlow
 
-**ShopFlow** is a modern e-commerce application built with **Flutter and Firebase**, designed with a scalable **MVC architecture** and **GetX** for state management.
+### Multi-Vendor E-Commerce Mobile Application built with Flutter & Firebase
 
-The project supports both **customer and seller workflows**, with an admin panel currently under development. The goal is to build a complete, production-style e-commerce platform while following clean project structure, reusable components, and real-world development practices.
+ShopFlow is a Flutter-based multi-vendor e-commerce application with separate experiences for **Customers, Sellers, and Administrators**.
+
+The application uses **GetX** for state management and **Firebase** for authentication, database, and notifications, with **Stripe** integrated for payments.
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
-### 👤 Authentication & User Roles
+### 👤 Customer
 
-* User registration and login
-* Firebase Authentication
-* Role-based navigation
-* Customer and Seller roles
-* Admin role support
-* Automatic navigation according to user role
-* User profile information stored in Firestore
-
-### 🛍️ Customer Features
-
+* User registration, login and logout
 * Browse products
-* Product details
-* Product categories
 * Product search
-* Product ratings
-* Product discounts
-* Stock information
-* Add products to cart
-* Update cart quantities
-* Stock validation
-* Wishlist
+* Category-based filtering
+* Product details
+* Shopping cart with quantity and stock validation
 * Checkout
-* Order placement
-* View personal orders
-* Order information and status
+* Stripe payment integration
+* Order history
+* Order status tracking
+* Wishlist
+* Product ratings and reviews
+* Edit and delete personal reviews
+* Profile and settings
+* Light/Dark theme support
+* Push/local notifications
 
-### 🏪 Seller Features
+### 🏪 Seller
 
 * Seller dashboard
-* View seller's own products
 * Add products
 * Edit products
 * Delete products
-* Product ownership using Firebase Authentication UID
-* Seller-specific product management
-* Store profile section
-* Seller order management *(in development)*
+* View own products
+* Centralized category selection
+* Seller order management
+* Update order status
+* Store profile
+* Seller statistics
+* Notifications
+* Seller settings
 
-### 👑 Admin Panel
+### 🛡️ Admin
 
-The Admin Panel is currently being developed.
-
-Implemented/planned modules include:
-
-* Admin authentication
 * Admin dashboard
-* Total users
-* Total sellers
-* Total products
-* Total orders
-* Revenue statistics
 * User management
+* Enable/disable users
 * Seller management
 * Product management
+* Edit/delete products
+* Centralized category management
+* Create, activate and deactivate categories
+* Order management
+* Update order status
+* Dashboard statistics
+* Revenue and order overview
 
 ---
 
-## 🔥 Firebase Integration
+## ⭐ Ratings & Reviews
 
-ShopFlow uses Firebase as its backend.
+Customers can:
 
-### Firebase Services
+* Give products a rating from 1–5 stars
+* Write reviews
+* Edit their own reviews
+* Delete their own reviews
+* View reviews from other customers
 
-* **Firebase Authentication** — user authentication and role-based access
-* **Cloud Firestore** — users, products and orders
-* **Firebase Storage** — product media *(planned/ongoing)*
-* **Firebase Cloud Messaging (FCM)** — push notifications *(currently being integrated)*
+Product ratings are automatically recalculated when reviews are added, updated, or deleted.
 
-### Notification Flow
+Reviews are stored separately in Firestore.
 
-The planned notification system follows this workflow:
+---
+
+## 🗂️ Centralized Category System
+
+ShopFlow uses a centralized category system managed by the Admin.
 
 ```text
-Customer places order
-        ↓
-Seller receives notification
-        ↓
-Seller updates order status
-        ↓
-Customer receives notification
+Admin
+  │
+  ├── Create / Manage Categories
+  │
+  ▼
+Firestore
+  │
+  └── categories
+        │
+        ▼
+Seller → Select Category → Product
+        │
+        ▼
+Customer → Category Filter
 ```
 
----
-
-## 🏗️ Architecture
-
-ShopFlow follows an **MVC architecture with GetX**.
-
-```text
-lib/
-│
-├── app/
-│   ├── bindings/
-│   ├── routes/
-│   ├── theme/
-│   └── utils/
-│
-├── controllers/
-│   ├── auth_controller.dart
-│   ├── cart_controller.dart
-│   ├── firestore_product_controller.dart
-│   ├── order_controller.dart
-│   ├── theme_controller.dart
-│   ├── wishlist_controller.dart
-│   ├── store_profile_controller.dart
-│   └── admin_controller.dart
-│
-├── models/
-│   ├── user_model.dart
-│   ├── product_model.dart
-│   └── order_model.dart
-│
-├── services/
-│   ├── auth_service.dart
-│   ├── firestore_service.dart
-│   ├── order_service.dart
-│   ├── storage_service.dart
-│   └── user_service.dart
-│
-├── views/
-│   ├── home/
-│   ├── products/
-│   ├── seller/
-│   ├── cart/
-│   ├── checkout/
-│   ├── orders/
-│   ├── profile/
-│   ├── settings/
-│   ├── welcome/
-│   └── splash/
-│
-└── widgets/
-    ├── auth_button_skeleton.dart
-    ├── product_skeleton.dart
-    └── product_card.dart
-```
-
----
-
-## 🧠 State Management
-
-ShopFlow uses **GetX** for:
-
-* Reactive state management
-* Dependency injection
-* Navigation
-* Controllers
-* Observable lists and variables
-
-Example:
-
-```dart
-final products = <ProductModel>[].obs;
-```
-
-This allows the UI to react automatically whenever the product list changes.
-
----
-
-## 📦 Product Model
-
-Products contain information such as:
-
-* Product ID
-* Owner ID
-* Title
-* Description
-* Price
-* Discount percentage
-* Rating
-* Stock
-* Brand
-* Category
-* Thumbnail
-* Product images
-* Reviews
-* Firestore document ID
-
-Each seller's products are associated with their Firebase Authentication UID, allowing seller-specific product management.
+Sellers cannot create arbitrary product categories. They select from the active categories managed by the Admin.
 
 ---
 
@@ -196,215 +106,159 @@ Each seller's products are associated with their Firebase Authentication UID, al
 
 The cart system supports:
 
-* Add to cart
-* Remove from cart
+* Add/remove products
 * Increase/decrease quantity
 * Stock validation
-* Item count
 * Subtotal calculation
+* Item count
 
-Orders store information such as:
+Orders contain:
 
 * Customer
+* Seller(s)
 * Products
-* Quantities
 * Total amount
 * Order status
-* Order date
+* Payment status
+* Delivery address
+* Creation date
 
 ---
 
-## 🎨 UI & Reusable Components
+## 💳 Payments
 
-ShopFlow uses reusable widgets to keep the UI consistent.
+ShopFlow uses **Stripe** for payment processing.
 
-For example, the reusable `ProductCard` is designed to be shared across:
+The application includes:
 
-* Home
-* Wishlist
-* Search
-* Category screens
+* Payment Sheet integration
+* Payment Intent creation
+* Checkout payment flow
+* Payment status tracking
 
-The product card supports:
-
-* Product image
-* Discount badge
-* Wishlist heart button
-* Product title
-* Price
-* Rating
-* Other product information
+> **Production note:** Stripe secret credentials should be handled through a secure backend/server environment rather than directly inside the mobile application.
 
 ---
 
-## 🔐 Security
+## 🔔 Notifications
 
-Firebase Security Rules are being developed alongside the application.
+ShopFlow uses Firebase Cloud Messaging for notification functionality.
 
-The intended access model is:
+Notifications are designed for events such as:
+
+* New orders
+* Order status updates
+* Seller/customer notifications
+
+FCM tokens are associated with users through Firestore.
+
+---
+
+## 🔥 Firebase
+
+The project currently uses Firebase services including:
+
+* Firebase Authentication
+* Cloud Firestore
+* Firebase Cloud Messaging
+
+Main Firestore collections include:
 
 ```text
-Customer
-   ↓
-Own profile + own orders
-
-Seller
-   ↓
-Own products + seller-specific data
-
-Admin
-   ↓
-Administrative management
+users
+products
+categories
+orders
+reviews
 ```
 
-The project is progressively moving toward stricter role-based Firestore access.
+---
+
+## 🏗️ Architecture
+
+ShopFlow follows a structured Flutter architecture:
+
+```text
+lib/
+├── app/
+│   ├── routes/
+│   ├── theme/
+│   └── utils/
+│
+├── controllers/
+├── models/
+├── services/
+├── views/
+│   ├── admin/
+│   ├── seller/
+│   └── customer/
+│
+└── main.dart
+```
+
+### State Management
+
+The application uses **GetX** for:
+
+* State management
+* Dependency injection
+* Navigation
+* Controllers
+
+Examples:
+
+```text
+AuthController
+FirestoreProductController
+CartController
+OrderController
+CategoryController
+ReviewController
+PaymentController
+AdminController
+StoreProfileController
+ThemeController
+```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-| Technology               | Purpose                                 |
-| ------------------------ | --------------------------------------- |
-| Flutter                  | Application development                 |
-| Dart                     | Programming language                    |
-| Firebase Auth            | Authentication                          |
-| Cloud Firestore          | Database                                |
-| Firebase Storage         | Media storage                           |
-| Firebase Cloud Messaging | Push notifications                      |
-| GetX                     | State management & dependency injection |
-| MVC                      | Application architecture                |
-
----
-
-## 📱 Screens
-
-### Customer
-
-* Splash Screen
-* Welcome Screen
-* Login
-* Register
-* Home
-* Product Details
-* Search
-* Categories
-* Wishlist
-* Cart
-* Checkout
-* Orders
-* Profile
-* Settings
-
-### Seller
-
-* Seller Dashboard
-* My Products
-* Add Product
-* Edit Product
-* Seller Product Management
-* Seller Orders *(in development)*
-* Store Profile *(in development)*
-
-### Admin
-
-* Admin Dashboard
-* Dashboard statistics
-* User Management *(in development)*
-* Seller Management *(in development)*
-* Product Management *(in development)*
+| Technology               | Purpose                       |
+| ------------------------ | ----------------------------- |
+| Flutter                  | Mobile application            |
+| Dart                     | Programming language          |
+| GetX                     | State management & navigation |
+| Firebase Auth            | Authentication                |
+| Cloud Firestore          | Database                      |
+| Firebase Cloud Messaging | Notifications                 |
+| Stripe                   | Payments                      |
+| Android                  | Mobile platform               |
 
 ---
 
-## 📌 Project Status
-
-**ShopFlow is actively under development.**
-
-### ✅ Completed
-
-* Firebase project integration
-* Firebase Authentication
-* Role-based authentication flow
-* Customer application flow
-* Seller dashboard
-* Product CRUD
-* Seller-specific product filtering
-* Product details
-* Cart system
-* Wishlist
-* Checkout
-* Order creation
-* Order listing
-* GetX state management
-* MVC project structure
-* Reusable Product Card
-* Responsive UI improvements
-* Initial Admin Panel development
-
-### 🚧 In Progress
-
-* Seller Order Management
-* Admin Dashboard improvements
-* Admin User Management
-* Admin Seller Management
-* Admin Product Management
-* Firebase Cloud Messaging
-* Push notification workflow
-* Firebase Storage integration
-* Advanced Firestore security rules
-
----
-
-## 🔮 Future Improvements
-
-* Product image/video uploads
-* Complete seller store profiles
-* Complete seller order management
-* Complete admin panel
-* Advanced search and filtering
-* Payment gateway integration
-* Push notifications
-* Order tracking
-* Product reviews
-* Analytics
-* Firebase App Check
-* Crash reporting
-* Production-ready security rules
-* CI/CD
-
----
-
-## ⚙️ Getting Started
+## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/shopflow.git
+git clone https://github.com/maaz962/shop-flow.git
+cd shop-flow
 ```
 
-### 2. Navigate to the project
-
-```bash
-cd shopflow
-```
-
-### 3. Install dependencies
+### 2. Install dependencies
 
 ```bash
 flutter pub get
 ```
 
-### 4. Configure Firebase
+### 3. Configure Firebase
 
-Create a Firebase project and connect it with the Flutter application.
+Add your Firebase configuration for the required platforms.
 
-Configure:
+### 4. Configure Stripe
 
-* Firebase Authentication
-* Cloud Firestore
-* Firebase Storage
-* Firebase Cloud Messaging
-
-Add the required Firebase configuration files for your target platform.
+Configure the Stripe environment according to the project's payment setup.
 
 ### 5. Run the application
 
@@ -414,43 +268,78 @@ flutter run
 
 ---
 
-## 📚 What I Am Learning Through ShopFlow
+## 🔐 Security
 
-ShopFlow is not only an e-commerce project; it is also a practical project for learning real-world software development concepts.
+Firestore rules provide role-based access for major application resources.
 
-Through this project, I am working with:
+The application distinguishes between:
 
-* Flutter development
-* Dart
-* MVC architecture
-* GetX
-* Firebase
-* Firestore database design
-* Authentication
-* Role-based authorization
-* CRUD operations
-* State management
-* Dependency injection
-* Reusable widgets
-* Responsive UI
-* Push notifications
-* Backend security
-* Git & GitHub
-* Real-world application architecture
+```text
+Customer
+Seller
+Admin
+```
+
+Admin-only operations include category management and administrative product/order/user management.
+
+For production deployment, sensitive payment and notification credentials should be moved to a secure backend environment.
 
 ---
 
-## 👨‍💻 Author
+## 📌 Current Project Status
 
-**M. Maaz Arif**
+### Implemented
 
-BS Computer Science Student
-Flutter & Full-Stack Developer in Progress
+* [x] Customer authentication
+* [x] Product browsing
+* [x] Search & categories
+* [x] Cart
+* [x] Checkout
+* [x] Stripe payment integration
+* [x] Orders
+* [x] Wishlist
+* [x] Ratings & reviews
+* [x] Seller dashboard
+* [x] Seller product management
+* [x] Seller order management
+* [x] Store profile
+* [x] Admin dashboard
+* [x] User management
+* [x] Seller management
+* [x] Product management
+* [x] Category management
+* [x] Order management
+* [x] Notifications
+* [x] Firebase integration
 
 ---
 
-## ⭐ Project
+## 🔮 Future Improvements
 
-If you find this project useful or interesting, consider giving the repository a ⭐.
+Some areas planned for further production-level improvement include:
 
-ShopFlow is continuously evolving as I learn and implement more production-level Flutter and Firebase concepts.
+* Secure backend payment verification
+* Server-side order and stock validation
+* Improved notification backend
+* Advanced admin analytics
+* Product image upload optimization
+* Pagination and performance improvements
+* Automated testing
+* Production security hardening
+
+---
+
+## 👨‍💻 Developer
+
+**Muhammad Maaz**
+
+Flutter Developer | Firebase | Full-Stack Development
+
+GitHub:
+https://github.com/maaz962
+
+---
+
+## 📄 License
+
+This project is developed for learning, development, and portfolio purposes.
