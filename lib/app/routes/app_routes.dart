@@ -31,4 +31,5 @@ class AppRoutes {
   static const adminUsers = '/admin-users';
   static const adminCategories = '/admin-categories';
   static const adminSellers = '/admin-sellers';
+  static const adminProducts = '/admin-products';
 }

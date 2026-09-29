@@ -32,6 +32,7 @@ import 'package:shop_flow_app/views/admin/admin_dashboard_screen.dart';
 import 'package:shop_flow_app/views/admin/admin_users_screen.dart';
 import 'package:shop_flow_app/views/admin/admin_categories_screen.dart';
 import '../../views/admin/admin_sellers_screen.dart';
+import 'package:shop_flow_app/views/admin/admin_products_screen.dart';
 
 import 'app_routes.dart';
 
@@ -157,6 +158,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.adminSellers,
       page: () => const AdminSellersScreen(),
+    ),
+
+    GetPage(
+      name: AppRoutes.adminProducts,
+      page: () => const AdminProductsScreen(),
     ),
 
     // Admin Categories

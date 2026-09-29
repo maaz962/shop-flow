@@ -182,7 +182,81 @@ class AdminController extends GetxController {
 
       AppSnackbar.show(
         'Error',
-        'Failed to update user status',
+        'Failed to update firestoreIdus',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Update Product
+Future<void> updateProduct(ProductModel product) async {
+    try{
+      if(product.firestoreId == null || product.firestoreId!.isEmpty) {
+        throw Exception(
+          'Firestore document ID is missing',
+        );
+      }
+
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await firestoreService.updateProduct(product);
+
+      // Update product locally
+      final index = products.indexWhere(
+          (item) => item.firestoreId == product.firestoreId,
+      );
+
+      if(index != -1) {
+        products[index] = product;
+      }
+
+      AppSnackbar.show('Success', 'Product updated sucessfully',
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      AppSnackbar.show('Error', 'Failed to update product');
+    } finally {
+      isLoading.value  = false;
+    }
+}
+
+// Delete Product
+
+  Future<void> deleteProduct(ProductModel product) async {
+    try {
+      final firestoreId = product.firestoreId;
+
+      if (firestoreId == null ||
+          firestoreId.isEmpty) {
+        throw Exception(
+          'Firestore document ID is missing',
+        );
+      }
+
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await firestoreService.deleteProduct(
+        firestoreId,
+      );
+
+      products.removeWhere(
+            (item) => item.firestoreId == firestoreId,
+      );
+
+      AppSnackbar.show(
+        'Success',
+        'Product deleted successfully',
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      AppSnackbar.show(
+        'Error',
+        'Failed to delete product',
       );
     } finally {
       isLoading.value = false;

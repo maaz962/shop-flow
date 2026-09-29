@@ -383,7 +383,9 @@ class _ManagementGrid extends StatelessWidget {
         subtitle:
         'View, edit and delete products',
         onTap: () {
-          // Phase 6
+          Get.toNamed(
+            AppRoutes.adminProducts,
+          );
         },
       ),
       _ManagementData(
