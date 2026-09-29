@@ -32,4 +32,5 @@ class AppRoutes {
   static const adminCategories = '/admin-categories';
   static const adminSellers = '/admin-sellers';
   static const adminProducts = '/admin-products';
+  static const adminOrders = '/admin-orders';
 }

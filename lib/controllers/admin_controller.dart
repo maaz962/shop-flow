@@ -189,6 +189,46 @@ class AdminController extends GetxController {
     }
   }
 
+  // Update Order Status
+  Future<void> updateOrderStatus(
+      OrderModel order,
+      String orderStatus,
+      ) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      await orderService.updateOrderStatus(
+        orderId: order.orderId,
+        orderStatus: orderStatus,
+      );
+
+      final index = orders.indexWhere(
+            (item) => item.orderId == order.orderId,
+      );
+
+      if (index != -1) {
+        orders[index] = order.copyWith(
+          orderStatus: orderStatus,
+        );
+      }
+
+      AppSnackbar.show(
+        'Success',
+        'Order status updated successfully',
+      );
+    } catch (e) {
+      errorMessage.value = e.toString();
+
+      AppSnackbar.show(
+        'Error',
+        'Failed to update order status',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Update Product
 Future<void> updateProduct(ProductModel product) async {
     try{

@@ -394,7 +394,7 @@ class _ManagementGrid extends StatelessWidget {
         subtitle:
         'View and manage all orders',
         onTap: () {
-          // Phase 7
+          Get.toNamed(AppRoutes.adminOrders);
         },
       ),
       _ManagementData(
